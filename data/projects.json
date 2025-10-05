@@ -74,11 +74,11 @@
           "lens": "24-70mm f/2.8"
         },
         "tags": [],
-        "is_selected": true,
+        "is_selected": false,
         "is_favorite": false,
         "comment_count": 4,
         "created_at": "2025-09-16T20:37:15.004865",
-        "updated_at": "2025-09-28T20:37:15.004869"
+        "updated_at": "2025-10-05T19:21:27.033804"
       },
       {
         "id": "351c9d0f-bee0-4df4-9ce2-c4f26ca34a3a",
@@ -106,10 +106,10 @@
         },
         "tags": [],
         "is_selected": false,
-        "is_favorite": true,
+        "is_favorite": false,
         "comment_count": 2,
         "created_at": "2025-09-09T20:37:15.004958",
-        "updated_at": "2025-10-05T18:53:07.835305"
+        "updated_at": "2025-10-05T18:56:13.919100"
       },
       {
         "id": "3175ef50-c3ea-4c09-8b9e-e5163df07504",
@@ -140,7 +140,7 @@
         "is_favorite": false,
         "comment_count": 0,
         "created_at": "2025-09-17T20:37:15.005025",
-        "updated_at": "2025-10-05T18:53:21.029150"
+        "updated_at": "2025-10-05T18:56:20.006601"
       },
       {
         "id": "bdc93f51-7532-4cec-9294-6c527b996bf4",
@@ -171,7 +171,7 @@
         "is_favorite": false,
         "comment_count": 2,
         "created_at": "2025-09-08T20:37:15.005082",
-        "updated_at": "2025-09-30T20:37:15.005085"
+        "updated_at": "2025-10-05T18:56:28.334464"
       },
       {
         "id": "b7f29aa7-0a1f-470c-8580-cbca0408d8c4",
@@ -202,7 +202,7 @@
         "is_favorite": false,
         "comment_count": 3,
         "created_at": "2025-09-25T20:37:15.005140",
-        "updated_at": "2025-09-30T20:37:15.005143"
+        "updated_at": "2025-10-05T18:56:31.100345"
       },
       {
         "id": "9c03e251-6e20-48ca-a9aa-393201c8d58b",
