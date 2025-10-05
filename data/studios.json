@@ -1,0 +1,32 @@
+[
+  {
+    "id": "studio-001",
+    "name": "Elegant Moments Photography",
+    "email": "contact@elegantmoments.com",
+    "phone": "+1-555-123-4567",
+    "address": "123 Photography Lane, New York, NY 10001",
+    "logo_url": "https://picsum.photos/seed/1001/200/200",
+    "settings": {
+      "watermark_enabled": true,
+      "default_image_quality": "high",
+      "auto_backup": true
+    },
+    "created_at": "2024-09-30T20:37:14.953438",
+    "updated_at": "2025-08-31T20:37:14.953478"
+  },
+  {
+    "id": "studio-002",
+    "name": "Timeless Wedding Photography",
+    "email": "hello@timelessweddings.com",
+    "phone": "+1-555-987-6543",
+    "address": "456 Studio Street, Los Angeles, CA 90210",
+    "logo_url": "https://picsum.photos/seed/1002/200/200",
+    "settings": {
+      "watermark_enabled": false,
+      "default_image_quality": "ultra",
+      "auto_backup": true
+    },
+    "created_at": "2025-03-14T20:37:14.953675",
+    "updated_at": "2025-09-20T20:37:14.953687"
+  }
+]
