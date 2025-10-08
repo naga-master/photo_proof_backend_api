@@ -1,12 +1,48 @@
 [
   {
     "id": "user-001",
+    "name": "Photo Studio",
+    "email": "studio@photoproof.com",
+    "role": "studio",
+    "studio_id": "studio-001",
+    "created_at": "2025-09-08T20:00:41.697330",
+    "updated_at": "2025-10-08T20:00:41.697367"
+  },
+  {
+    "id": "user-002",
+    "name": "Sarah Johnson",
+    "email": "sarah.johnson@email.com",
+    "role": "client",
+    "studio_id": null,
+    "created_at": "2025-09-18T20:00:41.697501",
+    "updated_at": "2025-10-08T20:00:41.697510"
+  },
+  {
+    "id": "user-003",
+    "name": "Emma Davis",
+    "email": "emma.davis@email.com",
+    "role": "client",
+    "studio_id": null,
+    "created_at": "2025-09-23T20:00:41.697539",
+    "updated_at": "2025-10-08T20:00:41.697551"
+  },
+  {
+    "id": "user-004",
+    "name": "Robert Henderson",
+    "email": "robert.henderson@email.com",
+    "role": "client",
+    "studio_id": null,
+    "created_at": "2025-09-28T20:00:41.697564",
+    "updated_at": "2025-10-08T20:00:41.697569"
+  },
+  {
+    "id": "user-001",
     "name": "John Smith",
     "email": "john@elegantmoments.com",
     "role": "studio",
     "studio_id": "studio-001",
-    "created_at": "2024-09-30T20:37:14.963788",
-    "updated_at": "2025-08-31T20:37:14.963801"
+    "created_at": "2024-10-08T20:01:06.600158",
+    "updated_at": "2025-09-08T20:01:06.600180"
   },
   {
     "id": "user-002",
@@ -14,8 +50,8 @@
     "email": "sarah@example.com",
     "role": "client",
     "studio_id": null,
-    "created_at": "2025-06-22T20:37:14.963840",
-    "updated_at": "2025-09-20T20:37:14.963844"
+    "created_at": "2025-06-30T20:01:06.600224",
+    "updated_at": "2025-09-28T20:01:06.600231"
   },
   {
     "id": "user-003",
@@ -23,8 +59,8 @@
     "email": "emma@example.com",
     "role": "client",
     "studio_id": null,
-    "created_at": "2025-07-12T20:37:14.963858",
-    "updated_at": "2025-09-25T20:37:14.963861"
+    "created_at": "2025-07-20T20:01:06.600263",
+    "updated_at": "2025-10-03T20:01:06.600271"
   },
   {
     "id": "user-004",
@@ -32,8 +68,8 @@
     "email": "michael@example.com",
     "role": "client",
     "studio_id": null,
-    "created_at": "2025-08-01T20:37:14.963868",
-    "updated_at": "2025-09-28T20:37:14.963871"
+    "created_at": "2025-08-09T20:01:06.600286",
+    "updated_at": "2025-10-06T20:01:06.600291"
   },
   {
     "id": "user-005",
@@ -41,7 +77,88 @@
     "email": "lisa@timelessweddings.com",
     "role": "studio",
     "studio_id": "studio-002",
-    "created_at": "2025-03-14T20:37:14.963877",
-    "updated_at": "2025-09-15T20:37:14.963879"
+    "created_at": "2025-03-22T20:01:06.600303",
+    "updated_at": "2025-09-23T20:01:06.600308"
+  },
+  {
+    "id": "user-001",
+    "name": "Photo Studio",
+    "email": "studio@photoproof.com",
+    "role": "studio",
+    "studio_id": "studio-001",
+    "created_at": "2025-09-08T20:07:26.539669",
+    "updated_at": "2025-10-08T20:07:26.539698"
+  },
+  {
+    "id": "user-002",
+    "name": "Sarah Johnson",
+    "email": "sarah.johnson@email.com",
+    "role": "client",
+    "studio_id": null,
+    "created_at": "2025-09-18T20:07:26.539732",
+    "updated_at": "2025-10-08T20:07:26.539738"
+  },
+  {
+    "id": "user-003",
+    "name": "Emma Davis",
+    "email": "emma.davis@email.com",
+    "role": "client",
+    "studio_id": null,
+    "created_at": "2025-09-23T20:07:26.539756",
+    "updated_at": "2025-10-08T20:07:26.539759"
+  },
+  {
+    "id": "user-004",
+    "name": "Robert Henderson",
+    "email": "robert.henderson@email.com",
+    "role": "client",
+    "studio_id": null,
+    "created_at": "2025-09-28T20:07:26.539768",
+    "updated_at": "2025-10-08T20:07:26.539771"
+  },
+  {
+    "id": "user-001",
+    "name": "John Smith",
+    "email": "john@elegantmoments.com",
+    "role": "studio",
+    "studio_id": "studio-001",
+    "created_at": "2024-10-08T20:07:42.443564",
+    "updated_at": "2025-09-08T20:07:42.443595"
+  },
+  {
+    "id": "user-002",
+    "name": "Sarah Johnson",
+    "email": "sarah@example.com",
+    "role": "client",
+    "studio_id": null,
+    "created_at": "2025-06-30T20:07:42.443637",
+    "updated_at": "2025-09-28T20:07:42.443645"
+  },
+  {
+    "id": "user-003",
+    "name": "Emma Wilson",
+    "email": "emma@example.com",
+    "role": "client",
+    "studio_id": null,
+    "created_at": "2025-07-20T20:07:42.443664",
+    "updated_at": "2025-10-03T20:07:42.443669"
+  },
+  {
+    "id": "user-004",
+    "name": "Michael Chen",
+    "email": "michael@example.com",
+    "role": "client",
+    "studio_id": null,
+    "created_at": "2025-08-09T20:07:42.443682",
+    "updated_at": "2025-10-06T20:07:42.443686"
+  },
+  {
+    "id": "user-005",
+    "name": "Lisa Martinez",
+    "email": "lisa@timelessweddings.com",
+    "role": "studio",
+    "studio_id": "studio-002",
+    "created_at": "2025-03-22T20:07:42.443698",
+    "updated_at": "2025-09-23T20:07:42.443704"
   }
 ]

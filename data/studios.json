@@ -1,6 +1,17 @@
 [
   {
     "id": "studio-001",
+    "name": "Professional Photo Studio",
+    "email": "studio@photoproof.com",
+    "phone": null,
+    "address": null,
+    "logo_url": null,
+    "settings": {},
+    "created_at": "2025-09-08T20:00:41.712873",
+    "updated_at": "2025-10-08T20:00:41.712894"
+  },
+  {
+    "id": "studio-001",
     "name": "Elegant Moments Photography",
     "email": "contact@elegantmoments.com",
     "phone": "+1-555-123-4567",
@@ -11,8 +22,8 @@
       "default_image_quality": "high",
       "auto_backup": true
     },
-    "created_at": "2024-09-30T20:37:14.953438",
-    "updated_at": "2025-08-31T20:37:14.953478"
+    "created_at": "2024-10-08T20:01:06.593465",
+    "updated_at": "2025-09-08T20:01:06.593501"
   },
   {
     "id": "studio-002",
@@ -26,7 +37,48 @@
       "default_image_quality": "ultra",
       "auto_backup": true
     },
-    "created_at": "2025-03-14T20:37:14.953675",
-    "updated_at": "2025-09-20T20:37:14.953687"
+    "created_at": "2025-03-22T20:01:06.593573",
+    "updated_at": "2025-09-28T20:01:06.593583"
+  },
+  {
+    "id": "studio-001",
+    "name": "Professional Photo Studio",
+    "email": "studio@photoproof.com",
+    "phone": null,
+    "address": null,
+    "logo_url": null,
+    "settings": {},
+    "created_at": "2025-09-08T20:07:26.549220",
+    "updated_at": "2025-10-08T20:07:26.549245"
+  },
+  {
+    "id": "studio-001",
+    "name": "Elegant Moments Photography",
+    "email": "contact@elegantmoments.com",
+    "phone": "+1-555-123-4567",
+    "address": "123 Photography Lane, New York, NY 10001",
+    "logo_url": "https://picsum.photos/seed/1001/200/200",
+    "settings": {
+      "watermark_enabled": true,
+      "default_image_quality": "high",
+      "auto_backup": true
+    },
+    "created_at": "2024-10-08T20:07:42.439451",
+    "updated_at": "2025-09-08T20:07:42.439475"
+  },
+  {
+    "id": "studio-002",
+    "name": "Timeless Wedding Photography",
+    "email": "hello@timelessweddings.com",
+    "phone": "+1-555-987-6543",
+    "address": "456 Studio Street, Los Angeles, CA 90210",
+    "logo_url": "https://picsum.photos/seed/1002/200/200",
+    "settings": {
+      "watermark_enabled": false,
+      "default_image_quality": "ultra",
+      "auto_backup": true
+    },
+    "created_at": "2025-03-22T20:07:42.439546",
+    "updated_at": "2025-09-28T20:07:42.439552"
   }
 ]

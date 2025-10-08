@@ -140,18 +140,22 @@ def generate_mock_images(project_id: str, categories: List[ProjectCategory], cou
     camera_models = ["Canon EOS R5", "Nikon D850", "Sony A7R IV", "Canon 5D Mark IV", "Nikon Z7"]
     lens_models = ["24-70mm f/2.8", "85mm f/1.4", "50mm f/1.2", "70-200mm f/2.8", "35mm f/1.4"]
     
+    # Use more reliable dimensions that work better with Picsum
+    valid_dimensions = [
+        (800, 600),   # 4:3 ratio - very reliable
+        (1200, 800),  # 3:2 ratio - very reliable
+        (1600, 900),  # 16:9 ratio - very reliable
+        (900, 1200),  # Portrait 3:4 - reduced from 1600 for better reliability
+        (600, 800),   # Portrait 4:3 - smaller, more reliable
+    ]
+    
     for category in categories:
         for i in range(count_per_category):
             image_id = str(uuid.uuid4())
             seed = random.randint(1, 1000)
             
-            # Generate image dimensions
-            width = random.choice([800, 1200, 1600, 2000])
-            height = int(width * random.uniform(0.6, 0.8))  # Landscape orientation mostly
-            
-            # Sometimes use portrait orientation
-            if random.random() < 0.3:
-                width, height = height, width
+            # Use predefined valid dimensions
+            width, height = random.choice(valid_dimensions)
             
             # Create image version
             version = ImageVersion(

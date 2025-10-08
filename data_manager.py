@@ -470,7 +470,7 @@ class DataManager:
                         id=f"comment-{uuid.uuid4()}",
                         image_id=image.id,
                         project_id=project.id,
-                        user_id=random.choice(["user-001"] + [u.id for u in client_users]).id,
+                        user_id=random.choice(["user-001"] + [u.id for u in client_users]),
                         user_name=random.choice(["Photo Studio", proj_data["client_name"]]),
                         user_role=random.choice([UserRole.STUDIO, UserRole.CLIENT]),
                         content=random.choice(comment_templates),
