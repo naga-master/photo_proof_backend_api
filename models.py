@@ -150,6 +150,41 @@ class CreateCommentRequest(BaseModel):
     parent_id: Optional[str] = None
 
 
+# Batch actions for offline sync
+class BatchActionType(str, Enum):
+    SELECT = "select"
+    FAVORITE = "favorite"
+    COMMENT = "comment"
+    APPROVE = "approve"
+    DOWNLOAD = "download"
+
+
+class BatchAction(BaseModel):
+    client_action_id: str  # UUID from client for idempotency
+    action_type: BatchActionType
+    photo_id: Optional[str] = None
+    project_id: Optional[str] = None
+    payload: Dict[str, Any] = Field(default_factory=dict)
+    timestamp: int  # Unix timestamp when action was created
+
+
+class BatchActionsRequest(BaseModel):
+    actions: List[BatchAction]
+
+
+class BatchActionResult(BaseModel):
+    client_action_id: str
+    success: bool
+    error: Optional[str] = None
+
+
+class BatchActionsResponse(BaseModel):
+    accepted: List[str]  # List of client_action_ids that were processed successfully
+    failed: List[BatchActionResult] = Field(default_factory=list)  # List of failed actions with reasons
+    processed_count: int
+    total_count: int
+
+
 # Response models
 class ProjectListResponse(BaseModel):
     projects: List[Project]

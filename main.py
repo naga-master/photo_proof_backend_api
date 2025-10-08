@@ -15,7 +15,8 @@ from models import (
     Project, ProjectImage, ProjectCategory, Comment, User, Studio,
     CreateProjectRequest, CreateCategoryRequest, UpdateImageRequest, CreateCommentRequest,
     ProjectListResponse, ImageListResponse, CommentListResponse,
-    ProjectStatus, UserRole, ImageVersion, ImageMetadata, ProjectSettings
+    ProjectStatus, UserRole, ImageVersion, ImageMetadata, ProjectSettings,
+    BatchAction, BatchActionsRequest, BatchActionsResponse, BatchActionResult, BatchActionType
 )
 from data_manager import data_manager
 
@@ -558,6 +559,208 @@ async def update_project_settings(
         raise HTTPException(status_code=404, detail="Project not found")
     
     return updated_project.settings
+
+
+# Batch actions endpoint for offline sync
+@app.post("/api/actions/batch", response_model=BatchActionsResponse)
+async def process_batch_actions(
+    request: BatchActionsRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Process a batch of actions for offline sync support.
+    Supports idempotency via client_action_id to prevent duplicate processing.
+    """
+    print(f"🔄 Processing batch of {len(request.actions)} actions")
+    
+    accepted = []
+    failed = []
+    processed_actions = set()  # Track processed client_action_ids for idempotency
+    
+    # Simple idempotency check (in production, store in Redis/database)
+    # For demo purposes, we'll process all actions but track duplicates
+    
+    for action in request.actions:
+        try:
+            # Check for duplicate client_action_id within this batch
+            if action.client_action_id in processed_actions:
+                failed.append(BatchActionResult(
+                    client_action_id=action.client_action_id,
+                    success=False,
+                    error="Duplicate client_action_id in batch"
+                ))
+                continue
+            
+            processed_actions.add(action.client_action_id)
+            
+            # Process action based on type
+            success = await process_single_action(action, current_user)
+            
+            if success:
+                accepted.append(action.client_action_id)
+                print(f"✅ Processed {action.action_type} action: {action.client_action_id}")
+            else:
+                failed.append(BatchActionResult(
+                    client_action_id=action.client_action_id,
+                    success=False,
+                    error=f"Failed to process {action.action_type} action"
+                ))
+                print(f"❌ Failed {action.action_type} action: {action.client_action_id}")
+                
+        except Exception as e:
+            failed.append(BatchActionResult(
+                client_action_id=action.client_action_id,
+                success=False,
+                error=str(e)
+            ))
+            print(f"💥 Error processing action {action.client_action_id}: {e}")
+    
+    response = BatchActionsResponse(
+        accepted=accepted,
+        failed=failed,
+        processed_count=len(accepted),
+        total_count=len(request.actions)
+    )
+    
+    print(f"📊 Batch complete: {len(accepted)} accepted, {len(failed)} failed")
+    return response
+
+
+async def process_single_action(action: BatchAction, current_user: User) -> bool:
+    """Process a single action from the batch"""
+    try:
+        if action.action_type == BatchActionType.SELECT:
+            return await process_select_action(action, current_user)
+        elif action.action_type == BatchActionType.FAVORITE:
+            return await process_favorite_action(action, current_user)
+        elif action.action_type == BatchActionType.COMMENT:
+            return await process_comment_action(action, current_user)
+        elif action.action_type == BatchActionType.APPROVE:
+            return await process_approve_action(action, current_user)
+        elif action.action_type == BatchActionType.DOWNLOAD:
+            return await process_download_action(action, current_user)
+        else:
+            print(f"⚠️ Unknown action type: {action.action_type}")
+            return False
+    except Exception as e:
+        print(f"❌ Error in process_single_action: {e}")
+        return False
+
+
+async def process_select_action(action: BatchAction, current_user: User) -> bool:
+    """Process a select/deselect action"""
+    if not action.photo_id or not action.project_id:
+        return False
+    
+    selected = action.payload.get('selected', False)
+    
+    # Use existing update_project_image function
+    image = data_manager.update_project_image(
+        action.project_id, 
+        action.photo_id, 
+        {"is_selected": selected}
+    )
+    
+    return image is not None
+
+
+async def process_favorite_action(action: BatchAction, current_user: User) -> bool:
+    """Process a favorite/unfavorite action"""
+    if not action.photo_id or not action.project_id:
+        return False
+    
+    favorite = action.payload.get('favorite', False)
+    
+    # Use existing update_project_image function
+    image = data_manager.update_project_image(
+        action.project_id, 
+        action.photo_id, 
+        {"is_favorite": favorite}
+    )
+    
+    return image is not None
+
+
+async def process_comment_action(action: BatchAction, current_user: User) -> bool:
+    """Process a comment creation action"""
+    if not action.photo_id or not action.project_id:
+        return False
+    
+    comment_text = action.payload.get('commentText', '')
+    parent_id = action.payload.get('parentId')
+    
+    if not comment_text.strip():
+        return False
+    
+    # Create comment using existing logic
+    comment = Comment(
+        id=str(uuid.uuid4()),
+        image_id=action.photo_id,
+        project_id=action.project_id,
+        user_id=current_user.id,
+        user_name=current_user.name,
+        user_role=current_user.role,
+        content=comment_text,
+        parent_id=parent_id,
+        created_at=datetime.now(),
+        updated_at=datetime.now()
+    )
+    
+    created_comment = data_manager.create_comment(comment)
+    return created_comment is not None
+
+
+async def process_approve_action(action: BatchAction, current_user: User) -> bool:
+    """Process an approve/disapprove action"""
+    if not action.photo_id or not action.project_id:
+        return False
+    
+    approved = action.payload.get('approved', False)
+    
+    # For now, treat approve as a special tag
+    # In a real system, you might have an approval status field
+    current_tags = []
+    
+    # Get current image to preserve existing tags
+    project = data_manager.get_project_by_id(action.project_id)
+    if project:
+        image = next((img for img in project.images if img.id == action.photo_id), None)
+        if image:
+            current_tags = image.tags or []
+    
+    # Add or remove 'approved' tag
+    if approved and 'approved' not in current_tags:
+        current_tags.append('approved')
+    elif not approved and 'approved' in current_tags:
+        current_tags.remove('approved')
+    
+    # Update image with new tags
+    image = data_manager.update_project_image(
+        action.project_id, 
+        action.photo_id, 
+        {"tags": current_tags}
+    )
+    
+    return image is not None
+
+
+async def process_download_action(action: BatchAction, current_user: User) -> bool:
+    """Process a download action (mainly for logging/analytics)"""
+    # Download actions are typically just logged for analytics
+    # The actual file download happens separately
+    print(f"📥 Download logged for image {action.photo_id} by user {current_user.id}")
+    return True
+
+
+# Health endpoint for sync system
+@app.get("/api/health")
+async def health_check():
+    """Health check endpoint for the sync system"""
+    return {
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "version": "1.0.0"
+    }
 
 
 if __name__ == "__main__":
