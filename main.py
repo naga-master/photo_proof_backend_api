@@ -585,9 +585,8 @@ async def process_batch_actions(
             # Check for duplicate client_action_id within this batch
             if action.client_action_id in processed_actions:
                 failed.append(BatchActionResult(
-                    client_action_id=action.client_action_id,
-                    success=False,
-                    error="Duplicate client_action_id in batch"
+                    clientActionId=action.client_action_id,
+                    reason="Duplicate client_action_id in batch"
                 ))
                 continue
             
@@ -609,17 +608,18 @@ async def process_batch_actions(
                 
         except Exception as e:
             failed.append(BatchActionResult(
-                client_action_id=action.client_action_id,
-                success=False,
-                error=str(e)
+                clientActionId=action.client_action_id,
+                reason=str(e)
             ))
             print(f"💥 Error processing action {action.client_action_id}: {e}")
     
     response = BatchActionsResponse(
         accepted=accepted,
         failed=failed,
-        processed_count=len(accepted),
-        total_count=len(request.actions)
+        metadata={
+            "processed_count": len(accepted),
+            "total_count": len(request.actions)
+        }
     )
     
     print(f"📊 Batch complete: {len(accepted)} accepted, {len(failed)} failed")

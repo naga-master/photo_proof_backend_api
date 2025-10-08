@@ -173,16 +173,14 @@ class BatchActionsRequest(BaseModel):
 
 
 class BatchActionResult(BaseModel):
-    client_action_id: str
-    success: bool
-    error: Optional[str] = None
+    clientActionId: str  # Changed from client_action_id to match frontend
+    reason: str
 
 
 class BatchActionsResponse(BaseModel):
     accepted: List[str]  # List of client_action_ids that were processed successfully
     failed: List[BatchActionResult] = Field(default_factory=list)  # List of failed actions with reasons
-    processed_count: int
-    total_count: int
+    metadata: Optional[Dict[str, Any]] = None  # Optional metadata field
 
 
 # Response models
