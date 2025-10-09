@@ -5614,5 +5614,29 @@
     "parent_id": null,
     "created_at": "2025-10-08T22:09:50.872071",
     "updated_at": "2025-10-08T22:09:50.872080"
+  },
+  {
+    "id": "2f2847ec-a509-4793-a93b-79192ad1f2b1",
+    "image_id": "img-project-001-001",
+    "project_id": "project-001",
+    "user_id": "user-001",
+    "user_name": "Photo Studio",
+    "user_role": "studio",
+    "content": "Automated test comment",
+    "parent_id": null,
+    "created_at": "2025-10-09T22:13:58.566639",
+    "updated_at": "2025-10-09T22:13:58.566644"
+  },
+  {
+    "id": "cf1f902f-c6da-4166-8929-40da73cd2e13",
+    "image_id": "img-project-001-001",
+    "project_id": "project-001",
+    "user_id": "user-001",
+    "user_name": "Photo Studio",
+    "user_role": "studio",
+    "content": "Batch action comment",
+    "parent_id": null,
+    "created_at": "2025-10-09T22:15:24.095229",
+    "updated_at": "2025-10-09T22:15:24.095229"
   }
 ]
