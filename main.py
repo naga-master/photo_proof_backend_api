@@ -478,6 +478,334 @@ async def upload_images(
     return {"message": f"Uploaded {len(uploaded_images)} images", "images": uploaded_images}
 
 
+# Chunked upload endpoints for multi-folder support
+@app.post("/api/upload/chunk")
+async def upload_chunk(
+    chunk: UploadFile = File(...),
+    chunkIndex: int = Form(...),
+    chunkId: str = Form(...),
+    fileId: str = Form(...),
+    sessionId: str = Form(...),
+    current_user: User = Depends(get_current_user)
+):
+    """Upload a single chunk of a file"""
+    if current_user.role != UserRole.STUDIO:
+        raise HTTPException(status_code=403, detail="Only studio users can upload")
+    
+    try:
+        # In a real implementation, you would:
+        # 1. Save the chunk to temporary storage (AWS S3, local disk, etc.)
+        # 2. Generate an ETag or checksum for the chunk
+        # 3. Store chunk metadata in database
+        
+        # For demo purposes, we'll simulate saving the chunk
+        chunk_data = await chunk.read()
+        chunk_size = len(chunk_data)
+        
+        # Generate mock ETag
+        import hashlib
+        etag = hashlib.md5(chunk_data).hexdigest()
+        
+        # In real app, save to storage:
+        # chunk_path = f"uploads/temp/{sessionId}/{fileId}/chunk_{chunkIndex}"
+        # with open(chunk_path, 'wb') as f:
+        #     f.write(chunk_data)
+        
+        print(f"📦 Received chunk {chunkIndex} for file {fileId} (size: {chunk_size} bytes)")
+        
+        return {
+            "chunkId": chunkId,
+            "chunkIndex": chunkIndex,
+            "size": chunk_size,
+            "etag": etag,
+            "status": "uploaded"
+        }
+        
+    except Exception as e:
+        print(f"❌ Chunk upload failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Chunk upload failed: {str(e)}")
+
+
+@app.post("/api/upload/finalize")
+async def finalize_upload(
+    request: dict,
+    current_user: User = Depends(get_current_user)
+):
+    """Finalize chunked upload by combining chunks into final file"""
+    if current_user.role != UserRole.STUDIO:
+        raise HTTPException(status_code=403, detail="Only studio users can upload")
+    
+    try:
+        file_id = request.get('fileId')
+        file_name = request.get('fileName')
+        total_size = request.get('totalSize')
+        chunks = request.get('chunks', [])
+        
+        if not all([file_id, file_name, total_size, chunks]):
+            raise HTTPException(status_code=400, detail="Missing required fields")
+        
+        # In a real implementation, you would:
+        # 1. Combine all chunks into the final file
+        # 2. Verify file integrity (checksum)
+        # 3. Move file to permanent storage
+        # 4. Generate final URL and thumbnail
+        # 5. Clean up temporary chunks
+        
+        # For demo purposes, generate mock URLs
+        final_url = f"https://picsum.photos/800/600?random={file_id}"
+        thumbnail_url = f"https://picsum.photos/300/200?random={file_id}"
+        
+        print(f"✅ Finalized upload for {file_name} ({total_size} bytes, {len(chunks)} chunks)")
+        
+        # In real app, combine chunks:
+        # temp_dir = f"uploads/temp/{sessionId}/{fileId}"
+        # final_path = f"uploads/final/{fileId}/{fileName}"
+        # with open(final_path, 'wb') as final_file:
+        #     for chunk_info in sorted(chunks, key=lambda x: x['index']):
+        #         chunk_path = f"{temp_dir}/chunk_{chunk_info['index']}"
+        #         with open(chunk_path, 'rb') as chunk_file:
+        #             final_file.write(chunk_file.read())
+        # shutil.rmtree(temp_dir)  # Clean up temp chunks
+        
+        return {
+            "fileId": file_id,
+            "url": final_url,
+            "thumbnail": thumbnail_url,
+            "size": total_size,
+            "status": "completed"
+        }
+        
+    except Exception as e:
+        print(f"❌ Upload finalization failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Upload finalization failed: {str(e)}")
+
+
+@app.post("/api/upload/session")
+async def create_upload_session(
+    request: dict,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a new upload session for multi-folder uploads"""
+    if current_user.role != UserRole.STUDIO:
+        raise HTTPException(status_code=403, detail="Only studio users can create upload sessions")
+    
+    try:
+        project_id = request.get('projectId')
+        project_name = request.get('projectName')
+        settings = request.get('settings', {})
+        
+        if not project_id:
+            raise HTTPException(status_code=400, detail="Project ID is required")
+        
+        # Verify project exists
+        project = data_manager.get_project_by_id(project_id)
+        if not project:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        # Generate session ID
+        session_id = str(uuid.uuid4())
+        
+        # In real app, store session in database
+        session_data = {
+            "sessionId": session_id,
+            "projectId": project_id,
+            "projectName": project_name or project.name,
+            "userId": current_user.id,
+            "settings": {
+                "chunkSize": settings.get('chunkSize', 5 * 1024 * 1024),  # 5MB default
+                "maxRetries": settings.get('maxRetries', 3),
+                "parallelUploads": settings.get('parallelUploads', 3),
+                "conflictResolution": settings.get('conflictResolution', 'ask'),
+                **settings
+            },
+            "status": "pending",
+            "createdAt": datetime.now().isoformat(),
+            "totalFiles": 0,
+            "totalBytes": 0,
+            "uploadedBytes": 0
+        }
+        
+        print(f"🎯 Created upload session {session_id} for project {project.name}")
+        
+        return session_data
+        
+    except Exception as e:
+        print(f"❌ Session creation failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Session creation failed: {str(e)}")
+
+
+@app.get("/api/upload/session/{session_id}")
+async def get_upload_session(
+    session_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get upload session status and progress"""
+    if current_user.role != UserRole.STUDIO:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    # In real app, retrieve from database
+    # For demo, return mock data
+    return {
+        "sessionId": session_id,
+        "status": "uploading",
+        "totalFiles": 150,
+        "completedFiles": 75,
+        "failedFiles": 2,
+        "totalBytes": 500 * 1024 * 1024,  # 500MB
+        "uploadedBytes": 250 * 1024 * 1024,  # 250MB
+        "progress": 50.0,
+        "estimatedTimeRemaining": 300,  # 5 minutes
+        "updatedAt": datetime.now().isoformat()
+    }
+
+
+@app.post("/api/upload/session/{session_id}/pause")
+async def pause_upload_session(
+    session_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Pause an upload session"""
+    if current_user.role != UserRole.STUDIO:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    # In real app, update session status in database
+    print(f"⏸️ Paused upload session {session_id}")
+    
+    return {"sessionId": session_id, "status": "paused"}
+
+
+@app.post("/api/upload/session/{session_id}/resume")
+async def resume_upload_session(
+    session_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Resume a paused upload session"""
+    if current_user.role != UserRole.STUDIO:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    # In real app, update session status in database
+    print(f"▶️ Resumed upload session {session_id}")
+    
+    return {"sessionId": session_id, "status": "uploading"}
+
+
+@app.post("/api/upload/session/{session_id}/cancel")
+async def cancel_upload_session(
+    session_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Cancel an upload session and clean up temporary files"""
+    if current_user.role != UserRole.STUDIO:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    # In real app:
+    # 1. Update session status to cancelled
+    # 2. Clean up temporary chunk files
+    # 3. Cancel any active uploads
+    
+    print(f"❌ Cancelled upload session {session_id}")
+    
+    # Cleanup temp files
+    # temp_dir = f"uploads/temp/{session_id}"
+    # if os.path.exists(temp_dir):
+    #     shutil.rmtree(temp_dir)
+    
+    return {"sessionId": session_id, "status": "cancelled"}
+
+
+@app.post("/api/upload/bulk")
+async def bulk_upload_with_categories(
+    files: List[UploadFile] = File(...),
+    project_id: str = Form(...),
+    folder_mappings: str = Form(...),  # JSON string mapping file paths to categories
+    current_user: User = Depends(get_current_user)
+):
+    """Bulk upload files with folder-to-category mappings"""
+    if current_user.role != UserRole.STUDIO:
+        raise HTTPException(status_code=403, detail="Only studio users can upload")
+    
+    project = data_manager.get_project_by_id(project_id)
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    try:
+        import json
+        mappings = json.loads(folder_mappings)
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=400, detail="Invalid folder mappings JSON")
+    
+    uploaded_images = []
+    folder_stats = {}
+    
+    for file in files:
+        if not file.content_type.startswith('image/'):
+            continue
+        
+        # Determine category from folder mappings
+        file_path = getattr(file, 'path', file.filename)
+        category_id = None
+        
+        for folder_path, cat_id in mappings.items():
+            if file_path.startswith(folder_path):
+                category_id = cat_id
+                break
+        
+        # Default to first category if no mapping found
+        if not category_id and project.categories:
+            category_id = project.categories[0].id
+        
+        # Track folder statistics
+        folder_name = file_path.split('/')[0] if '/' in file_path else 'Root'
+        if folder_name not in folder_stats:
+            folder_stats[folder_name] = {"count": 0, "size": 0, "category": category_id}
+        folder_stats[folder_name]["count"] += 1
+        folder_stats[folder_name]["size"] += file.size or 0
+        
+        # Create image record
+        image_id = str(uuid.uuid4())
+        version = ImageVersion(
+            id=f"ver-{image_id}",
+            version="original",
+            url=f"https://picsum.photos/800/600?random={len(uploaded_images) + 1}",
+            thumbnail=f"https://picsum.photos/300/200?random={len(uploaded_images) + 1}",
+            file_name=file.filename,
+            uploaded_at=datetime.now(),
+            is_latest=True,
+            file_size=file.size or 1024 * 1024
+        )
+        
+        image = ProjectImage(
+            id=image_id,
+            original_file_name=file.filename,
+            category_id=category_id,
+            versions=[version],
+            metadata=ImageMetadata(
+                width=3840,
+                height=2560,
+                camera="Bulk Upload Camera",
+                lens="Bulk Upload Lens"
+            ),
+            tags=[],
+            is_selected=False,
+            is_favorite=False,
+            comment_count=0,
+            created_at=datetime.now(),
+            updated_at=datetime.now()
+        )
+        
+        data_manager.add_image_to_project(project_id, image)
+        uploaded_images.append(image)
+    
+    print(f"📤 Bulk uploaded {len(uploaded_images)} images across {len(folder_stats)} folders")
+    
+    return {
+        "message": f"Successfully uploaded {len(uploaded_images)} images",
+        "images": uploaded_images,
+        "folderStats": folder_stats,
+        "totalFolders": len(folder_stats)
+    }
+
+
 # Settings endpoints
 @app.get("/api/settings/studio/{studio_id}")
 async def get_studio_settings(
