@@ -13,6 +13,7 @@ class CreateProjectRequest(BaseModel):
     client_name: str
     client_email: str
     categories: Optional[List[ProjectCategory]] = None
+    project_date: Optional[str] = None  # ISO date string
 
 
 class CreateCategoryRequest(BaseModel):

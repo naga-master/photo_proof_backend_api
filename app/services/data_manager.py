@@ -124,6 +124,17 @@ class DataManager:
         self._save_data(self.projects_file, projects)
         return project
 
+    def delete_project(self, project_id: str) -> bool:
+        """Delete a project by ID. Returns True if deleted, False if not found."""
+        projects = self._load_data(self.projects_file)
+        original_length = len(projects)
+        projects = [p for p in projects if p.get("id") != project_id]
+        
+        if len(projects) < original_length:
+            self._save_data(self.projects_file, projects)
+            return True
+        return False
+
     def update_project(self, project: Project) -> Project:
         projects = self._load_data(self.projects_file)
         project_dict = project.model_dump()

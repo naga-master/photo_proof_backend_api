@@ -112,6 +112,7 @@ async def create_project(
         id=project_id,
         name=request.name,
         description=request.description,
+        project_date=request.project_date,
         client_name=request.client_name,
         client_email=request.client_email,
         studio_id=current_user.studio_id,
@@ -129,3 +130,21 @@ async def create_project(
     )
 
     return data_manager.create_project(project)
+
+
+@router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_project(
+    project_id: str,
+    data_manager: DataManager = Depends(get_data_manager),
+    current_user: User = Depends(get_current_user),
+) -> None:
+    """Delete a project."""
+    project = data_manager.get_project_by_id(project_id)
+    if not project:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    
+    # Check if user has permission to delete this project
+    if current_user.role != UserRole.STUDIO or current_user.studio_id != project.studio_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to delete this project")
+    
+    data_manager.delete_project(project_id)

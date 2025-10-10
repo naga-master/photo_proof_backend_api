@@ -32,6 +32,7 @@ class Project(BaseModel):
     id: str
     name: str
     description: Optional[str] = None
+    project_date: Optional[str] = None  # ISO date string
     client_name: str
     client_email: str
     studio_id: str
