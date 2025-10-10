@@ -82,11 +82,11 @@
           "lens": "85mm f/1.4"
         },
         "tags": [],
-        "is_selected": false,
+        "is_selected": true,
         "is_favorite": true,
-        "comment_count": 24,
+        "comment_count": 26,
         "created_at": "2025-10-01T20:07:26.552831",
-        "updated_at": "2025-10-08T22:20:55.265027"
+        "updated_at": "2025-10-09T22:15:24.058412"
       },
       {
         "id": "img-project-001-002",
@@ -20796,5 +20796,122 @@
     "created_at": "2025-08-09T20:07:42.526859",
     "updated_at": "2025-09-28T20:07:42.526863",
     "access_url": "henderson-family-portraits-def456"
+  },
+  {
+    "id": "074a1750-871d-4abd-a482-3fadbe1e4191",
+    "name": "Test Project",
+    "description": "test",
+    "client_name": "Client",
+    "client_email": "client@example.com",
+    "studio_id": "studio-001",
+    "categories": [
+      {
+        "id": "candid",
+        "name": "candid",
+        "display_name": "Candid",
+        "description": "Natural, unposed moments",
+        "order": 1,
+        "is_default": true
+      },
+      {
+        "id": "portrait",
+        "name": "portrait",
+        "display_name": "Portrait",
+        "description": "Formal portraits and posed shots",
+        "order": 2,
+        "is_default": true
+      },
+      {
+        "id": "traditional",
+        "name": "traditional",
+        "display_name": "Traditional",
+        "description": "Traditional ceremony and formal events",
+        "order": 3,
+        "is_default": true
+      },
+      {
+        "id": "f83e419f-7a71-4e2e-80b6-2ff42e96cb43",
+        "name": "reception",
+        "display_name": "Reception",
+        "description": "Party",
+        "order": 4,
+        "is_default": false
+      }
+    ],
+    "images": [
+      {
+        "id": "502e8e5c-f6e7-4caa-a9d8-0dc434873e01",
+        "original_file_name": "tmpchunk.bin",
+        "category_id": "candid",
+        "versions": [
+          {
+            "id": "ver-502e8e5c-f6e7-4caa-a9d8-0dc434873e01",
+            "version": "original",
+            "url": "https://picsum.photos/800/600?random=1",
+            "thumbnail": "https://picsum.photos/300/200?random=1",
+            "file_name": "tmpchunk.bin",
+            "uploaded_at": "2025-10-09T22:14:59.790373",
+            "is_latest": true,
+            "file_size": 11,
+            "description": null
+          }
+        ],
+        "metadata": {
+          "width": 3840,
+          "height": 2560,
+          "captured_at": null,
+          "camera": "Bulk Upload Camera",
+          "lens": "Bulk Upload Lens"
+        },
+        "tags": [],
+        "is_selected": false,
+        "is_favorite": false,
+        "comment_count": 0,
+        "created_at": "2025-10-09T22:14:59.790393",
+        "updated_at": "2025-10-09T22:14:59.790394"
+      },
+      {
+        "id": "407c7b59-b638-4429-b4db-70006584b531",
+        "original_file_name": "tmpchunk.bin",
+        "category_id": "reception",
+        "versions": [
+          {
+            "id": "ver-407c7b59-b638-4429-b4db-70006584b531",
+            "version": "original",
+            "url": "https://picsum.photos/800/600?random=2",
+            "thumbnail": "https://picsum.photos/300/200?random=2",
+            "file_name": "tmpchunk.bin",
+            "uploaded_at": "2025-10-09T22:15:04.887980",
+            "is_latest": true,
+            "file_size": 1048576,
+            "description": null
+          }
+        ],
+        "metadata": {
+          "width": 3840,
+          "height": 2560,
+          "captured_at": null,
+          "camera": "Uploaded Camera",
+          "lens": "Uploaded Lens"
+        },
+        "tags": [],
+        "is_selected": false,
+        "is_favorite": false,
+        "comment_count": 0,
+        "created_at": "2025-10-09T22:15:04.887997",
+        "updated_at": "2025-10-09T22:15:04.887998"
+      }
+    ],
+    "settings": {
+      "is_password_protected": true,
+      "password": "secret",
+      "allow_downloads": false,
+      "allow_comments": false,
+      "expires_at": null
+    },
+    "status": "draft",
+    "created_at": "2025-10-09T22:13:30.572564",
+    "updated_at": "2025-10-09T22:15:20.408515",
+    "access_url": "test-project-425090de"
   }
 ]
