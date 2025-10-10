@@ -18426,74 +18426,12 @@
     "access_url": "henderson-family-portraits-def456"
   },
   {
-    "id": "70ac7e20-eb4e-4ec3-b218-06d44671637a",
-    "name": "Wed",
-    "description": "",
-    "client_name": "John Smith",
-    "client_email": "john@example.com",
-    "studio_id": "studio-001",
-    "categories": [
-      {
-        "id": "candid",
-        "name": "candid",
-        "display_name": "Candid",
-        "description": "Natural, unposed moments",
-        "order": 1,
-        "is_default": true
-      },
-      {
-        "id": "portrait",
-        "name": "portrait",
-        "display_name": "Portrait",
-        "description": "Formal portraits and posed shots",
-        "order": 2,
-        "is_default": true
-      },
-      {
-        "id": "traditional",
-        "name": "traditional",
-        "display_name": "Traditional",
-        "description": "Traditional ceremony and formal events",
-        "order": 3,
-        "is_default": true
-      },
-      {
-        "id": "fcf3e8af-33d1-48d2-b325-ef66fdf043c9",
-        "name": "raw",
-        "display_name": "Raw Photos",
-        "description": "Unedited original photos",
-        "order": 4,
-        "is_default": false
-      },
-      {
-        "id": "56adcab9-82ed-4253-93cd-c5ab33532571",
-        "name": "edited",
-        "display_name": "Edited Photos",
-        "description": "Final edited photos",
-        "order": 5,
-        "is_default": false
-      }
-    ],
-    "images": [],
-    "settings": {
-      "is_password_protected": false,
-      "password": null,
-      "allow_downloads": true,
-      "allow_comments": true,
-      "expires_at": null
-    },
-    "status": "draft",
-    "created_at": "2025-10-10T10:44:06.784275",
-    "updated_at": "2025-10-10T10:44:06.985585",
-    "access_url": "wed-adb1616c"
-  },
-  {
-    "id": "37213070-fc4e-46af-87c4-069f8eced2ce",
+    "id": "3142cdaf-b2b6-4ecd-bd59-343868bc4985",
     "name": "Weedding",
     "description": "asdc",
     "project_date": null,
-    "client_name": "Vignedh",
-    "client_email": "bivk",
+    "client_name": "NAGARAJ",
+    "client_email": "naga@email.com",
     "studio_id": "studio-001",
     "categories": [
       {
@@ -18521,7 +18459,7 @@
         "is_default": true
       },
       {
-        "id": "88ce32d9-fdf3-4e30-8859-37ed2ff3c173",
+        "id": "799db567-081b-49d4-8776-64c0eba89eec",
         "name": "raw",
         "display_name": "Raw Photos",
         "description": "Unedited original photos",
@@ -18529,7 +18467,7 @@
         "is_default": false
       },
       {
-        "id": "c698cd52-05b8-4792-9c31-0da388d614a1",
+        "id": "5a8e8e67-c9dc-4025-a056-5ebec3c91116",
         "name": "edited",
         "display_name": "Edited Photos",
         "description": "Final edited photos",
@@ -18546,71 +18484,8 @@
       "expires_at": null
     },
     "status": "draft",
-    "created_at": "2025-10-10T11:32:12.275877",
-    "updated_at": "2025-10-10T11:32:12.453414",
-    "access_url": "weedding-9f0febde"
-  },
-  {
-    "id": "7b69f093-a953-454d-b487-738e32857845",
-    "name": "Weedding",
-    "description": "aSD",
-    "project_date": null,
-    "client_name": "Vignedh",
-    "client_email": "bivk",
-    "studio_id": "studio-001",
-    "categories": [
-      {
-        "id": "candid",
-        "name": "candid",
-        "display_name": "Candid",
-        "description": "Natural, unposed moments",
-        "order": 1,
-        "is_default": true
-      },
-      {
-        "id": "portrait",
-        "name": "portrait",
-        "display_name": "Portrait",
-        "description": "Formal portraits and posed shots",
-        "order": 2,
-        "is_default": true
-      },
-      {
-        "id": "traditional",
-        "name": "traditional",
-        "display_name": "Traditional",
-        "description": "Traditional ceremony and formal events",
-        "order": 3,
-        "is_default": true
-      },
-      {
-        "id": "92508b60-7eab-4da3-bdaa-cbeca710cc90",
-        "name": "raw",
-        "display_name": "Raw Photos",
-        "description": "Unedited original photos",
-        "order": 4,
-        "is_default": false
-      },
-      {
-        "id": "eb041ed8-c324-4e4f-9b1a-5762628770bf",
-        "name": "edited",
-        "display_name": "Edited Photos",
-        "description": "Final edited photos",
-        "order": 5,
-        "is_default": false
-      }
-    ],
-    "images": [],
-    "settings": {
-      "is_password_protected": false,
-      "password": null,
-      "allow_downloads": true,
-      "allow_comments": true,
-      "expires_at": null
-    },
-    "status": "draft",
-    "created_at": "2025-10-10T11:33:17.789845",
-    "updated_at": "2025-10-10T11:33:17.964040",
-    "access_url": "weedding-4893c958"
+    "created_at": "2025-10-10T11:58:31.794118",
+    "updated_at": "2025-10-10T11:58:31.979055",
+    "access_url": "weedding-c2e7d372"
   }
 ]

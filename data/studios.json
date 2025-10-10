@@ -128,5 +128,53 @@
     "owner_id": null,
     "created_at": "2025-10-10T06:02:03.333298",
     "updated_at": "2025-10-10T06:02:03.333298"
+  },
+  {
+    "id": "36ad7d5c-db2f-43f4-96bd-ba1873627f19",
+    "name": "asdcas",
+    "email": "asdc",
+    "phone": "",
+    "address": "",
+    "logo_url": null,
+    "settings": {},
+    "owner_id": null,
+    "created_at": "2025-10-10T06:08:19.019749",
+    "updated_at": "2025-10-10T06:08:19.019749"
+  },
+  {
+    "id": "e307c6be-62c8-42fa-8374-a4ef3c4e19cb",
+    "name": "asdasd",
+    "email": "asdca",
+    "phone": "adasd",
+    "address": "",
+    "logo_url": null,
+    "settings": {},
+    "owner_id": null,
+    "created_at": "2025-10-10T06:08:25.880975",
+    "updated_at": "2025-10-10T06:08:25.880975"
+  },
+  {
+    "id": "22b15fc9-1a49-4a52-8814-0928c00ce70d",
+    "name": "ascas",
+    "email": "asdca",
+    "phone": "",
+    "address": "",
+    "logo_url": null,
+    "settings": {},
+    "owner_id": null,
+    "created_at": "2025-10-10T06:10:04.773185",
+    "updated_at": "2025-10-10T06:10:04.773185"
+  },
+  {
+    "id": "f285ec72-0047-4f7d-853e-61b70400b176",
+    "name": "NAGARAJ",
+    "email": "naga@email.com",
+    "phone": "",
+    "address": "",
+    "logo_url": null,
+    "settings": {},
+    "owner_id": null,
+    "created_at": "2025-10-10T06:28:23.015850",
+    "updated_at": "2025-10-10T06:28:23.015850"
   }
 ]
