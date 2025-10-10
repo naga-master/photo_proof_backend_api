@@ -7,6 +7,7 @@ from .images import ImageRead, ImageVersionRead
 from .projects import ProjectCategoryRead, ProjectDetail, ProjectSettingsRead, ProjectSummary
 from .requests import (
     CreateCategoryRequest,
+    CreateClientRequest,
     CreateCommentRequest,
     CreateProjectRequest,
     CompleteUploadRequest,
@@ -35,6 +36,7 @@ __all__ = [
     "CommentListResponse",
     "CompleteUploadResponse",
     "CreateCategoryRequest",
+    "CreateClientRequest",
     "CreateCommentRequest",
     "CreateProjectRequest",
     "CompleteUploadRequest",

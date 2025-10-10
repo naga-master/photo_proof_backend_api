@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Iterable, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session, selectinload
 
 from app.api import deps
@@ -138,18 +138,34 @@ def create_project(
     if not current_user.studio_id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Studio assignment required for user")
 
-    client = (
-        db.query(models.Client)
-        .filter(models.Client.studio_id == current_user.studio_id, func.lower(models.Client.email) == request.client_email.lower())
-        .first()
-    )
-    if not client:
+    client: Optional[models.Client] = None
+
+    client_query = db.query(models.Client).filter(models.Client.studio_id == current_user.studio_id)
+
+    if request.client_id:
+        client = client_query.filter(models.Client.id == request.client_id).first()
+        if not client:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Selected client is not available")
+    else:
+        normalized_email = request.client_email.lower()
+        duplicate_filters = [func.lower(models.Client.email) == normalized_email]
+        if request.client_phone:
+            duplicate_filters.append(models.Client.phone == request.client_phone)
+
+        duplicate = client_query.filter(or_(*duplicate_filters)).first()
+        if duplicate:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="This email or phone is already associated with an existing client. Choose that client or update the details.",
+            )
+
         client = models.Client(
             id=str(uuid.uuid4()),
             studio_id=current_user.studio_id,
             user_id=None,
             name=request.client_name,
-            email=request.client_email.lower(),
+            email=normalized_email,
+            phone=request.client_phone,
             status="active",
             total_projects=0,
             created_at=datetime.utcnow(),

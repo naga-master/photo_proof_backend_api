@@ -17,11 +17,19 @@ class CreateCategoryRequest(BaseModel):
 class CreateProjectRequest(BaseModel):
     name: str
     description: Optional[str] = None
+    client_id: Optional[str] = None
     client_name: str
     client_email: str
+    client_phone: Optional[str] = None
     project_type: Optional[str] = None
     shoot_date: Optional[date] = None
     categories: Optional[List[CreateCategoryRequest]] = None
+
+
+class CreateClientRequest(BaseModel):
+    name: str
+    email: str
+    phone: Optional[str] = None
 
 
 class UpdateImageRequest(BaseModel):
