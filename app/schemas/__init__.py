@@ -1,18 +1,28 @@
 """Pydantic schemas used across the application."""
 
 from .actions import BatchAction, BatchActionResult, BatchActionsRequest, BatchActionsResponse
-from .comments import Comment
-from .enums import BatchActionType, ProjectStatus, UserRole
-from .images import ImageMetadata, ImageVersion, ProjectImage
-from .projects import Project, ProjectCategory, ProjectSettings
+from .comments import CommentRead
+from .enums import BatchActionType, ClientStatus, ImageStatus, ProjectStatus, UserRole
+from .images import ImageRead, ImageVersionRead
+from .projects import ProjectCategoryRead, ProjectDetail, ProjectSettingsRead, ProjectSummary
 from .requests import (
     CreateCategoryRequest,
     CreateCommentRequest,
     CreateProjectRequest,
+    CompleteUploadRequest,
+    InitiateUploadRequest,
     UpdateImageRequest,
+    UploadFileDescriptor,
 )
-from .responses import CommentListResponse, ImageListResponse, ProjectListResponse
-from .users import Studio, User
+from .responses import (
+    CommentListResponse,
+    CompleteUploadResponse,
+    ImageListResponse,
+    ProjectListResponse,
+    UploadInitiateResponse,
+    UploadUrlInfo,
+)
+from .users import ClientRead, StudioRead, UserRead
 
 __all__ = [
     "BatchAction",
@@ -20,22 +30,31 @@ __all__ = [
     "BatchActionsRequest",
     "BatchActionsResponse",
     "BatchActionType",
-    "Comment",
+    "ClientRead",
+    "CommentRead",
     "CommentListResponse",
+    "CompleteUploadResponse",
     "CreateCategoryRequest",
     "CreateCommentRequest",
     "CreateProjectRequest",
+    "CompleteUploadRequest",
+    "InitiateUploadRequest",
     "ImageListResponse",
-    "ImageMetadata",
-    "ImageVersion",
-    "Project",
-    "ProjectCategory",
+    "ImageRead",
+    "ImageStatus",
+    "ImageVersionRead",
+    "ProjectCategoryRead",
+    "ProjectSummary",
     "ProjectListResponse",
-    "ProjectImage",
-    "ProjectSettings",
+    "ProjectDetail",
+    "ProjectSettingsRead",
     "ProjectStatus",
-    "Studio",
+    "StudioRead",
     "UpdateImageRequest",
-    "User",
+    "UploadInitiateResponse",
+    "UploadUrlInfo",
+    "UploadFileDescriptor",
+    "UserRead",
     "UserRole",
+    "ClientStatus",
 ]

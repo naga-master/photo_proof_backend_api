@@ -3,46 +3,66 @@
 from __future__ import annotations
 
 from fastapi import Depends, HTTPException, Path, status
+from sqlalchemy.orm import Session, selectinload
 
-from app.core.dependencies import get_current_user, get_data_manager
-from app.schemas import Project, ProjectImage, Studio, User, UserRole
-from app.services.data_manager import DataManager
+from app.core.dependencies import get_current_user
+from app.db import models
+from app.db.session import get_db
+from app.schemas import StudioRead, UserRead, UserRole
 
 
-async def get_project(
+def get_project(
     project_id: str = Path(..., description="Project identifier"),
-    data_manager: DataManager = Depends(get_data_manager),
-) -> Project:
-    project = data_manager.get_project_by_id(project_id)
+    db: Session = Depends(get_db),
+) -> models.Project:
+    query = (
+        db.query(models.Project)
+        .options(
+            selectinload(models.Project.categories),
+            selectinload(models.Project.images).selectinload(models.Image.versions),
+            selectinload(models.Project.images).selectinload(models.Image.tags),
+            selectinload(models.Project.settings),
+            selectinload(models.Project.client),
+        )
+    )
+
+    project = query.filter(models.Project.id == project_id).first()
+    if not project:
+        project = query.filter(models.Project.access_url == project_id).first()
     if not project:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
     return project
 
 
-async def get_project_image(
+def get_project_image(
     image_id: str = Path(..., description="Project image identifier"),
-    project: Project = Depends(get_project),
-) -> ProjectImage:
-    image = next((img for img in project.images if img.id == image_id), None)
+    db: Session = Depends(get_db),
+) -> models.Image:
+    image = (
+        db.query(models.Image)
+        .options(selectinload(models.Image.versions), selectinload(models.Image.tags))
+        .filter(models.Image.id == image_id)
+        .first()
+    )
     if not image:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found")
     return image
 
 
-async def get_studio(
+def get_studio(
     studio_id: str = Path(..., description="Studio identifier"),
-    data_manager: DataManager = Depends(get_data_manager),
-) -> Studio:
-    studio = data_manager.get_studio_by_id(studio_id)
+    db: Session = Depends(get_db),
+) -> models.Studio:
+    studio = db.query(models.Studio).filter(models.Studio.id == studio_id).first()
     if not studio:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Studio not found")
     return studio
 
 
-async def ensure_studio_access(
-    studio: Studio = Depends(get_studio),
-    current_user: User = Depends(get_current_user),
-) -> Studio:
-    if current_user.role != UserRole.STUDIO or current_user.studio_id != studio.id:
+def ensure_studio_access(
+    studio: models.Studio = Depends(get_studio),
+    current_user: UserRead = Depends(get_current_user),
+) -> StudioRead:
+    if current_user.role == UserRole.CLIENT:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
-    return studio
+    return StudioRead.model_validate(studio)

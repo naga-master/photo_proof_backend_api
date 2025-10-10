@@ -1,348 +1,243 @@
-"""File upload endpoints including bulk and chunked flows."""
+"""Upload endpoints backed by SQLite storage."""
 
-import json
+from __future__ import annotations
+
+import mimetypes
 import uuid
 from datetime import datetime
-from typing import Dict, List, Optional
+from pathlib import Path
+from typing import List, Optional
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from sqlalchemy.orm import Session, selectinload
 
-from app.api import deps
-from app.core.dependencies import get_current_user, get_data_manager
+from app.core.config import get_settings
+from app.core.dependencies import get_current_user
+from app.db import models
+from app.db.session import get_db
 from app.schemas import (
-    ImageMetadata,
-    ImageVersion,
-    Project,
-    ProjectImage,
-    User,
+    CompleteUploadRequest,
+    CompleteUploadResponse,
+    ImageRead,
+    ImageVersionRead,
+    InitiateUploadRequest,
+    UploadInitiateResponse,
+    UploadUrlInfo,
+    UserRead,
     UserRole,
 )
-from app.services.data_manager import DataManager
 
 
 router = APIRouter(tags=["Uploads"])
 
+settings = get_settings()
+UPLOADS_ROOT = Path(settings.uploads_directory).resolve()
+UPLOADS_ROOT.mkdir(parents=True, exist_ok=True)
 
-@router.post("/api/projects/{project_id}/upload")
-async def upload_images(
-    project: Project = Depends(deps.get_project),
-    files: List[UploadFile] = File(...),
-    category_id: Optional[str] = Form(None),
-    current_user: User = Depends(get_current_user),
-    data_manager: DataManager = Depends(get_data_manager),
-):
-    if current_user.role != UserRole.STUDIO:
+
+def _sanitize_segment(value: str) -> str:
+    return Path(value).name
+
+
+def _resolve_category_id(project: models.Project, requested: Optional[str]) -> Optional[str]:
+    if requested:
+        if any(category.id == requested for category in project.categories):
+            return requested
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid category for project")
+
+    default_category = next((category for category in project.categories if category.is_default), None)
+    if default_category:
+        return default_category.id
+
+    return project.categories[0].id if project.categories else None
+
+
+def _build_target_url(request: Request, project_id: str, category_segment: str, file_name: str) -> str:
+    base_url = str(request.base_url).rstrip("/")
+    return f"{base_url}/uploads/{project_id}/{category_segment}/{file_name}"
+
+
+def _serialize_image(image: models.Image) -> ImageRead:
+    base = ImageRead.model_validate(image)
+    versions = [ImageVersionRead.model_validate(version) for version in image.versions]
+    tags = [tag.name for tag in image.tags]
+    return base.model_copy(update={"versions": versions, "tags": tags})
+
+
+@router.post("/api/uploads/initiate", response_model=UploadInitiateResponse)
+def initiate_uploads(
+    payload: InitiateUploadRequest,
+    request: Request,
+    current_user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> UploadInitiateResponse:
+    if current_user.role == UserRole.CLIENT:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only studio users can upload images")
 
-    if not category_id and project.categories:
-        category_id = project.categories[0].id
-
-    uploaded_images: List[ProjectImage] = []
-
-    for file in files:
-        if not file.content_type.startswith("image/"):
-            continue
-
-        image_id = str(uuid.uuid4())
-        version = ImageVersion(
-            id=f"ver-{image_id}",
-            version="original",
-            url=f"https://picsum.photos/800/600?random={len(project.images) + 1}",
-            thumbnail=f"https://picsum.photos/300/200?random={len(project.images) + 1}",
-            file_name=file.filename,
-            uploaded_at=datetime.now(),
-            is_latest=True,
-            file_size=1024 * 1024,
-        )
-
-        image = ProjectImage(
-            id=image_id,
-            original_file_name=file.filename,
-            category_id=category_id,
-            versions=[version],
-            metadata=ImageMetadata(
-                width=3840,
-                height=2560,
-                camera="Uploaded Camera",
-                lens="Uploaded Lens",
-            ),
-            tags=[],
-            is_selected=False,
-            is_favorite=False,
-            comment_count=0,
-            created_at=datetime.now(),
-            updated_at=datetime.now(),
-        )
-
-        data_manager.add_image_to_project(project.id, image)
-        uploaded_images.append(image)
-
-    return {"message": f"Uploaded {len(uploaded_images)} images", "images": uploaded_images}
-
-
-@router.post("/api/upload/chunk")
-async def upload_chunk(
-    chunk: UploadFile = File(...),
-    chunkIndex: int = Form(...),
-    chunkId: str = Form(...),
-    fileId: str = Form(...),
-    sessionId: str = Form(...),
-    current_user: User = Depends(get_current_user),
-):
-    if current_user.role != UserRole.STUDIO:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only studio users can upload")
-
-    try:
-        chunk_data = await chunk.read()
-        chunk_size = len(chunk_data)
-
-        import hashlib
-
-        etag = hashlib.md5(chunk_data).hexdigest()
-
-        print(f"📦 Received chunk {chunkIndex} for file {fileId} (size: {chunk_size} bytes)")
-
-        return {
-            "chunkId": chunkId,
-            "chunkIndex": chunkIndex,
-            "size": chunk_size,
-            "etag": etag,
-            "status": "uploaded",
-        }
-    except Exception as exc:  # noqa: BLE001
-        print(f"❌ Chunk upload failed: {exc}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Chunk upload failed: {exc}")
-
-
-@router.post("/api/upload/finalize")
-async def finalize_upload(
-    request: Dict,
-    current_user: User = Depends(get_current_user),
-):
-    if current_user.role != UserRole.STUDIO:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only studio users can upload")
-
-    try:
-        file_id = request.get("fileId")
-        file_name = request.get("fileName")
-        total_size = request.get("totalSize")
-        chunks = request.get("chunks", [])
-
-        if not all([file_id, file_name, total_size, chunks]):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Missing required fields")
-
-        final_url = f"https://picsum.photos/800/600?random={file_id}"
-        thumbnail_url = f"https://picsum.photos/300/200?random={file_id}"
-
-        print(f"✅ Finalized upload for {file_name} ({total_size} bytes, {len(chunks)} chunks)")
-
-        return {
-            "fileId": file_id,
-            "url": final_url,
-            "thumbnail": thumbnail_url,
-            "size": total_size,
-            "status": "completed",
-        }
-    except HTTPException:
-        raise
-    except Exception as exc:  # noqa: BLE001
-        print(f"❌ Upload finalization failed: {exc}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Upload finalization failed: {exc}")
-
-
-@router.post("/api/upload/session")
-async def create_upload_session(
-    request: Dict,
-    current_user: User = Depends(get_current_user),
-    data_manager: DataManager = Depends(get_data_manager),
-):
-    if current_user.role != UserRole.STUDIO:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only studio users can create upload sessions")
-
-    try:
-        project_id = request.get("projectId")
-        project_name = request.get("projectName")
-        settings = request.get("settings", {})
-
-        if not project_id:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Project ID is required")
-
-        project = data_manager.get_project_by_id(project_id)
-        if not project:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
-
-        session_id = str(uuid.uuid4())
-
-        session_data = {
-            "sessionId": session_id,
-            "projectId": project_id,
-            "projectName": project_name or project.name,
-            "userId": current_user.id,
-            "settings": {
-                "chunkSize": settings.get("chunkSize", 5 * 1024 * 1024),
-                "maxRetries": settings.get("maxRetries", 3),
-                "parallelUploads": settings.get("parallelUploads", 3),
-                "conflictResolution": settings.get("conflictResolution", "ask"),
-                **settings,
-            },
-            "status": "pending",
-            "createdAt": datetime.now().isoformat(),
-            "totalFiles": 0,
-            "totalBytes": 0,
-            "uploadedBytes": 0,
-        }
-
-        print(f"🎯 Created upload session {session_id} for project {project.name}")
-        return session_data
-    except HTTPException:
-        raise
-    except Exception as exc:  # noqa: BLE001
-        print(f"❌ Session creation failed: {exc}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Session creation failed: {exc}")
-
-
-@router.get("/api/upload/session/{session_id}")
-async def get_upload_session(
-    session_id: str,
-    current_user: User = Depends(get_current_user),
-):
-    if current_user.role != UserRole.STUDIO:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
-
-    return {
-        "sessionId": session_id,
-        "status": "uploading",
-        "totalFiles": 150,
-        "completedFiles": 75,
-        "failedFiles": 2,
-        "totalBytes": 500 * 1024 * 1024,
-        "uploadedBytes": 250 * 1024 * 1024,
-        "progress": 50.0,
-        "estimatedTimeRemaining": 300,
-        "updatedAt": datetime.now().isoformat(),
-    }
-
-
-@router.post("/api/upload/session/{session_id}/pause")
-async def pause_upload_session(
-    session_id: str,
-    current_user: User = Depends(get_current_user),
-):
-    if current_user.role != UserRole.STUDIO:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
-
-    print(f"⏸️ Paused upload session {session_id}")
-    return {"sessionId": session_id, "status": "paused"}
-
-
-@router.post("/api/upload/session/{session_id}/resume")
-async def resume_upload_session(
-    session_id: str,
-    current_user: User = Depends(get_current_user),
-):
-    if current_user.role != UserRole.STUDIO:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
-
-    print(f"▶️ Resumed upload session {session_id}")
-    return {"sessionId": session_id, "status": "uploading"}
-
-
-@router.post("/api/upload/session/{session_id}/cancel")
-async def cancel_upload_session(
-    session_id: str,
-    current_user: User = Depends(get_current_user),
-):
-    if current_user.role != UserRole.STUDIO:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
-
-    print(f"❌ Cancelled upload session {session_id}")
-    return {"sessionId": session_id, "status": "cancelled"}
-
-
-@router.post("/api/upload/bulk")
-async def bulk_upload_with_categories(
-    project_id: str = Form(...),
-    folder_mappings: str = Form(...),
-    files: List[UploadFile] = File(...),
-    current_user: User = Depends(get_current_user),
-    data_manager: DataManager = Depends(get_data_manager),
-):
-    if current_user.role != UserRole.STUDIO:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only studio users can upload")
-
-    project = data_manager.get_project_by_id(project_id)
+    project = (
+        db.query(models.Project)
+        .options(selectinload(models.Project.categories))
+        .filter(models.Project.id == payload.project_id)
+        .first()
+    )
     if not project:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
 
+    project_segment = _sanitize_segment(project.id)
+    upload_urls: List[UploadUrlInfo] = []
+
+    for descriptor in payload.files:
+        file_name = _sanitize_segment(descriptor.file_name)
+        category_id = _resolve_category_id(project, descriptor.category_id)
+        category_segment = _sanitize_segment(category_id) if category_id else "uncategorized"
+
+        destination_dir = UPLOADS_ROOT / project_segment / category_segment
+        destination_dir.mkdir(parents=True, exist_ok=True)
+
+        upload_id_source = f"{project_segment}:{category_segment}:{file_name.lower()}"
+        upload_id = str(uuid.uuid5(uuid.NAMESPACE_URL, upload_id_source))
+        target_url = _build_target_url(request, project_segment, category_segment, file_name)
+
+        upload_urls.append(
+            UploadUrlInfo(
+                file_name=file_name,
+                target_url=target_url,
+                upload_id=upload_id,
+                category_id=category_id,
+            )
+        )
+
+    return UploadInitiateResponse(upload_urls=upload_urls)
+
+
+@router.put("/uploads/{project_id}/{category_id}/{file_name:path}", status_code=status.HTTP_204_NO_CONTENT)
+async def upload_file_stream(project_id: str, category_id: str, file_name: str, request: Request) -> Response:
+    sanitized_name = _sanitize_segment(file_name)
+    category_segment = _sanitize_segment(category_id)
+    project_segment = _sanitize_segment(project_id)
+
+    destination_dir = UPLOADS_ROOT / project_segment / category_segment
+    destination_dir.mkdir(parents=True, exist_ok=True)
+
+    destination_path = destination_dir / sanitized_name
+
     try:
-        mappings = json.loads(folder_mappings)
-    except json.JSONDecodeError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid folder mappings JSON") from exc
+        with destination_path.open("wb") as buffer:
+            async for chunk in request.stream():
+                buffer.write(chunk)
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to write file: {exc}") from exc
 
-    uploaded_images: List[ProjectImage] = []
-    folder_stats: Dict[str, Dict[str, int | str | None]] = {}
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-    for file in files:
-        if not file.content_type.startswith("image/"):
-            continue
 
-        file_path = getattr(file, "path", file.filename)
-        category_for_file = None
+@router.put("/api/uploads/complete", response_model=CompleteUploadResponse)
+def complete_upload(
+    payload: CompleteUploadRequest,
+    current_user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> CompleteUploadResponse:
+    if current_user.role == UserRole.CLIENT:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only studio users can upload images")
 
-        for folder_path, category in mappings.items():
-            if file_path.startswith(folder_path):
-                category_for_file = category
-                break
+    project = (
+        db.query(models.Project)
+        .options(selectinload(models.Project.categories))
+        .filter(models.Project.id == payload.project_id)
+        .first()
+    )
+    if not project:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
 
-        if not category_for_file and project.categories:
-            category_for_file = project.categories[0].id
+    category_id = _resolve_category_id(project, payload.category_id)
+    resolved_category_id = category_id or (project.categories[0].id if project.categories else None)
+    if not resolved_category_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No category available for project")
 
-        folder_name = file_path.split("/")[0] if "/" in file_path else "Root"
-        if folder_name not in folder_stats:
-            folder_stats[folder_name] = {"count": 0, "size": 0, "category": category_for_file}
+    category_segment = _sanitize_segment(resolved_category_id)
+    project_segment = _sanitize_segment(project.id)
 
-        folder_stats[folder_name]["count"] += 1
-        folder_stats[folder_name]["size"] += getattr(file, "size", 0) or 0
+    sanitized_name = _sanitize_segment(payload.file_name)
+    stored_path = UPLOADS_ROOT / project_segment / category_segment / sanitized_name
 
-        image_id = str(uuid.uuid4())
-        version = ImageVersion(
-            id=f"ver-{image_id}",
-            version="original",
-            url=f"https://picsum.photos/800/600?random={len(uploaded_images) + 1}",
-            thumbnail=f"https://picsum.photos/300/200?random={len(uploaded_images) + 1}",
-            file_name=file.filename,
-            uploaded_at=datetime.now(),
-            is_latest=True,
-            file_size=getattr(file, "size", 1024 * 1024) or 1024 * 1024,
+    if not stored_path.exists():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Uploaded file not found on server")
+
+    file_size = stored_path.stat().st_size
+    mime_type = payload.content_type or mimetypes.guess_type(sanitized_name)[0] or "application/octet-stream"
+    asset_url = payload.upload_url or f"/uploads/{project_segment}/{category_segment}/{sanitized_name}"
+
+    duplicate = (
+        db.query(models.Image)
+        .filter(
+            models.Image.project_id == project.id,
+            models.Image.original_filename == payload.original_file_name,
+            models.Image.category_id == resolved_category_id,
         )
-
-        image = ProjectImage(
-            id=image_id,
-            original_file_name=file.filename,
-            category_id=category_for_file,
-            versions=[version],
-            metadata=ImageMetadata(
-                width=3840,
-                height=2560,
-                camera="Bulk Upload Camera",
-                lens="Bulk Upload Lens",
-            ),
-            tags=[],
-            is_selected=False,
-            is_favorite=False,
-            comment_count=0,
-            created_at=datetime.now(),
-            updated_at=datetime.now(),
+        .first()
+    )
+    if duplicate:
+        duplicate = (
+            db.query(models.Image)
+            .options(selectinload(models.Image.versions), selectinload(models.Image.tags))
+            .filter(models.Image.id == duplicate.id)
+            .first()
         )
+        return CompleteUploadResponse(image=_serialize_image(duplicate), already_exists=True)
 
-        data_manager.add_image_to_project(project.id, image)
-        uploaded_images.append(image)
+    image = models.Image(
+        id=str(uuid.uuid4()),
+        project_id=project.id,
+        category_id=resolved_category_id,
+        uploaded_by=current_user.id,
+        original_filename=payload.original_file_name,
+        s3_key_original=asset_url,
+        s3_key_thumbnail=asset_url,
+        s3_key_preview=None,
+        s3_key_print=None,
+        file_size_bytes=file_size,
+        mime_type=mime_type,
+        width=None,
+        height=None,
+        is_favorite=False,
+        is_selected=False,
+        comment_count=0,
+        status="ready",
+        uploaded_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
+    )
+    db.add(image)
+    db.flush()
 
-    print(f"📤 Bulk uploaded {len(uploaded_images)} images across {len(folder_stats)} folders")
+    version = models.ImageVersion(
+        id=str(uuid.uuid4()),
+        image_id=image.id,
+        version_name="original",
+        s3_key=asset_url,
+        file_size_bytes=file_size,
+        width=None,
+        height=None,
+        created_by=current_user.id,
+        created_at=datetime.utcnow(),
+    )
+    db.add(version)
 
-    return {
-        "message": f"Successfully uploaded {len(uploaded_images)} images",
-        "images": uploaded_images,
-        "folderStats": folder_stats,
-        "totalFolders": len(folder_stats),
-    }
+    project.total_images = (project.total_images or 0) + 1
+    project.storage_used_bytes = (project.storage_used_bytes or 0) + file_size
+    project.updated_at = datetime.utcnow()
+
+    category = next((cat for cat in project.categories if cat.id == resolved_category_id), None)
+    if category:
+        category.image_count = (category.image_count or 0) + 1
+        category.updated_at = datetime.utcnow()
+
+    db.commit()
+
+    image = (
+        db.query(models.Image)
+        .options(selectinload(models.Image.versions), selectinload(models.Image.tags))
+        .filter(models.Image.id == image.id)
+        .first()
+    )
+
+    return CompleteUploadResponse(image=_serialize_image(image), already_exists=False)

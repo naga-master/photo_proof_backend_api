@@ -29,6 +29,8 @@ class Settings(BaseModel):
     allow_methods: List[str] = Field(default_factory=lambda: ["*"])
     allow_headers: List[str] = Field(default_factory=lambda: ["*"])
     data_directory: str = Field(default=os.getenv("DATA_DIR", "data"))
+    database_url: str = Field(default=os.getenv("DATABASE_URL", "sqlite:///./photo_proof.db"))
+    uploads_directory: str = Field(default=os.getenv("UPLOADS_DIR", "uploads"))
 
     model_config = {
         "frozen": True,

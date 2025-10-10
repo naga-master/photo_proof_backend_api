@@ -1,18 +1,22 @@
 """Endpoints for managing studio and project settings."""
 
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 
 from app.api import deps
-from app.core.dependencies import get_current_user, get_data_manager
-from app.schemas import Project, ProjectSettings, Studio, User, UserRole
-from app.services.data_manager import DataManager
+from app.core.dependencies import get_current_user
+from app.db import models
+from app.db.session import get_db
+from app.schemas import ProjectSettingsRead, StudioRead, UserRead, UserRole
 
 
 router = APIRouter(tags=["Settings"])
 
 
 @router.get("/api/settings/studio/{studio_id}")
-async def get_studio_settings(studio: Studio = Depends(deps.ensure_studio_access)) -> dict:
+def get_studio_settings(studio: StudioRead = Depends(deps.ensure_studio_access)) -> dict:
     return {
         "studio_id": studio.id,
         "studio_name": studio.name,
@@ -33,30 +37,37 @@ async def get_studio_settings(studio: Studio = Depends(deps.ensure_studio_access
 
 
 @router.put("/api/settings/studio/{studio_id}")
-async def update_studio_settings(
-    settings: dict,
-    studio: Studio = Depends(deps.ensure_studio_access),
-) -> dict:
+def update_studio_settings(settings: dict, studio: StudioRead = Depends(deps.ensure_studio_access)) -> dict:
     return {"message": "Settings updated successfully", "settings": settings, "studio_id": studio.id}
 
 
-@router.get("/api/projects/{project_id}/settings")
-async def get_project_settings(project: Project = Depends(deps.get_project)) -> ProjectSettings:
-    return project.settings
+@router.get("/api/projects/{project_id}/settings", response_model=ProjectSettingsRead)
+def get_project_settings(project: models.Project = Depends(deps.get_project)) -> ProjectSettingsRead:
+    if not project.settings:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project settings not found")
+    return ProjectSettingsRead.model_validate(project.settings)
 
 
-@router.put("/api/projects/{project_id}/settings")
-async def update_project_settings(
-    settings: ProjectSettings,
-    project: Project = Depends(deps.get_project),
-    current_user: User = Depends(get_current_user),
-    data_manager: DataManager = Depends(get_data_manager),
-) -> ProjectSettings:
-    if current_user.role != UserRole.STUDIO:
+@router.put("/api/projects/{project_id}/settings", response_model=ProjectSettingsRead)
+def update_project_settings(
+    settings: ProjectSettingsRead,
+    project: models.Project = Depends(deps.get_project),
+    current_user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> ProjectSettingsRead:
+    if current_user.role == UserRole.CLIENT:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only studio users can update project settings")
 
-    updated_project = data_manager.update_project_settings(project.id, settings)
-    if not updated_project:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    project_settings = project.settings
+    if not project_settings:
+        project_settings = models.ProjectSettings(project_id=project.id)
+        db.add(project_settings)
 
-    return updated_project.settings
+    for key, value in settings.model_dump(exclude={"id", "created_at", "updated_at"}).items():
+        setattr(project_settings, key, value)
+
+    project.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(project_settings)
+
+    return ProjectSettingsRead.model_validate(project_settings)

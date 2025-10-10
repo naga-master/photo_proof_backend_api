@@ -1,150 +1,236 @@
-"""Project management endpoints."""
+"""Project management endpoints backed by the SQL database."""
 
 from __future__ import annotations
 
 import uuid
 from datetime import datetime
-from typing import List, Optional
+from typing import Iterable, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import func
+from sqlalchemy.orm import Session, selectinload
 
 from app.api import deps
-from app.core.dependencies import get_current_user, get_data_manager
+from app.core.dependencies import get_current_user
+from app.db import models
+from app.db.session import get_db
 from app.schemas import (
+    CreateCategoryRequest,
     CreateProjectRequest,
-    Project,
-    ProjectCategory,
+    ProjectCategoryRead,
+    ProjectDetail,
     ProjectListResponse,
-    ProjectSettings,
+    ProjectSettingsRead,
     ProjectStatus,
-    User,
+    ProjectSummary,
+    UserRead,
     UserRole,
+    ClientRead,
+    ImageRead,
+    ImageVersionRead,
 )
-from app.services.data_manager import DataManager
 
 
 router = APIRouter(prefix="/api/projects", tags=["Projects"])
 
 
-def _default_categories() -> List[ProjectCategory]:
+def _default_category_templates() -> Iterable[CreateCategoryRequest]:
     return [
-        ProjectCategory(
-            id="candid",
-            name="candid",
-            display_name="Candid",
-            description="Natural, unposed moments",
-            order=1,
-            is_default=True,
-        ),
-        ProjectCategory(
-            id="portrait",
-            name="portrait",
-            display_name="Portrait",
-            description="Formal portraits and posed shots",
-            order=2,
-            is_default=True,
-        ),
-        ProjectCategory(
-            id="traditional",
-            name="traditional",
-            display_name="Traditional",
-            description="Traditional ceremony and formal events",
-            order=3,
-            is_default=True,
-        ),
+        CreateCategoryRequest(name="all", display_name="All Photos", is_default=True, order_index=1),
+        CreateCategoryRequest(name="favorites", display_name="Favorites", is_default=False, order_index=2),
+        CreateCategoryRequest(name="highlights", display_name="Highlights", is_default=False, order_index=3),
     ]
 
 
+def _serialize_image(image: models.Image) -> ImageRead:
+    image_model = ImageRead.model_validate(image)
+    versions = [ImageVersionRead.model_validate(version) for version in image.versions]
+    tags = [tag.name for tag in image.tags]
+    return image_model.model_copy(update={"versions": versions, "tags": tags})
+
+
+def _project_detail(project: models.Project, include_images: bool = True) -> ProjectDetail:
+    summary = ProjectSummary.model_validate(project)
+    categories = [
+        ProjectCategoryRead.model_validate(category)
+        for category in sorted(project.categories, key=lambda cat: (cat.order_index, cat.created_at))
+    ]
+    settings = ProjectSettingsRead.model_validate(project.settings) if project.settings else None
+    client = ClientRead.model_validate(project.client) if project.client else None
+    images: List[ImageRead] = []
+    if include_images:
+        images = [
+            _serialize_image(image)
+            for image in sorted(project.images, key=lambda img: img.uploaded_at or img.created_at)
+        ]
+
+    detail_payload = summary.model_dump()
+    detail_payload.update(
+        {
+            "delivery_date": project.delivery_date,
+            "location": project.location,
+            "view_count": project.view_count,
+            "last_viewed_at": project.last_viewed_at,
+            "client": client,
+            "settings": settings,
+            "categories": categories,
+            "images": images,
+        }
+    )
+    return ProjectDetail(**detail_payload)
+
+
 @router.get("/", response_model=ProjectListResponse)
-async def list_projects(
+def list_projects(
     studio_id: Optional[str] = Query(None, description="Filter by studio ID"),
     status: Optional[ProjectStatus] = Query(None, description="Filter by status"),
-    current_user: User = Depends(get_current_user),
-    data_manager: DataManager = Depends(get_data_manager),
+    current_user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ) -> ProjectListResponse:
-    projects = data_manager.get_projects(studio_id=studio_id)
+    query = db.query(models.Project).order_by(models.Project.created_at.desc())
+
+    if studio_id:
+        query = query.filter(models.Project.studio_id == studio_id)
+    elif current_user.studio_id:
+        query = query.filter(models.Project.studio_id == current_user.studio_id)
 
     if status:
-        projects = [project for project in projects if project.status == status]
+        query = query.filter(models.Project.status == status.value)
 
-    if current_user.role == UserRole.CLIENT:
-        projects = [project for project in projects if project.client_email == current_user.email]
-    elif current_user.role == UserRole.STUDIO and current_user.studio_id:
-        projects = [project for project in projects if project.studio_id == current_user.studio_id]
-
-    return ProjectListResponse(projects=projects, total=len(projects))
+    projects = query.all()
+    summaries = [ProjectSummary.model_validate(project) for project in projects]
+    return ProjectListResponse(projects=summaries, total=len(summaries))
 
 
-@router.get("/{project_id}", response_model=Project)
-async def get_project(project: Project = Depends(deps.get_project)) -> Project:
-    return project
+@router.get("/{project_id}", response_model=ProjectDetail)
+def get_project(project: models.Project = Depends(deps.get_project)) -> ProjectDetail:
+    return _project_detail(project, include_images=True)
 
 
-@router.get("/access/{access_url}", response_model=Project)
-async def get_project_by_access_url(
-    access_url: str,
-    data_manager: DataManager = Depends(get_data_manager),
-) -> Project:
-    project = data_manager.get_project_by_access_url(access_url)
+@router.get("/access/{access_url}", response_model=ProjectDetail)
+def get_project_by_access_url(access_url: str, db: Session = Depends(get_db)) -> ProjectDetail:
+    project = (
+        db.query(models.Project)
+        .options(
+            selectinload(models.Project.categories),
+            selectinload(models.Project.images).selectinload(models.Image.versions),
+            selectinload(models.Project.images).selectinload(models.Image.tags),
+            selectinload(models.Project.settings),
+            selectinload(models.Project.client),
+        )
+        .filter(models.Project.access_url == access_url)
+        .first()
+    )
     if not project:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
-    return project
+    return _project_detail(project, include_images=True)
 
 
-@router.post("/", response_model=Project, status_code=status.HTTP_201_CREATED)
-async def create_project(
+@router.post("/", response_model=ProjectDetail, status_code=status.HTTP_201_CREATED)
+def create_project(
     request: CreateProjectRequest,
-    current_user: User = Depends(get_current_user),
-    data_manager: DataManager = Depends(get_data_manager),
-) -> Project:
-    if current_user.role != UserRole.STUDIO:
+    current_user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> ProjectDetail:
+    if current_user.role == UserRole.CLIENT:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only studio users can create projects")
 
     if not current_user.studio_id:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Studio assignment missing for current user")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Studio assignment required for user")
+
+    client = (
+        db.query(models.Client)
+        .filter(models.Client.studio_id == current_user.studio_id, func.lower(models.Client.email) == request.client_email.lower())
+        .first()
+    )
+    if not client:
+        client = models.Client(
+            id=str(uuid.uuid4()),
+            studio_id=current_user.studio_id,
+            user_id=None,
+            name=request.client_name,
+            email=request.client_email.lower(),
+            status="active",
+            total_projects=0,
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
+        )
+        db.add(client)
+        db.flush()
 
     project_id = str(uuid.uuid4())
-    access_url = f"{request.name.lower().replace(' ', '-')}-{str(uuid.uuid4())[:8]}"
+    slug = request.name.lower().replace(" ", "-")
+    access_url = f"{slug}-{project_id[:6]}"
 
-    categories = request.categories or _default_categories()
-
-    project = Project(
+    project = models.Project(
         id=project_id,
+        studio_id=current_user.studio_id,
+        client_id=client.id,
+        created_by=current_user.id,
         name=request.name,
         description=request.description,
-        project_date=request.project_date,
-        client_name=request.client_name,
-        client_email=request.client_email,
-        studio_id=current_user.studio_id,
-        categories=categories,
-        images=[],
-        settings=ProjectSettings(
-            is_password_protected=False,
-            allow_downloads=True,
-            allow_comments=True,
-        ),
-        status=ProjectStatus.DRAFT,
-        created_at=datetime.now(),
-        updated_at=datetime.now(),
+        project_type=request.project_type,
+        shoot_date=request.shoot_date,
         access_url=access_url,
+        status=ProjectStatus.DRAFT.value,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
+    )
+    db.add(project)
+    db.flush()
+
+    settings = models.ProjectSettings(project_id=project.id)
+    db.add(settings)
+
+    incoming_categories = request.categories or list(_default_category_templates())
+    for index, category_req in enumerate(incoming_categories, start=1):
+        order_index = category_req.order_index or index
+        db.add(
+            models.Category(
+                id=str(uuid.uuid4()),
+                project_id=project.id,
+                name=category_req.name,
+                display_name=category_req.display_name,
+                description=category_req.description,
+                order_index=order_index,
+                is_default=category_req.is_default,
+                image_count=0,
+            )
+        )
+
+    client.total_projects = (client.total_projects or 0) + 1
+    client.updated_at = datetime.utcnow()
+
+    db.commit()
+
+    refreshed = (
+        db.query(models.Project)
+        .options(
+            selectinload(models.Project.categories),
+            selectinload(models.Project.images).selectinload(models.Image.versions),
+            selectinload(models.Project.images).selectinload(models.Image.tags),
+            selectinload(models.Project.settings),
+            selectinload(models.Project.client),
+        )
+        .filter(models.Project.id == project.id)
+        .first()
     )
 
-    return data_manager.create_project(project)
+    return _project_detail(refreshed, include_images=True)
 
 
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_project(
+def delete_project(
     project_id: str,
-    data_manager: DataManager = Depends(get_data_manager),
-    current_user: User = Depends(get_current_user),
+    current_user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ) -> None:
-    """Delete a project."""
-    project = data_manager.get_project_by_id(project_id)
+    project = db.query(models.Project).filter(models.Project.id == project_id).first()
     if not project:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
-    
-    # Check if user has permission to delete this project
-    if current_user.role != UserRole.STUDIO or current_user.studio_id != project.studio_id:
+
+    if current_user.role == UserRole.CLIENT or current_user.studio_id != project.studio_id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to delete this project")
-    
-    data_manager.delete_project(project_id)
+
+    db.delete(project)
+    db.commit()
