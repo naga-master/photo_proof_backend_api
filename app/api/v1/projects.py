@@ -49,7 +49,18 @@ def _serialize_image(image: models.Image) -> ImageRead:
     return image_model.model_copy(update={"versions": versions, "tags": tags})
 
 
-def _project_detail(project: models.Project, include_images: bool = True) -> ProjectDetail:
+def _project_detail(project: models.Project, include_images: bool = True, db: Optional[Session] = None) -> ProjectDetail:
+    # Update total_images count if database session is provided
+    if db:
+        actual_count = db.query(func.count(models.Image.id)).filter(
+            models.Image.project_id == project.id
+        ).scalar() or 0
+        
+        if project.total_images != actual_count:
+            project.total_images = actual_count
+            db.add(project)
+            db.commit()
+    
     summary = ProjectSummary.model_validate(project)
     categories = [
         ProjectCategoryRead.model_validate(category)
@@ -98,13 +109,26 @@ def list_projects(
         query = query.filter(models.Project.status == status.value)
 
     projects = query.all()
+    
+    # Recalculate actual image counts for each project
+    for project in projects:
+        actual_count = db.query(func.count(models.Image.id)).filter(
+            models.Image.project_id == project.id
+        ).scalar() or 0
+        
+        if project.total_images != actual_count:
+            project.total_images = actual_count
+            db.add(project)
+    
+    db.commit()
+    
     summaries = [ProjectSummary.model_validate(project) for project in projects]
     return ProjectListResponse(projects=summaries, total=len(summaries))
 
 
 @router.get("/{project_id}", response_model=ProjectDetail)
-def get_project(project: models.Project = Depends(deps.get_project)) -> ProjectDetail:
-    return _project_detail(project, include_images=True)
+def get_project(project: models.Project = Depends(deps.get_project), db: Session = Depends(get_db)) -> ProjectDetail:
+    return _project_detail(project, include_images=True, db=db)
 
 
 @router.get("/access/{access_url}", response_model=ProjectDetail)
@@ -123,7 +147,7 @@ def get_project_by_access_url(access_url: str, db: Session = Depends(get_db)) ->
     )
     if not project:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
-    return _project_detail(project, include_images=True)
+    return _project_detail(project, include_images=True, db=db)
 
 
 @router.post("/", response_model=ProjectDetail, status_code=status.HTTP_201_CREATED)
@@ -189,13 +213,30 @@ def create_project(
         shoot_date=request.shoot_date,
         access_url=access_url,
         status=ProjectStatus.DRAFT.value,
+        total_images=0,
+        selected_images=0,
+        total_comments=0,
+        storage_used_bytes=0,
+        view_count=0,
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow(),
     )
     db.add(project)
     db.flush()
 
-    settings = models.ProjectSettings(project_id=project.id)
+    settings = models.ProjectSettings(
+        id=str(uuid.uuid4()),
+        project_id=project.id,
+        is_password_protected=False,
+        allow_downloads=True,
+        allow_comments=True,
+        allow_selections=True,
+        allow_favorites=True,
+        watermark_enabled=False,
+        auto_archive_days=90,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow(),
+    )
     db.add(settings)
 
     incoming_categories = request.categories or list(_default_category_templates())
@@ -211,6 +252,8 @@ def create_project(
                 order_index=order_index,
                 is_default=category_req.is_default,
                 image_count=0,
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow(),
             )
         )
 

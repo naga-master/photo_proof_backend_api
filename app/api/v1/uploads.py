@@ -6,10 +6,11 @@ import mimetypes
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy.orm import Session, selectinload
+from PIL import Image as PILImage
 
 from app.core.config import get_settings
 from app.core.dependencies import get_current_user
@@ -78,22 +79,27 @@ def _validate_image_file(file_path: Path) -> bool:
         if file_path.suffix.lower() in {'.jpg', '.jpeg'}:
             # JPEG: FF D8 FF
             if len(header) < 3 or header[:3] != b'\xff\xd8\xff':
+                print("JPEG: FF D8 FF")
                 return False
         elif file_path.suffix.lower() == '.png':
             # PNG: 89 50 4E 47 0D 0A 1A 0A
             if len(header) < 8 or header[:8] != b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a':
+                print("PNG: 89 50 4E 47 0D 0A 1A 0A")
                 return False
         elif file_path.suffix.lower() == '.gif':
             # GIF: GIF87a or GIF89a
             if len(header) < 6 or not (header[:6] == b'GIF87a' or header[:6] == b'GIF89a'):
+                print("# GIF: GIF87a or GIF89a")
                 return False
         elif file_path.suffix.lower() == '.bmp':
             # BMP: BM
             if len(header) < 2 or header[:2] != b'BM':
+                print("# BMP: BM")
                 return False
         elif file_path.suffix.lower() == '.webp':
             # WebP: RIFF....WEBP
             if len(header) < 12 or header[:4] != b'RIFF' or header[8:12] != b'WEBP':
+                print(" WebP: RIFF....WEBP")
                 return False
         
         # Try to read file as text to detect ASCII text files disguised as images
@@ -104,20 +110,48 @@ def _validate_image_file(file_path: Path) -> bool:
             # If we can read it as text and it contains test phrases, it's corrupted
             test_phrases = ['test', 'hello', 'image does not exist', 'test data', 'hello world']
             if any(phrase in content.lower() for phrase in test_phrases):
+                print(test_phrases)
                 return False
                 
             # If the entire file is readable as ASCII and small, it's probably not an image
             if file_path.stat().st_size < 1000 and content.isprintable():
+                print(file_path.stat().st_size)
                 return False
                 
         except UnicodeDecodeError:
             # Good! Can't decode as text - likely a real binary image file
+            print("Unicode error")
             pass
         
         return True
         
-    except Exception:
+    except Exception as e:
+        print(e)
         return False
+
+
+def _extract_image_metadata(file_path: Path) -> Tuple[Optional[int], Optional[int]]:
+    """Extract width and height metadata from an image file.
+    
+    Returns:
+        Tuple of (width, height) or (None, None) if extraction fails
+    """
+    if not _is_image_file(file_path.name):
+        return None, None
+    
+    try:
+        # Ensure the file exists and is readable
+        if not file_path.exists() or not file_path.is_file():
+            print(f"Warning: File does not exist or is not a file: {file_path}")
+            return None, None
+            
+        with PILImage.open(file_path) as img:
+            width, height = img.size
+            print(f"Extracted metadata for {file_path.name}: {width}x{height}")
+            return width, height
+    except Exception as e:
+        print(f"Warning: Could not extract metadata from {file_path}: {e}")
+        return None, None
 
 
 def _serialize_image(image: models.Image) -> ImageRead:
@@ -174,7 +208,27 @@ def initiate_uploads(
 
 
 @router.put("/api/uploads/stream/{project_id}/{category_id}/{file_name:path}", status_code=status.HTTP_204_NO_CONTENT)
-async def upload_file_stream(project_id: str, category_id: str, file_name: str, request: Request) -> Response:
+async def upload_file_stream(
+    project_id: str, 
+    category_id: str, 
+    file_name: str, 
+    request: Request,
+    db: Session = Depends(get_db)
+) -> Response:
+    # Validate project exists before allowing file upload
+    project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if not project:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    
+    # Validate category exists in project
+    category = (
+        db.query(models.Category)
+        .filter(models.Category.id == category_id, models.Category.project_id == project_id)
+        .first()
+    )
+    if not category:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid category for project")
+
     sanitized_name = _sanitize_segment(file_name)
     category_segment = _sanitize_segment(category_id)
     project_segment = _sanitize_segment(project_id)
@@ -211,6 +265,7 @@ async def upload_file_stream(project_id: str, category_id: str, file_name: str, 
                 )
         
     except Exception as exc:  # noqa: BLE001
+        print(exc)
         # Clean up the file if upload failed
         destination_path.unlink(missing_ok=True)
         raise HTTPException(
@@ -268,6 +323,9 @@ def complete_upload(
     # Generate static serving URL instead of using upload API URL
     asset_url = f"/uploads/{project_segment}/{category_segment}/{sanitized_name}"
 
+    # Extract image metadata (width, height) if it's an image file
+    width, height = _extract_image_metadata(stored_path)
+
     duplicate = (
         db.query(models.Image)
         .filter(
@@ -298,8 +356,8 @@ def complete_upload(
         s3_key_print=None,
         file_size_bytes=file_size,
         mime_type=mime_type,
-        width=None,
-        height=None,
+        width=width,
+        height=height,
         is_favorite=False,
         is_selected=False,
         comment_count=0,
@@ -316,8 +374,8 @@ def complete_upload(
         version_name="original",
         s3_key=asset_url,
         file_size_bytes=file_size,
-        width=None,
-        height=None,
+        width=width,
+        height=height,
         created_by=current_user.id,
         created_at=datetime.utcnow(),
     )
