@@ -10,6 +10,7 @@ from typing import List, Optional, Tuple
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy.orm import Session, selectinload
+from sqlalchemy import text
 from PIL import Image as PILImage
 
 from app.core.config import get_settings
@@ -37,7 +38,28 @@ UPLOADS_ROOT.mkdir(parents=True, exist_ok=True)
 
 
 def _sanitize_segment(value: str) -> str:
-    return Path(value).name
+    try:
+        # Ensure the value is properly encoded
+        if isinstance(value, bytes):
+            value = value.decode('utf-8', errors='replace')
+        
+        result = Path(value).name
+        # Verify the result is safe for filesystem
+        if result and all(ord(char) < 128 or char.isalnum() or char in '.-_()[]' for char in result):
+            return result
+        else:
+            # Fallback for problematic characters
+            import re
+            safe_name = re.sub(r'[^\w\-_\.\(\)\[\]]', '_', result)
+            print(f"� Sanitized problematic filename '{value}' -> '{safe_name}'")
+            return safe_name
+    except Exception as e:
+        print(f"❌ Unicode error sanitizing '{value}': {e}")
+        # Fallback: remove non-ASCII characters
+        import re
+        safe_name = re.sub(r'[^\w\-_\.]', '_', str(value))
+        print(f"🔧 Fallback sanitized '{value}' -> '{safe_name}'")
+        return safe_name
 
 
 def _resolve_category_id(project: models.Project, requested: Optional[str]) -> Optional[str]:
@@ -282,22 +304,36 @@ def complete_upload(
     current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> CompleteUploadResponse:
-    if current_user.role == UserRole.CLIENT:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only studio users can upload images")
+    print(f"🔄 Complete upload called for: {payload.file_name} in project {payload.project_id}")
+    
+    try:
+        if current_user.role == UserRole.CLIENT:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only studio users can upload images")
 
-    project = (
-        db.query(models.Project)
-        .options(selectinload(models.Project.categories))
-        .filter(models.Project.id == payload.project_id)
-        .first()
-    )
-    if not project:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+        project = (
+            db.query(models.Project)
+            .options(selectinload(models.Project.categories))
+            .filter(models.Project.id == payload.project_id)
+            .first()
+        )
+        if not project:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
 
-    category_id = _resolve_category_id(project, payload.category_id)
-    resolved_category_id = category_id or (project.categories[0].id if project.categories else None)
-    if not resolved_category_id:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No category available for project")
+        category_id = _resolve_category_id(project, payload.category_id)
+        resolved_category_id = category_id or (project.categories[0].id if project.categories else None)
+        if not resolved_category_id:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No category available for project")
+
+    except HTTPException:
+        # Re-raise HTTP exceptions as-is
+        raise
+    except Exception as e:
+        print(f"❌ Error in upload completion setup for {payload.file_name}: {e}")
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Internal error during upload setup: {str(e)}"
+        )
 
     category_segment = _sanitize_segment(resolved_category_id)
     project_segment = _sanitize_segment(project.id)
@@ -344,53 +380,75 @@ def complete_upload(
         )
         return CompleteUploadResponse(image=_serialize_image(duplicate), already_exists=True)
 
-    image = models.Image(
-        id=str(uuid.uuid4()),
-        project_id=project.id,
-        category_id=resolved_category_id,
-        uploaded_by=current_user.id,
-        original_filename=payload.original_file_name,
-        s3_key_original=asset_url,
-        s3_key_thumbnail=asset_url,
-        s3_key_preview=None,
-        s3_key_print=None,
-        file_size_bytes=file_size,
-        mime_type=mime_type,
-        width=width,
-        height=height,
-        is_favorite=False,
-        is_selected=False,
-        comment_count=0,
-        status="ready",
-        uploaded_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
-    )
-    db.add(image)
-    db.flush()
+    try:
+        # Create the image record
+        image = models.Image(
+            id=str(uuid.uuid4()),
+            project_id=project.id,
+            category_id=resolved_category_id,
+            uploaded_by=current_user.id,
+            original_filename=payload.original_file_name,
+            s3_key_original=asset_url,
+            s3_key_thumbnail=asset_url,
+            s3_key_preview=None,
+            s3_key_print=None,
+            file_size_bytes=file_size,
+            mime_type=mime_type,
+            width=width,
+            height=height,
+            is_favorite=False,
+            is_selected=False,
+            comment_count=0,
+            status="ready",
+            uploaded_at=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
+        )
+        db.add(image)
+        db.flush()
 
-    version = models.ImageVersion(
-        id=str(uuid.uuid4()),
-        image_id=image.id,
-        version_name="original",
-        s3_key=asset_url,
-        file_size_bytes=file_size,
-        width=width,
-        height=height,
-        created_by=current_user.id,
-        created_at=datetime.utcnow(),
-    )
-    db.add(version)
+        version = models.ImageVersion(
+            id=str(uuid.uuid4()),
+            image_id=image.id,
+            version_name="original",
+            s3_key=asset_url,
+            file_size_bytes=file_size,
+            width=width,
+            height=height,
+            created_by=current_user.id,
+            created_at=datetime.utcnow(),
+        )
+        db.add(version)
 
-    project.total_images = (project.total_images or 0) + 1
-    project.storage_used_bytes = (project.storage_used_bytes or 0) + file_size
-    project.updated_at = datetime.utcnow()
+        # Use atomic updates to prevent race conditions
+        # Update project stats atomically
+        db.execute(
+            text("UPDATE projects SET total_images = COALESCE(total_images, 0) + 1, storage_used_bytes = COALESCE(storage_used_bytes, 0) + :file_size, updated_at = :updated_at WHERE id = :project_id"),
+            {"file_size": file_size, "updated_at": datetime.utcnow(), "project_id": project.id}
+        )
+        
+        # Update category count atomically
+        db.execute(
+            text("UPDATE categories SET image_count = COALESCE(image_count, 0) + 1, updated_at = :updated_at WHERE id = :category_id"),
+            {"updated_at": datetime.utcnow(), "category_id": resolved_category_id}
+        )
 
-    category = next((cat for cat in project.categories if cat.id == resolved_category_id), None)
-    if category:
-        category.image_count = (category.image_count or 0) + 1
-        category.updated_at = datetime.utcnow()
+        print(f"✅ Atomically updated project {project.id} and category {resolved_category_id} for {payload.file_name}")
+        
+        db.commit()
+        print(f"📊 Committed changes to database for {payload.file_name}")
 
-    db.commit()
+        # Refresh the objects to get updated counts
+        db.refresh(project)
+        category = next((cat for cat in project.categories if cat.id == resolved_category_id), None)
+        print(f"📈 After update - project total_images: {project.total_images}, category image_count: {category.image_count if category else 'N/A'}")
+
+    except Exception as e:
+        print(f"❌ Database error during upload completion for {payload.file_name}: {e}")
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database error during upload completion: {str(e)}"
+        )
 
     image = (
         db.query(models.Image)
