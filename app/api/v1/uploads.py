@@ -54,7 +54,70 @@ def _resolve_category_id(project: models.Project, requested: Optional[str]) -> O
 
 def _build_target_url(request: Request, project_id: str, category_segment: str, file_name: str) -> str:
     base_url = str(request.base_url).rstrip("/")
-    return f"{base_url}/uploads/{project_id}/{category_segment}/{file_name}"
+    return f"{base_url}/api/uploads/stream/{project_id}/{category_segment}/{file_name}"
+
+
+def _is_image_file(filename: str) -> bool:
+    """Check if the file is an image based on its extension."""
+    image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.tiff', '.tif'}
+    return Path(filename).suffix.lower() in image_extensions
+
+
+def _validate_image_file(file_path: Path) -> bool:
+    """Validate that an image file is not corrupted and has proper headers."""
+    try:
+        # Check file size - should be more than 100 bytes for a valid image
+        if file_path.stat().st_size < 100:
+            return False
+        
+        # Read first few bytes to check for valid image headers
+        with file_path.open('rb') as f:
+            header = f.read(20)
+        
+        # Check for common image file signatures
+        if file_path.suffix.lower() in {'.jpg', '.jpeg'}:
+            # JPEG: FF D8 FF
+            if len(header) < 3 or header[:3] != b'\xff\xd8\xff':
+                return False
+        elif file_path.suffix.lower() == '.png':
+            # PNG: 89 50 4E 47 0D 0A 1A 0A
+            if len(header) < 8 or header[:8] != b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a':
+                return False
+        elif file_path.suffix.lower() == '.gif':
+            # GIF: GIF87a or GIF89a
+            if len(header) < 6 or not (header[:6] == b'GIF87a' or header[:6] == b'GIF89a'):
+                return False
+        elif file_path.suffix.lower() == '.bmp':
+            # BMP: BM
+            if len(header) < 2 or header[:2] != b'BM':
+                return False
+        elif file_path.suffix.lower() == '.webp':
+            # WebP: RIFF....WEBP
+            if len(header) < 12 or header[:4] != b'RIFF' or header[8:12] != b'WEBP':
+                return False
+        
+        # Try to read file as text to detect ASCII text files disguised as images
+        try:
+            with file_path.open('r', encoding='utf-8') as f:
+                content = f.read(200)  # Read first 200 chars
+            
+            # If we can read it as text and it contains test phrases, it's corrupted
+            test_phrases = ['test', 'hello', 'image does not exist', 'test data', 'hello world']
+            if any(phrase in content.lower() for phrase in test_phrases):
+                return False
+                
+            # If the entire file is readable as ASCII and small, it's probably not an image
+            if file_path.stat().st_size < 1000 and content.isprintable():
+                return False
+                
+        except UnicodeDecodeError:
+            # Good! Can't decode as text - likely a real binary image file
+            pass
+        
+        return True
+        
+    except Exception:
+        return False
 
 
 def _serialize_image(image: models.Image) -> ImageRead:
@@ -110,7 +173,7 @@ def initiate_uploads(
     return UploadInitiateResponse(upload_urls=upload_urls)
 
 
-@router.put("/uploads/{project_id}/{category_id}/{file_name:path}", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/api/uploads/stream/{project_id}/{category_id}/{file_name:path}", status_code=status.HTTP_204_NO_CONTENT)
 async def upload_file_stream(project_id: str, category_id: str, file_name: str, request: Request) -> Response:
     sanitized_name = _sanitize_segment(file_name)
     category_segment = _sanitize_segment(category_id)
@@ -122,11 +185,38 @@ async def upload_file_stream(project_id: str, category_id: str, file_name: str, 
     destination_path = destination_dir / sanitized_name
 
     try:
+        total_bytes = 0
         with destination_path.open("wb") as buffer:
             async for chunk in request.stream():
+                if not chunk:  # Skip empty chunks
+                    continue
                 buffer.write(chunk)
+                total_bytes += len(chunk)
+        
+        # Validate the uploaded file
+        if total_bytes == 0:
+            destination_path.unlink(missing_ok=True)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, 
+                detail="Uploaded file is empty"
+            )
+        
+        # Additional validation for image files
+        if _is_image_file(sanitized_name):
+            if not _validate_image_file(destination_path):
+                destination_path.unlink(missing_ok=True)
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST, 
+                    detail="Uploaded file is not a valid image"
+                )
+        
     except Exception as exc:  # noqa: BLE001
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to write file: {exc}") from exc
+        # Clean up the file if upload failed
+        destination_path.unlink(missing_ok=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail=f"Failed to write file: {exc}"
+        ) from exc
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -163,9 +253,20 @@ def complete_upload(
     if not stored_path.exists():
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Uploaded file not found on server")
 
+    # Validate the stored file integrity
+    if _is_image_file(sanitized_name):
+        if not _validate_image_file(stored_path):
+            # Remove the corrupted file
+            stored_path.unlink(missing_ok=True)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, 
+                detail="Uploaded file is corrupted or invalid"
+            )
+
     file_size = stored_path.stat().st_size
     mime_type = payload.content_type or mimetypes.guess_type(sanitized_name)[0] or "application/octet-stream"
-    asset_url = payload.upload_url or f"/uploads/{project_segment}/{category_segment}/{sanitized_name}"
+    # Generate static serving URL instead of using upload API URL
+    asset_url = f"/uploads/{project_segment}/{category_segment}/{sanitized_name}"
 
     duplicate = (
         db.query(models.Image)

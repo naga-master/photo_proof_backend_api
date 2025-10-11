@@ -1,3 +1,4 @@
+
 """Backward compatible entry point for the Photo Proof API."""
 
 from app.main import app
