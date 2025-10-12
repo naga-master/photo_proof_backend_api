@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Generator
@@ -13,6 +14,7 @@ from app.core.config import get_settings
 
 
 settings = get_settings()
+logger = logging.getLogger(__name__)
 
 
 def _ensure_sqlite_directory(database_url: str) -> None:
@@ -59,14 +61,18 @@ def get_db() -> Generator[Session, None, None]:
     """FastAPI dependency that provides a transactional database session."""
 
     db = SessionLocal()
+    logger.debug("Database session opened")
     try:
         yield db
         db.commit()
+        logger.debug("Database session committed")
     except Exception:  # pragma: no cover - re-raise for FastAPI error handling
         db.rollback()
+        logger.exception("Database session rolled back due to exception")
         raise
     finally:
         db.close()
+        logger.debug("Database session closed")
 
 
 @contextmanager
@@ -74,11 +80,15 @@ def session_scope() -> Generator[Session, None, None]:
     """Context manager variant for scripts and background tasks."""
 
     session = SessionLocal()
+    logger.debug("Session scope opened")
     try:
         yield session
         session.commit()
+        logger.debug("Session scope committed")
     except Exception:  # pragma: no cover - re-raise to caller
         session.rollback()
+        logger.exception("Session scope rolled back due to exception")
         raise
     finally:
         session.close()
+        logger.debug("Session scope closed")

@@ -1,5 +1,6 @@
 """Batch action processing for offline synchronization."""
 
+import logging
 import uuid
 from datetime import datetime
 from typing import List, Set
@@ -21,6 +22,7 @@ from app.schemas import (
 
 
 router = APIRouter(prefix="/api/actions", tags=["Batch Actions"])
+logger = logging.getLogger(__name__)
 
 
 @router.post("/batch", response_model=BatchActionsResponse)
@@ -29,12 +31,20 @@ def process_batch_actions(
     current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> BatchActionsResponse:
+    logger.debug(
+        "Processing batch actions",
+        extra={"user_id": current_user.id, "count": len(request.actions)},
+    )
     accepted: List[str] = []
     failed: List[BatchActionResult] = []
     processed_actions: Set[str] = set()
 
     for action in request.actions:
         if action.client_action_id in processed_actions:
+            logger.warning(
+                "Duplicate client action id encountered",
+                extra={"client_action_id": action.client_action_id},
+            )
             failed.append(
                 BatchActionResult(
                     clientActionId=action.client_action_id,
@@ -48,7 +58,15 @@ def process_batch_actions(
         success = _process_single_action(action, current_user, db)
         if success:
             accepted.append(action.client_action_id)
+            logger.debug(
+                "Batch action processed",
+                extra={"client_action_id": action.client_action_id, "type": action.action_type},
+            )
         else:
+            logger.warning(
+                "Batch action failed",
+                extra={"client_action_id": action.client_action_id, "type": action.action_type},
+            )
             failed.append(
                 BatchActionResult(
                     clientActionId=action.client_action_id,
@@ -56,6 +74,10 @@ def process_batch_actions(
                 )
             )
 
+    logger.debug(
+        "Batch actions completed",
+        extra={"accepted": len(accepted), "failed": len(failed)},
+    )
     return BatchActionsResponse(
         accepted=accepted,
         failed=failed,
@@ -77,11 +99,19 @@ def _process_single_action(action: BatchAction, current_user: UserRead, db: Sess
             return True
         return False
     except Exception:  # noqa: BLE001
+        logger.exception(
+            "Batch action processing failed",
+            extra={"client_action_id": action.client_action_id, "type": action.action_type},
+        )
         return False
 
 
 def _fetch_image(action: BatchAction, db: Session) -> models.Image | None:
     if not action.photo_id or not action.project_id:
+        logger.warning(
+            "Action missing photo or project id",
+            extra={"client_action_id": action.client_action_id},
+        )
         return None
 
     return (
@@ -95,22 +125,35 @@ def _fetch_image(action: BatchAction, db: Session) -> models.Image | None:
 def _toggle_boolean_field(action: BatchAction, db: Session, field: str) -> bool:
     image = _fetch_image(action, db)
     if not image:
+        logger.warning(
+            "Image not found for toggle",
+            extra={"client_action_id": action.client_action_id, "field": field},
+        )
         return False
 
     value = bool(action.payload.get(field, False))
     setattr(image, field, value)
     image.updated_at = datetime.utcnow()
     db.commit()
+    logger.debug(
+        "Toggled image field",
+        extra={"image_id": image.id, "field": field, "value": value},
+    )
     return True
 
 
 def _create_comment(action: BatchAction, current_user: UserRead, db: Session) -> bool:
     image = _fetch_image(action, db)
     if not image:
+        logger.warning(
+            "Image not found for comment",
+            extra={"client_action_id": action.client_action_id},
+        )
         return False
 
     comment_text = action.payload.get("commentText", "").strip()
     if not comment_text:
+        logger.warning("Empty comment payload", extra={"client_action_id": action.client_action_id})
         return False
 
     comment = models.Comment(
@@ -131,12 +174,20 @@ def _create_comment(action: BatchAction, current_user: UserRead, db: Session) ->
     image.project.updated_at = datetime.utcnow()
 
     db.commit()
+    logger.info(
+        "Batch comment created",
+        extra={"comment_id": comment.id, "image_id": image.id},
+    )
     return True
 
 
 def _toggle_tag(action: BatchAction, db: Session, tag_name: str) -> bool:
     image = _fetch_image(action, db)
     if not image:
+        logger.warning(
+            "Image not found for tag toggle",
+            extra={"client_action_id": action.client_action_id, "tag": tag_name},
+        )
         return False
 
     should_have_tag = bool(action.payload.get("approved", False))
@@ -148,10 +199,15 @@ def _toggle_tag(action: BatchAction, db: Session, tag_name: str) -> bool:
             tag = models.Tag(id=str(uuid.uuid4()), studio_id=image.project.studio_id, name=tag_name)
             db.add(tag)
             db.flush()
+            logger.debug("Created approval tag", extra={"tag": tag_name})
         image.tags.append(tag)
     elif not should_have_tag and tag_name in existing_tags:
         image.tags = [tag for tag in image.tags if tag.name != tag_name]
 
     image.updated_at = datetime.utcnow()
     db.commit()
+    logger.debug(
+        "Toggled tag",
+        extra={"image_id": image.id, "tag": tag_name, "enabled": should_have_tag},
+    )
     return True

@@ -1,5 +1,6 @@
 """Studio related endpoints backed by SQLite."""
 
+import logging
 from datetime import datetime
 from typing import List
 from uuid import uuid4
@@ -14,20 +15,27 @@ from app.db.session import get_db
 from app.schemas import StudioRead
 
 
+logger = logging.getLogger(__name__)
+
+
 router = APIRouter(prefix="/api/studios", tags=["Studios"])
 
 
 @router.get("/", response_model=List[StudioRead])
 def list_studios(db: Session = Depends(get_db)) -> List[StudioRead]:
+    logger.debug("Listing studios")
     studios = db.query(models.Studio).order_by(models.Studio.created_at.asc()).all()
+    logger.debug("Studios fetched", extra={"count": len(studios)})
     return [StudioRead.model_validate(studio) for studio in studios]
 
 
 @router.post("/", response_model=StudioRead)
 def create_studio(studio_data: dict, db: Session = Depends(get_db)) -> StudioRead:
+    logger.debug("Creating studio", extra={"email": studio_data.get("email")})
     name = studio_data.get("name")
     email = studio_data.get("email")
     if not name or not email:
+        logger.warning("Studio creation missing required fields")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Name and email are required")
 
     studio = models.Studio(
@@ -53,12 +61,15 @@ def create_studio(studio_data: dict, db: Session = Depends(get_db)) -> StudioRea
         db.commit()
     except IntegrityError:
         db.rollback()
+        logger.warning("Studio creation conflict", extra={"email": email.lower()})
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Studio with this email already exists")
 
     db.refresh(studio)
+    logger.info("Studio created", extra={"studio_id": studio.id})
     return StudioRead.model_validate(studio)
 
 
 @router.get("/{studio_id}", response_model=StudioRead)
 def get_studio(studio: models.Studio = Depends(deps.get_studio)) -> StudioRead:
+    logger.debug("Returning studio", extra={"studio_id": studio.id})
     return StudioRead.model_validate(studio)

@@ -1,9 +1,10 @@
 """Project image comment endpoints backed by SQLite storage."""
 
+import logging
 import uuid
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session, selectinload
 
 from app.api import deps
@@ -11,6 +12,9 @@ from app.core.dependencies import get_current_user
 from app.db import models
 from app.db.session import get_db
 from app.schemas import CommentListResponse, CommentRead, CreateCommentRequest, UserRead
+
+
+logger = logging.getLogger(__name__)
 
 
 router = APIRouter(
@@ -24,6 +28,7 @@ def list_image_comments(
     image: models.Image = Depends(deps.get_project_image),
     db: Session = Depends(get_db),
 ) -> CommentListResponse:
+    logger.debug("Listing comments", extra={"image_id": image.id})
     comments = (
         db.query(models.Comment)
         .options(selectinload(models.Comment.user))
@@ -41,6 +46,7 @@ def list_image_comments(
         )
         for comment in comments
     ]
+    logger.debug("Comments retrieved", extra={"count": len(serialized), "image_id": image.id})
     return CommentListResponse(comments=serialized, total=len(serialized), image_id=image.id)
 
 
@@ -51,6 +57,10 @@ def create_image_comment(
     current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> CommentRead:
+    logger.debug(
+        "Creating comment",
+        extra={"image_id": image.id, "user_id": current_user.id},
+    )
     comment = models.Comment(
         id=str(uuid.uuid4()),
         image_id=image.id,
@@ -71,6 +81,7 @@ def create_image_comment(
     db.commit()
     db.refresh(comment)
 
+    logger.info("Comment created", extra={"comment_id": comment.id, "image_id": image.id})
     return CommentRead.model_validate(comment).model_copy(
         update={"user_name": current_user.name, "user_role": current_user.role}
     )

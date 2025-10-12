@@ -1,5 +1,6 @@
 """FastAPI application factory."""
 
+import logging
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -8,11 +9,16 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api import api_router
 from app.core.config import get_settings
+from app.core.logging_config import configure_logging
 from app.db.init_db import init_db
+
+
+logger = logging.getLogger(__name__)
 
 
 def create_app() -> FastAPI:
     settings = get_settings()
+    configure_logging(settings)
 
     application = FastAPI(
         title=settings.app_name,
@@ -36,6 +42,7 @@ def create_app() -> FastAPI:
     init_db()
 
     application.include_router(api_router)
+    logger.info("Application initialized", extra={"environment": settings.environment})
     return application
 
 

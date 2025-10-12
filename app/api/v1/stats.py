@@ -1,5 +1,7 @@
 """Analytics and statistics endpoints."""
 
+import logging
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -9,11 +11,15 @@ from app.db.session import get_db
 from app.schemas import ProjectSummary, StudioRead
 
 
+logger = logging.getLogger(__name__)
+
+
 router = APIRouter(tags=["Statistics"])
 
 
 @router.get("/api/projects/{project_id}/stats")
 def get_project_stats(project: models.Project = Depends(deps.get_project)) -> dict:
+    logger.debug("Calculating project statistics", extra={"project_id": project.id})
     total_images = len(project.images)
     selected_images = len([image for image in project.images if image.is_selected])
     favorite_images = len([image for image in project.images if image.is_favorite])
@@ -44,6 +50,7 @@ def get_studio_dashboard(
     studio: StudioRead = Depends(deps.ensure_studio_access),
     db: Session = Depends(get_db),
 ) -> dict:
+    logger.debug("Calculating studio dashboard", extra={"studio_id": studio.id})
     total_projects = db.query(models.Project).filter(models.Project.studio_id == studio.id).count()
     active_projects = (
         db.query(models.Project)
@@ -73,6 +80,14 @@ def get_studio_dashboard(
         .all()
     )
 
+    logger.debug(
+        "Studio dashboard computed",
+        extra={
+            "studio_id": studio.id,
+            "total_projects": total_projects,
+            "total_clients": total_clients,
+        },
+    )
     return {
         "studio_id": studio.id,
         "stats": {

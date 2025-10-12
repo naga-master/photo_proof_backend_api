@@ -1,5 +1,6 @@
 """Project image endpoints."""
 
+import logging
 import uuid
 from datetime import datetime
 from typing import List, Optional
@@ -13,6 +14,9 @@ from app.core.dependencies import get_current_user
 from app.db import models
 from app.db.session import get_db
 from app.schemas import ImageListResponse, ImageRead, ImageVersionRead, UpdateImageRequest, UserRead, UserRole
+
+
+logger = logging.getLogger(__name__)
 
 
 router = APIRouter(prefix="/api/projects/{project_id}/images", tags=["Project Images"])
@@ -52,6 +56,15 @@ def list_project_images(
     offset: int = Query(0, ge=0, description="Number of images to skip"),
     db: Session = Depends(get_db),
 ) -> ImageListResponse:
+    logger.debug(
+        "Listing project images",
+        extra={
+            "project_id": project.id,
+            "category_id": category_id,
+            "limit": limit,
+            "offset": offset,
+        },
+    )
     query = _build_image_query(db, project.id, category_id)
     total = query.count()
     images = (
@@ -62,11 +75,16 @@ def list_project_images(
     )
 
     serialized = [_serialize_image(image) for image in images]
+    logger.debug(
+        "Images retrieved",
+        extra={"project_id": project.id, "count": len(serialized), "total": total},
+    )
     return ImageListResponse(images=serialized, total=total, category_id=category_id)
 
 
 @router.get("/{image_id}", response_model=ImageRead)
 def get_project_image(image: models.Image = Depends(deps.get_project_image)) -> ImageRead:
+    logger.debug("Fetching project image", extra={"image_id": image.id})
     return _serialize_image(image)
 
 
@@ -77,8 +95,16 @@ def update_project_image(
     current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> ImageRead:
+    logger.debug(
+        "Updating project image",
+        extra={"image_id": image.id, "user_id": current_user.id},
+    )
     project = image.project
     if current_user.role == UserRole.CLIENT or current_user.studio_id != project.studio_id:
+        logger.warning(
+            "Unauthorized image update attempt",
+            extra={"image_id": image.id, "user_id": current_user.id},
+        )
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to update images")
 
     if request.category_id:
@@ -88,6 +114,10 @@ def update_project_image(
             .first()
         )
         if not category:
+            logger.warning(
+                "Category not found for image update",
+                extra={"category_id": request.category_id, "image_id": image.id},
+            )
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category not found")
         previous_category_id = image.category_id
         image.category_id = category.id
@@ -115,6 +145,7 @@ def update_project_image(
                 )
                 db.add(tag)
                 db.flush()
+                logger.debug("Created tag", extra={"tag": tag_name, "studio_id": project.studio_id})
             tags.append(tag)
         image.tags = tags
 
@@ -147,6 +178,7 @@ def update_project_image(
     db.commit()
     db.refresh(image)
 
+    logger.info("Project image updated", extra={"image_id": image.id, "project_id": project.id})
     return _serialize_image(image)
 
 
@@ -158,12 +190,17 @@ def get_gallery_images(
     offset: int = Query(0, ge=0, description="Number of images to skip"),
     db: Session = Depends(get_db),
 ) -> ImageListResponse:
+    logger.debug(
+        "Listing gallery images",
+        extra={"project_id": project_id, "category_id": category_id, "limit": limit, "offset": offset},
+    )
     project = (
         db.query(models.Project)
         .filter(models.Project.id == project_id)
         .first()
     )
     if not project:
+        logger.warning("Gallery project not found", extra={"project_id": project_id})
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
 
     query = _build_image_query(db, project_id, category_id)
@@ -176,4 +213,8 @@ def get_gallery_images(
     )
 
     serialized = [_serialize_image(image) for image in images]
+    logger.debug(
+        "Gallery images retrieved",
+        extra={"project_id": project_id, "count": len(serialized), "total": total},
+    )
     return ImageListResponse(images=serialized, total=total, category_id=category_id)

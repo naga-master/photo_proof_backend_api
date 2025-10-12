@@ -1,0 +1,402 @@
+2025-10-12 11:31:28 | DEBUG | app.db.session | Session scope opened
+2025-10-12 11:31:29 | DEBUG | app.db.session | Session scope committed
+2025-10-12 11:31:29 | DEBUG | app.db.session | Session scope closed
+2025-10-12 11:31:29 | INFO | app.main | Application initialized
+2025-10-12 11:31:29 | INFO | uvicorn.error | Started server process [22455]
+2025-10-12 11:31:29 | INFO | uvicorn.error | Waiting for application startup.
+2025-10-12 11:31:29 | INFO | uvicorn.error | Application startup complete.
+2025-10-12 11:32:10 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:32:10 | DEBUG | app.api.deps | Resolving studio dependency
+2025-10-12 11:32:10 | DEBUG | app.api.deps | Studio dependency resolved
+2025-10-12 11:32:10 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:32:10 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:32:10 | DEBUG | app.api.deps | Studio access granted
+2025-10-12 11:32:10 | DEBUG | app.api.v1.stats | Calculating studio dashboard
+2025-10-12 11:32:10 | DEBUG | app.api.v1.stats | Studio dashboard computed
+2025-10-12 11:32:10 | INFO | uvicorn.access | 127.0.0.1:50823 - "GET /api/studio/studio-001/dashboard HTTP/1.1" 200
+2025-10-12 11:32:10 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:32:10 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:32:32 | INFO | uvicorn.access | 127.0.0.1:50843 - "GET /api/projects HTTP/1.1" 307
+2025-10-12 11:32:32 | INFO | uvicorn.access | 127.0.0.1:50847 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-10-12 11:32:32 | INFO | uvicorn.access | 127.0.0.1:50848 - "GET /api/projects HTTP/1.1" 307
+2025-10-12 11:32:32 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:32:32 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:32:32 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:32:32 | DEBUG | app.api.v1.projects | Listing projects
+2025-10-12 11:32:32 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-10-12 11:32:32 | INFO | uvicorn.access | 127.0.0.1:50847 - "GET /api/projects/ HTTP/1.1" 200
+2025-10-12 11:32:32 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:32:32 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:32:32 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:32:32 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:32:32 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:32:32 | DEBUG | app.api.v1.projects | Listing projects
+2025-10-12 11:32:32 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-10-12 11:32:32 | INFO | uvicorn.access | 127.0.0.1:50847 - "GET /api/projects/ HTTP/1.1" 200
+2025-10-12 11:32:32 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:32:32 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:32:34 | INFO | uvicorn.access | 127.0.0.1:50855 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/categories HTTP/1.1" 307
+2025-10-12 11:32:34 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:32:34 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:32:34 | INFO | uvicorn.access | 127.0.0.1:50847 - "OPTIONS /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/categories/ HTTP/1.1" 200
+2025-10-12 11:32:34 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:32:34 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:32:34 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:32:34 | DEBUG | app.api.v1.projects | Fetching project detail
+2025-10-12 11:32:34 | INFO | uvicorn.access | 127.0.0.1:50856 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56 HTTP/1.1" 200
+2025-10-12 11:32:34 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:32:34 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:32:34 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:32:34 | DEBUG | app.api.v1.project_categories | Listing categories
+2025-10-12 11:32:34 | INFO | uvicorn.access | 127.0.0.1:50850 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/categories/ HTTP/1.1" 200
+2025-10-12 11:32:34 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:32:34 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:32:34 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:32:34 | DEBUG | app.api.v1.project_images | Listing gallery images
+2025-10-12 11:32:34 | DEBUG | app.api.v1.project_images | Gallery images retrieved
+2025-10-12 11:32:34 | INFO | uvicorn.access | 127.0.0.1:50859 - "GET /api/gallery/8f7be71f-64f5-4234-84c8-faff848b2d56/all?limit=200&offset=0 HTTP/1.1" 200
+2025-10-12 11:32:34 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:32:34 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:32:36 | INFO | uvicorn.access | 127.0.0.1:50865 - "GET /uploads/8f7be71f-64f5-4234-84c8-faff848b2d56/5c7de190-d74b-4aee-b66b-d5db75d03525/IMG_0070.jpg HTTP/1.1" 304
+2025-10-12 11:32:36 | INFO | uvicorn.access | 127.0.0.1:50864 - "GET /uploads/8f7be71f-64f5-4234-84c8-faff848b2d56/5c7de190-d74b-4aee-b66b-d5db75d03525/IMG_7057%20%281%29.jpg HTTP/1.1" 304
+2025-10-12 11:32:37 | INFO | uvicorn.access | 127.0.0.1:50868 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/3ce89673-9380-4a60-90c5-9cc8a4569f3e/comments HTTP/1.1" 307
+2025-10-12 11:32:37 | INFO | uvicorn.access | 127.0.0.1:50850 - "OPTIONS /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/3ce89673-9380-4a60-90c5-9cc8a4569f3e/comments/ HTTP/1.1" 200
+2025-10-12 11:32:37 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:32:37 | DEBUG | app.api.deps | Resolving project image
+2025-10-12 11:32:37 | DEBUG | app.api.deps | Project image resolved
+2025-10-12 11:32:37 | DEBUG | app.api.v1.project_comments | Listing comments
+2025-10-12 11:32:37 | DEBUG | app.api.v1.project_comments | Comments retrieved
+2025-10-12 11:32:37 | INFO | uvicorn.access | 127.0.0.1:50847 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/3ce89673-9380-4a60-90c5-9cc8a4569f3e/comments/ HTTP/1.1" 200
+2025-10-12 11:32:37 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:32:37 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:32:45 | INFO | uvicorn.access | 127.0.0.1:50880 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/72994a4c-7ffd-4393-9a56-0183488fcc2e/comments HTTP/1.1" 307
+2025-10-12 11:32:45 | INFO | uvicorn.access | 127.0.0.1:50882 - "OPTIONS /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/72994a4c-7ffd-4393-9a56-0183488fcc2e/comments/ HTTP/1.1" 200
+2025-10-12 11:32:45 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:32:45 | DEBUG | app.api.deps | Resolving project image
+2025-10-12 11:32:45 | DEBUG | app.api.deps | Project image resolved
+2025-10-12 11:32:45 | DEBUG | app.api.v1.project_comments | Listing comments
+2025-10-12 11:32:45 | DEBUG | app.api.v1.project_comments | Comments retrieved
+2025-10-12 11:32:45 | INFO | uvicorn.access | 127.0.0.1:50882 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/72994a4c-7ffd-4393-9a56-0183488fcc2e/comments/ HTTP/1.1" 200
+2025-10-12 11:32:45 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:32:45 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:02 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:33:02 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:33:02 | DEBUG | app.api.v1.projects | Fetching project detail
+2025-10-12 11:33:02 | INFO | uvicorn.access | 127.0.0.1:50911 - "GET /api/projects/proj-001/categories HTTP/1.1" 307
+2025-10-12 11:33:02 | INFO | uvicorn.access | 127.0.0.1:50910 - "GET /api/projects/proj-001 HTTP/1.1" 200
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:02 | INFO | uvicorn.access | 127.0.0.1:50884 - "OPTIONS /api/projects/proj-001/categories/ HTTP/1.1" 200
+2025-10-12 11:33:02 | DEBUG | app.api.deps | Resolving studio dependency
+2025-10-12 11:33:02 | DEBUG | app.api.deps | Studio dependency resolved
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:02 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:33:02 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:33:02 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:33:02 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:33:02 | DEBUG | app.api.deps | Studio access granted
+2025-10-12 11:33:02 | DEBUG | app.api.v1.stats | Calculating studio dashboard
+2025-10-12 11:33:02 | DEBUG | app.api.v1.stats | Studio dashboard computed
+2025-10-12 11:33:02 | INFO | uvicorn.access | 127.0.0.1:50912 - "GET /api/studio/studio-001/dashboard HTTP/1.1" 200
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:02 | DEBUG | app.api.deps | Resolving studio dependency
+2025-10-12 11:33:02 | DEBUG | app.api.deps | Studio dependency resolved
+2025-10-12 11:33:02 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:33:02 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:33:02 | DEBUG | app.api.deps | Studio access granted
+2025-10-12 11:33:02 | DEBUG | app.api.v1.stats | Calculating studio dashboard
+2025-10-12 11:33:02 | DEBUG | app.api.v1.stats | Studio dashboard computed
+2025-10-12 11:33:02 | INFO | uvicorn.access | 127.0.0.1:50917 - "GET /api/studio/studio-001/dashboard HTTP/1.1" 200
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:02 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:33:02 | DEBUG | app.api.v1.project_categories | Listing categories
+2025-10-12 11:33:02 | INFO | uvicorn.access | 127.0.0.1:50884 - "GET /api/projects/proj-001/categories/ HTTP/1.1" 200
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:02 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:33:02 | DEBUG | app.api.v1.projects | Fetching project detail
+2025-10-12 11:33:02 | INFO | uvicorn.access | 127.0.0.1:50914 - "GET /api/projects/proj-001 HTTP/1.1" 200
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:02 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:04 | INFO | uvicorn.access | 127.0.0.1:50921 - "GET /api/projects HTTP/1.1" 307
+2025-10-12 11:33:04 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:04 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:33:04 | INFO | uvicorn.access | 127.0.0.1:50924 - "GET /api/projects HTTP/1.1" 307
+2025-10-12 11:33:04 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:33:04 | DEBUG | app.api.v1.projects | Listing projects
+2025-10-12 11:33:04 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-10-12 11:33:04 | INFO | uvicorn.access | 127.0.0.1:50884 - "GET /api/projects/ HTTP/1.1" 200
+2025-10-12 11:33:04 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:04 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:04 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:04 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:33:04 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:33:04 | DEBUG | app.api.v1.projects | Listing projects
+2025-10-12 11:33:04 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-10-12 11:33:04 | INFO | uvicorn.access | 127.0.0.1:50884 - "GET /api/projects/ HTTP/1.1" 200
+2025-10-12 11:33:04 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:04 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:06 | INFO | uvicorn.access | 127.0.0.1:50929 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/categories HTTP/1.1" 307
+2025-10-12 11:33:06 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:06 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:33:06 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:06 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:33:06 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:33:06 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:33:06 | DEBUG | app.api.v1.projects | Fetching project detail
+2025-10-12 11:33:06 | DEBUG | app.api.v1.project_categories | Listing categories
+2025-10-12 11:33:06 | INFO | uvicorn.access | 127.0.0.1:50930 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56 HTTP/1.1" 200
+2025-10-12 11:33:06 | INFO | uvicorn.access | 127.0.0.1:50884 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/categories/ HTTP/1.1" 200
+2025-10-12 11:33:06 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:06 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:06 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:06 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:06 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:06 | DEBUG | app.api.v1.project_images | Listing gallery images
+2025-10-12 11:33:06 | DEBUG | app.api.v1.project_images | Gallery images retrieved
+2025-10-12 11:33:06 | INFO | uvicorn.access | 127.0.0.1:50933 - "GET /api/gallery/8f7be71f-64f5-4234-84c8-faff848b2d56/all?limit=200&offset=0 HTTP/1.1" 200
+2025-10-12 11:33:06 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:06 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:07 | INFO | uvicorn.access | 127.0.0.1:50936 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/3ce89673-9380-4a60-90c5-9cc8a4569f3e/comments HTTP/1.1" 307
+2025-10-12 11:33:07 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:07 | DEBUG | app.api.deps | Resolving project image
+2025-10-12 11:33:07 | DEBUG | app.api.deps | Project image resolved
+2025-10-12 11:33:07 | DEBUG | app.api.v1.project_comments | Listing comments
+2025-10-12 11:33:07 | DEBUG | app.api.v1.project_comments | Comments retrieved
+2025-10-12 11:33:07 | INFO | uvicorn.access | 127.0.0.1:50884 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/3ce89673-9380-4a60-90c5-9cc8a4569f3e/comments/ HTTP/1.1" 200
+2025-10-12 11:33:07 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:07 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:10 | INFO | uvicorn.access | 127.0.0.1:50944 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/72994a4c-7ffd-4393-9a56-0183488fcc2e/comments HTTP/1.1" 307
+2025-10-12 11:33:10 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:10 | DEBUG | app.api.deps | Resolving project image
+2025-10-12 11:33:10 | DEBUG | app.api.deps | Project image resolved
+2025-10-12 11:33:10 | DEBUG | app.api.v1.project_comments | Listing comments
+2025-10-12 11:33:10 | DEBUG | app.api.v1.project_comments | Comments retrieved
+2025-10-12 11:33:10 | INFO | uvicorn.access | 127.0.0.1:50884 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/72994a4c-7ffd-4393-9a56-0183488fcc2e/comments/ HTTP/1.1" 200
+2025-10-12 11:33:10 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:10 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:32 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:33:32 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:33:32 | DEBUG | app.api.v1.projects | Fetching project detail
+2025-10-12 11:33:32 | INFO | uvicorn.access | 127.0.0.1:50999 - "GET /api/projects/proj-001/categories HTTP/1.1" 307
+2025-10-12 11:33:32 | INFO | uvicorn.access | 127.0.0.1:50998 - "GET /api/projects/proj-001 HTTP/1.1" 200
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:32 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:32 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:33:32 | DEBUG | app.api.deps | Resolving studio dependency
+2025-10-12 11:33:32 | DEBUG | app.api.deps | Studio dependency resolved
+2025-10-12 11:33:32 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:33:32 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:33:32 | DEBUG | app.api.deps | Studio access granted
+2025-10-12 11:33:32 | DEBUG | app.api.v1.stats | Calculating studio dashboard
+2025-10-12 11:33:32 | DEBUG | app.api.v1.stats | Studio dashboard computed
+2025-10-12 11:33:32 | INFO | uvicorn.access | 127.0.0.1:51001 - "GET /api/studio/studio-001/dashboard HTTP/1.1" 200
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:32 | DEBUG | app.api.deps | Resolving studio dependency
+2025-10-12 11:33:32 | DEBUG | app.api.deps | Studio dependency resolved
+2025-10-12 11:33:32 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:33:32 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:33:32 | DEBUG | app.api.deps | Studio access granted
+2025-10-12 11:33:32 | DEBUG | app.api.v1.stats | Calculating studio dashboard
+2025-10-12 11:33:32 | DEBUG | app.api.v1.stats | Studio dashboard computed
+2025-10-12 11:33:32 | INFO | uvicorn.access | 127.0.0.1:51002 - "GET /api/studio/studio-001/dashboard HTTP/1.1" 200
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:32 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:33:32 | DEBUG | app.api.v1.projects | Fetching project detail
+2025-10-12 11:33:32 | INFO | uvicorn.access | 127.0.0.1:51000 - "GET /api/projects/proj-001 HTTP/1.1" 200
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:32 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:33:32 | DEBUG | app.api.v1.project_categories | Listing categories
+2025-10-12 11:33:32 | INFO | uvicorn.access | 127.0.0.1:50915 - "GET /api/projects/proj-001/categories/ HTTP/1.1" 200
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:32 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:34 | INFO | uvicorn.access | 127.0.0.1:51014 - "GET /api/projects HTTP/1.1" 307
+2025-10-12 11:33:34 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:34 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:33:34 | INFO | uvicorn.access | 127.0.0.1:51017 - "GET /api/projects HTTP/1.1" 307
+2025-10-12 11:33:34 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:33:34 | DEBUG | app.api.v1.projects | Listing projects
+2025-10-12 11:33:34 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-10-12 11:33:34 | INFO | uvicorn.access | 127.0.0.1:50915 - "GET /api/projects/ HTTP/1.1" 200
+2025-10-12 11:33:34 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:34 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:34 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:34 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:33:34 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:33:34 | DEBUG | app.api.v1.projects | Listing projects
+2025-10-12 11:33:34 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-10-12 11:33:34 | INFO | uvicorn.access | 127.0.0.1:50915 - "GET /api/projects/ HTTP/1.1" 200
+2025-10-12 11:33:34 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:34 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:35 | INFO | uvicorn.access | 127.0.0.1:51031 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/categories HTTP/1.1" 307
+2025-10-12 11:33:35 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:35 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:33:35 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:33:35 | DEBUG | app.api.v1.projects | Fetching project detail
+2025-10-12 11:33:35 | INFO | uvicorn.access | 127.0.0.1:51030 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56 HTTP/1.1" 200
+2025-10-12 11:33:35 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:35 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:35 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:35 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:33:36 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:33:36 | DEBUG | app.api.v1.project_categories | Listing categories
+2025-10-12 11:33:36 | INFO | uvicorn.access | 127.0.0.1:50915 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/categories/ HTTP/1.1" 200
+2025-10-12 11:33:36 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:36 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:36 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:36 | DEBUG | app.api.v1.project_images | Listing gallery images
+2025-10-12 11:33:36 | DEBUG | app.api.v1.project_images | Gallery images retrieved
+2025-10-12 11:33:36 | INFO | uvicorn.access | 127.0.0.1:51034 - "GET /api/gallery/8f7be71f-64f5-4234-84c8-faff848b2d56/all?limit=200&offset=0 HTTP/1.1" 200
+2025-10-12 11:33:36 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:36 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:36 | INFO | uvicorn.access | 127.0.0.1:51042 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/3ce89673-9380-4a60-90c5-9cc8a4569f3e/comments HTTP/1.1" 307
+2025-10-12 11:33:37 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:37 | DEBUG | app.api.deps | Resolving project image
+2025-10-12 11:33:37 | DEBUG | app.api.deps | Project image resolved
+2025-10-12 11:33:37 | DEBUG | app.api.v1.project_comments | Listing comments
+2025-10-12 11:33:37 | DEBUG | app.api.v1.project_comments | Comments retrieved
+2025-10-12 11:33:37 | INFO | uvicorn.access | 127.0.0.1:50915 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/3ce89673-9380-4a60-90c5-9cc8a4569f3e/comments/ HTTP/1.1" 200
+2025-10-12 11:33:37 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:37 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:38 | INFO | uvicorn.access | 127.0.0.1:51049 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/72994a4c-7ffd-4393-9a56-0183488fcc2e/comments HTTP/1.1" 307
+2025-10-12 11:33:38 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:38 | DEBUG | app.api.deps | Resolving project image
+2025-10-12 11:33:38 | DEBUG | app.api.deps | Project image resolved
+2025-10-12 11:33:38 | DEBUG | app.api.v1.project_comments | Listing comments
+2025-10-12 11:33:38 | DEBUG | app.api.v1.project_comments | Comments retrieved
+2025-10-12 11:33:38 | INFO | uvicorn.access | 127.0.0.1:50915 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/72994a4c-7ffd-4393-9a56-0183488fcc2e/comments/ HTTP/1.1" 200
+2025-10-12 11:33:38 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:38 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:33:57 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:33:57 | DEBUG | app.api.v1.project_images | Listing gallery images
+2025-10-12 11:33:57 | DEBUG | app.api.v1.project_images | Gallery images retrieved
+2025-10-12 11:33:57 | INFO | uvicorn.access | 127.0.0.1:51145 - "GET /api/gallery/8f7be71f-64f5-4234-84c8-faff848b2d56/5c7de190-d74b-4aee-b66b-d5db75d03525?limit=200&offset=0 HTTP/1.1" 200
+2025-10-12 11:33:57 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:33:57 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:35:47 | INFO | uvicorn.access | 127.0.0.1:51251 - "GET /api/projects/proj-001/categories HTTP/1.1" 307
+2025-10-12 11:35:47 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:35:47 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:35:47 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:35:47 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:35:47 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:35:47 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:35:47 | DEBUG | app.api.v1.projects | Fetching project detail
+2025-10-12 11:35:47 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:35:47 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:35:47 | DEBUG | app.api.v1.projects | Fetching project detail
+2025-10-12 11:35:47 | DEBUG | app.api.deps | Resolving studio dependency
+2025-10-12 11:35:47 | DEBUG | app.api.deps | Resolving studio dependency
+2025-10-12 11:35:47 | DEBUG | app.api.deps | Studio dependency resolved
+2025-10-12 11:35:47 | INFO | uvicorn.access | 127.0.0.1:51249 - "GET /api/projects/proj-001 HTTP/1.1" 200
+2025-10-12 11:35:47 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:35:47 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:35:47 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:35:47 | INFO | uvicorn.access | 127.0.0.1:51250 - "GET /api/projects/proj-001 HTTP/1.1" 200
+2025-10-12 11:35:47 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:35:47 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:35:47 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:35:47 | DEBUG | app.api.deps | Studio access granted
+2025-10-12 11:35:47 | DEBUG | app.api.deps | Studio dependency resolved
+2025-10-12 11:35:47 | DEBUG | app.api.v1.stats | Calculating studio dashboard
+2025-10-12 11:35:47 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:35:47 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:35:47 | DEBUG | app.api.deps | Studio access granted
+2025-10-12 11:35:47 | DEBUG | app.api.v1.stats | Calculating studio dashboard
+2025-10-12 11:35:47 | DEBUG | app.api.v1.stats | Studio dashboard computed
+2025-10-12 11:35:47 | INFO | uvicorn.access | 127.0.0.1:51252 - "GET /api/studio/studio-001/dashboard HTTP/1.1" 200
+2025-10-12 11:35:47 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:35:47 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:35:47 | DEBUG | app.api.v1.stats | Studio dashboard computed
+2025-10-12 11:35:47 | INFO | uvicorn.access | 127.0.0.1:51253 - "GET /api/studio/studio-001/dashboard HTTP/1.1" 200
+2025-10-12 11:35:47 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:35:47 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:35:48 | INFO | uvicorn.access | 127.0.0.1:51254 - "OPTIONS /api/projects/proj-001/categories/ HTTP/1.1" 200
+2025-10-12 11:35:48 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:35:48 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:35:48 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:35:48 | DEBUG | app.api.v1.project_categories | Listing categories
+2025-10-12 11:35:48 | INFO | uvicorn.access | 127.0.0.1:51254 - "GET /api/projects/proj-001/categories/ HTTP/1.1" 200
+2025-10-12 11:35:48 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:35:48 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:35:49 | INFO | uvicorn.access | 127.0.0.1:51257 - "GET /api/projects HTTP/1.1" 307
+2025-10-12 11:35:49 | INFO | uvicorn.access | 127.0.0.1:51259 - "GET /api/projects HTTP/1.1" 307
+2025-10-12 11:35:49 | INFO | uvicorn.access | 127.0.0.1:51254 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-10-12 11:35:49 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:35:49 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:35:49 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:35:49 | DEBUG | app.api.v1.projects | Listing projects
+2025-10-12 11:35:49 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-10-12 11:35:49 | INFO | uvicorn.access | 127.0.0.1:51254 - "GET /api/projects/ HTTP/1.1" 200
+2025-10-12 11:35:49 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:35:49 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:35:49 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:35:49 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-10-12 11:35:49 | DEBUG | app.core.dependencies | Current user resolved
+2025-10-12 11:35:49 | DEBUG | app.api.v1.projects | Listing projects
+2025-10-12 11:35:49 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-10-12 11:35:49 | INFO | uvicorn.access | 127.0.0.1:51254 - "GET /api/projects/ HTTP/1.1" 200
+2025-10-12 11:35:49 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:35:49 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:35:51 | INFO | uvicorn.access | 127.0.0.1:51262 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/categories HTTP/1.1" 307
+2025-10-12 11:35:51 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:35:51 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:35:51 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:35:51 | DEBUG | app.api.v1.projects | Fetching project detail
+2025-10-12 11:35:51 | INFO | uvicorn.access | 127.0.0.1:51263 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56 HTTP/1.1" 200
+2025-10-12 11:35:51 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:35:51 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:35:51 | INFO | uvicorn.access | 127.0.0.1:51254 - "OPTIONS /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/categories/ HTTP/1.1" 200
+2025-10-12 11:35:51 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:35:51 | DEBUG | app.api.deps | Resolving project dependency
+2025-10-12 11:35:51 | DEBUG | app.api.deps | Project dependency resolved
+2025-10-12 11:35:51 | DEBUG | app.api.v1.project_categories | Listing categories
+2025-10-12 11:35:51 | INFO | uvicorn.access | 127.0.0.1:51254 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/categories/ HTTP/1.1" 200
+2025-10-12 11:35:51 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:35:51 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:35:51 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:35:51 | DEBUG | app.api.v1.project_images | Listing gallery images
+2025-10-12 11:35:51 | DEBUG | app.api.v1.project_images | Gallery images retrieved
+2025-10-12 11:35:51 | INFO | uvicorn.access | 127.0.0.1:51265 - "GET /api/gallery/8f7be71f-64f5-4234-84c8-faff848b2d56/all?limit=200&offset=0 HTTP/1.1" 200
+2025-10-12 11:35:51 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:35:51 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:35:51 | INFO | uvicorn.access | 127.0.0.1:51268 - "GET /uploads/8f7be71f-64f5-4234-84c8-faff848b2d56/5c7de190-d74b-4aee-b66b-d5db75d03525/IMG_7057%20%281%29.jpg HTTP/1.1" 200
+2025-10-12 11:35:51 | INFO | uvicorn.access | 127.0.0.1:51270 - "GET /uploads/8f7be71f-64f5-4234-84c8-faff848b2d56/5c7de190-d74b-4aee-b66b-d5db75d03525/IMG_0070.jpg HTTP/1.1" 200
+2025-10-12 11:35:52 | INFO | uvicorn.access | 127.0.0.1:51272 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/3ce89673-9380-4a60-90c5-9cc8a4569f3e/comments HTTP/1.1" 307
+2025-10-12 11:35:52 | INFO | uvicorn.access | 127.0.0.1:51254 - "OPTIONS /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/3ce89673-9380-4a60-90c5-9cc8a4569f3e/comments/ HTTP/1.1" 200
+2025-10-12 11:35:52 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:35:52 | DEBUG | app.api.deps | Resolving project image
+2025-10-12 11:35:52 | DEBUG | app.api.deps | Project image resolved
+2025-10-12 11:35:52 | DEBUG | app.api.v1.project_comments | Listing comments
+2025-10-12 11:35:52 | DEBUG | app.api.v1.project_comments | Comments retrieved
+2025-10-12 11:35:52 | INFO | uvicorn.access | 127.0.0.1:51254 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/3ce89673-9380-4a60-90c5-9cc8a4569f3e/comments/ HTTP/1.1" 200
+2025-10-12 11:35:52 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:35:52 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:35:53 | INFO | uvicorn.access | 127.0.0.1:51274 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/72994a4c-7ffd-4393-9a56-0183488fcc2e/comments HTTP/1.1" 307
+2025-10-12 11:35:53 | INFO | uvicorn.access | 127.0.0.1:51254 - "OPTIONS /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/72994a4c-7ffd-4393-9a56-0183488fcc2e/comments/ HTTP/1.1" 200
+2025-10-12 11:35:53 | DEBUG | app.db.session | Database session opened
+2025-10-12 11:35:53 | DEBUG | app.api.deps | Resolving project image
+2025-10-12 11:35:53 | DEBUG | app.api.deps | Project image resolved
+2025-10-12 11:35:53 | DEBUG | app.api.v1.project_comments | Listing comments
+2025-10-12 11:35:53 | DEBUG | app.api.v1.project_comments | Comments retrieved
+2025-10-12 11:35:53 | INFO | uvicorn.access | 127.0.0.1:51254 - "GET /api/projects/8f7be71f-64f5-4234-84c8-faff848b2d56/images/72994a4c-7ffd-4393-9a56-0183488fcc2e/comments/ HTTP/1.1" 200
+2025-10-12 11:35:53 | DEBUG | app.db.session | Database session committed
+2025-10-12 11:35:53 | DEBUG | app.db.session | Database session closed
+2025-10-12 11:36:26 | INFO | uvicorn.error | Shutting down
+2025-10-12 11:36:26 | INFO | uvicorn.error | Waiting for application shutdown.
+2025-10-12 11:36:26 | INFO | uvicorn.error | Application shutdown complete.
+2025-10-12 11:36:26 | INFO | uvicorn.error | Finished server process [22455]

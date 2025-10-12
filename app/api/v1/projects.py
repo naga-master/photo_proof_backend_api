@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import uuid
 from datetime import datetime
 from typing import Iterable, List, Optional
@@ -32,6 +33,7 @@ from app.schemas import (
 
 
 router = APIRouter(prefix="/api/projects", tags=["Projects"])
+logger = logging.getLogger(__name__)
 
 
 def _default_category_templates() -> Iterable[CreateCategoryRequest]:
@@ -60,6 +62,10 @@ def _project_detail(project: models.Project, include_images: bool = True, db: Op
             project.total_images = actual_count
             db.add(project)
             db.commit()
+            logger.debug(
+                "Synchronized project total images",
+                extra={"project_id": project.id, "total_images": actual_count},
+            )
     
     summary = ProjectSummary.model_validate(project)
     categories = [
@@ -98,6 +104,14 @@ def list_projects(
     current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> ProjectListResponse:
+    logger.debug(
+        "Listing projects",
+        extra={
+            "studio_id": studio_id,
+            "status": status.value if status else None,
+            "user_id": current_user.id,
+        },
+    )
     query = db.query(models.Project).order_by(models.Project.created_at.desc())
 
     if studio_id:
@@ -111,6 +125,7 @@ def list_projects(
     projects = query.all()
     
     # Recalculate actual image counts for each project
+    recalculated = 0
     for project in projects:
         actual_count = db.query(func.count(models.Image.id)).filter(
             models.Image.project_id == project.id
@@ -119,20 +134,27 @@ def list_projects(
         if project.total_images != actual_count:
             project.total_images = actual_count
             db.add(project)
+            recalculated += 1
     
     db.commit()
+
+    if recalculated:
+        logger.debug("Recalculated project image totals", extra={"projects_updated": recalculated})
     
     summaries = [ProjectSummary.model_validate(project) for project in projects]
+    logger.debug("Projects retrieved", extra={"count": len(summaries)})
     return ProjectListResponse(projects=summaries, total=len(summaries))
 
 
 @router.get("/{project_id}", response_model=ProjectDetail)
 def get_project(project: models.Project = Depends(deps.get_project), db: Session = Depends(get_db)) -> ProjectDetail:
+    logger.debug("Fetching project detail", extra={"project_id": project.id})
     return _project_detail(project, include_images=True, db=db)
 
 
 @router.get("/access/{access_url}", response_model=ProjectDetail)
 def get_project_by_access_url(access_url: str, db: Session = Depends(get_db)) -> ProjectDetail:
+    logger.debug("Fetching project by access url", extra={"access_url": access_url})
     project = (
         db.query(models.Project)
         .options(
@@ -146,7 +168,9 @@ def get_project_by_access_url(access_url: str, db: Session = Depends(get_db)) ->
         .first()
     )
     if not project:
+        logger.warning("Project not found by access url", extra={"access_url": access_url})
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    logger.debug("Project resolved by access url", extra={"project_id": project.id})
     return _project_detail(project, include_images=True, db=db)
 
 
@@ -156,10 +180,16 @@ def create_project(
     current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> ProjectDetail:
+    logger.debug(
+        "Creating project",
+        extra={"user_id": current_user.id, "studio_id": current_user.studio_id, "name": request.name},
+    )
     if current_user.role == UserRole.CLIENT:
+        logger.warning("Client attempted to create project", extra={"user_id": current_user.id})
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only studio users can create projects")
 
     if not current_user.studio_id:
+        logger.warning("User missing studio assignment during project creation", extra={"user_id": current_user.id})
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Studio assignment required for user")
 
     client: Optional[models.Client] = None
@@ -169,6 +199,10 @@ def create_project(
     if request.client_id:
         client = client_query.filter(models.Client.id == request.client_id).first()
         if not client:
+            logger.warning(
+                "Invalid client selection",
+                extra={"client_id": request.client_id, "studio_id": current_user.studio_id},
+            )
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Selected client is not available")
     else:
         normalized_email = request.client_email.lower()
@@ -178,6 +212,10 @@ def create_project(
 
         duplicate = client_query.filter(or_(*duplicate_filters)).first()
         if duplicate:
+            logger.warning(
+                "Duplicate client detected",
+                extra={"email": normalized_email, "studio_id": current_user.studio_id},
+            )
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="This email or phone is already associated with an existing client. Choose that client or update the details.",
@@ -197,6 +235,7 @@ def create_project(
         )
         db.add(client)
         db.flush()
+        logger.info("New client created during project creation", extra={"client_id": client.id})
 
     project_id = str(uuid.uuid4())
     slug = request.name.lower().replace(" ", "-")
@@ -275,6 +314,7 @@ def create_project(
         .first()
     )
 
+    logger.info("Project created", extra={"project_id": project.id})
     return _project_detail(refreshed, include_images=True)
 
 
@@ -284,12 +324,19 @@ def delete_project(
     current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> None:
+    logger.debug("Deleting project", extra={"project_id": project_id, "user_id": current_user.id})
     project = db.query(models.Project).filter(models.Project.id == project_id).first()
     if not project:
+        logger.warning("Project not found for deletion", extra={"project_id": project_id})
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
 
     if current_user.role == UserRole.CLIENT or current_user.studio_id != project.studio_id:
+        logger.warning(
+            "Unauthorized project deletion attempt",
+            extra={"project_id": project_id, "user_id": current_user.id},
+        )
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to delete this project")
 
     db.delete(project)
     db.commit()
+    logger.info("Project deleted", extra={"project_id": project_id})

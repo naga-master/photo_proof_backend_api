@@ -12,12 +12,10 @@ from pydantic import BaseModel, Field, field_validator
 class Settings(BaseModel):
     """Application runtime configuration."""
 
-    app_name: str = Field(default="Photo Proof API")
-    description: str = Field(
-        default="Professional photo proofing gallery system API"
-    )
-    version: str = Field(default="1.0.0")
-    environment: str = Field(default=os.getenv("APP_ENV", "development"))
+    app_name: str = "Photo Proof API"
+    description: str = "Professional photo proofing gallery system API"
+    version: str = Field(default="1.0.0", description="application release version")
+    environment: str = Field(default=os.getenv("APP_ENV", "development"), description="environment identifier")
     api_prefix: str = Field(default="/api")
     cors_origins: List[str] = Field(
         default_factory=lambda: [
@@ -31,6 +29,14 @@ class Settings(BaseModel):
     data_directory: str = Field(default=os.getenv("DATA_DIR", "data"))
     database_url: str = Field(default=os.getenv("DATABASE_URL", "sqlite:///./photo_proof.db"))
     uploads_directory: str = Field(default=os.getenv("UPLOADS_DIR", "uploads"))
+    log_directory: str = Field(default_factory=lambda: os.getenv("LOG_DIR", "logs"))
+    log_file_name: str = Field(default_factory=lambda: os.getenv("LOG_FILE", "photo_proof_api.log"))
+    log_level: str = Field(
+        default_factory=lambda: os.getenv("LOG_LEVEL")
+        or ("DEBUG" if os.getenv("APP_ENV", "development") == "development" else "INFO")
+    )
+    log_max_bytes: int = Field(default_factory=lambda: int(os.getenv("LOG_MAX_BYTES", 10 * 1024 * 1024)))
+    log_backup_count: int = Field(default_factory=lambda: int(os.getenv("LOG_BACKUP_COUNT", 10)))
 
     model_config = {
         "frozen": True,
@@ -43,6 +49,11 @@ class Settings(BaseModel):
         if isinstance(value, str):
             return [origin.strip() for origin in value.split(",") if origin.strip()]
         return value
+
+    @field_validator("log_level", mode="after")
+    @classmethod
+    def normalize_log_level(cls, value: str) -> str:
+        return value.upper()
 
 
 @lru_cache
