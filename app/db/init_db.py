@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Iterable
 from uuid import NAMESPACE_URL, uuid5
 
+from sqlalchemy import inspect
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
@@ -367,9 +368,14 @@ def seed_database(session: Session) -> None:
                     image_id=image_id,
                     version_name=version.get("version") or "original",
                     s3_key=url,
+                    original_filename=image_obj.original_filename,
+                    mime_type=image_obj.mime_type,
                     file_size_bytes=file_size or None,
                     width=metadata.get("width"),
                     height=metadata.get("height"),
+                    checksum=None,
+                    notes=None,
+                    is_current=True,
                     created_by=creator_id,
                     created_at=_parse_datetime(version.get("uploaded_at")) or datetime.utcnow(),
                 )
@@ -488,5 +494,76 @@ def init_db() -> None:
     """Create tables and seed data if required."""
 
     Base.metadata.create_all(bind=engine)
+    inspector = inspect(engine)
+    columns = {column["name"] for column in inspector.get_columns("image_versions")}
+    alterations: list[str] = []
+    if "original_filename" not in columns:
+        alterations.append("ALTER TABLE image_versions ADD COLUMN original_filename VARCHAR(255)")
+    if "mime_type" not in columns:
+        alterations.append("ALTER TABLE image_versions ADD COLUMN mime_type VARCHAR(100)")
+    if "checksum" not in columns:
+        alterations.append("ALTER TABLE image_versions ADD COLUMN checksum VARCHAR(128)")
+    if "notes" not in columns:
+        alterations.append("ALTER TABLE image_versions ADD COLUMN notes TEXT")
+    if "is_current" not in columns:
+        alterations.append("ALTER TABLE image_versions ADD COLUMN is_current BOOLEAN DEFAULT 0")
+
+    if alterations:
+        with engine.begin() as connection:
+            for statement in alterations:
+                connection.exec_driver_sql(statement)
+
+            connection.exec_driver_sql(
+                """
+                UPDATE image_versions
+                SET original_filename = COALESCE(
+                    (
+                        SELECT images.original_filename
+                        FROM images
+                        WHERE images.id = image_versions.image_id
+                    ),
+                    original_filename,
+                    version_name || '.jpg'
+                )
+                """
+            )
+
+            connection.exec_driver_sql(
+                """
+                UPDATE image_versions
+                SET mime_type = (
+                    SELECT images.mime_type
+                    FROM images
+                    WHERE images.id = image_versions.image_id
+                )
+                WHERE mime_type IS NULL
+                """
+            )
+
+            connection.exec_driver_sql(
+                """
+                UPDATE image_versions
+                SET is_current = 0
+                WHERE is_current IS NULL
+                """
+            )
+
+            connection.exec_driver_sql(
+                """
+                UPDATE image_versions
+                SET is_current = 1
+                WHERE id IN (
+                    SELECT iv.id
+                    FROM image_versions iv
+                    JOIN (
+                        SELECT image_id, MAX(created_at) AS max_created
+                        FROM image_versions
+                        GROUP BY image_id
+                    ) latest
+                    ON latest.image_id = iv.image_id AND latest.max_created = iv.created_at
+                )
+                """
+            )
+
     with session_scope() as session:
         seed_database(session)

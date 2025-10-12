@@ -55,6 +55,8 @@ class UploadFileDescriptor(BaseModel):
     file_size: int = Field(alias="fileSize")
     content_type: Optional[str] = Field(default=None, alias="contentType")
     category_id: Optional[str] = Field(default=None, alias="categoryId")
+    replace_image_id: Optional[str] = Field(default=None, alias="replaceImageId")
+    version_name: Optional[str] = Field(default=None, alias="versionName")
 
     model_config = {
         "populate_by_name": True,
@@ -80,6 +82,10 @@ class CompleteUploadRequest(BaseModel):
     file_size: int = Field(alias="fileSize")
     content_type: Optional[str] = Field(default=None, alias="contentType")
     upload_url: Optional[str] = Field(default=None, alias="uploadUrl")
+    replace_image_id: Optional[str] = Field(default=None, alias="replaceImageId")
+    version_name: Optional[str] = Field(default=None, alias="versionName")
+    checksum: Optional[str] = None
+    force_replace: bool = Field(default=False, alias="forceReplace")
 
     model_config = {
         "populate_by_name": True,

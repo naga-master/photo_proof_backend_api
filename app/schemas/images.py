@@ -13,9 +13,14 @@ class ImageVersionRead(BaseModel):
     image_id: str
     version_name: str
     s3_key: str
+    original_filename: str
+    mime_type: Optional[str] = None
     file_size_bytes: Optional[int] = None
     width: Optional[int] = None
     height: Optional[int] = None
+    checksum: Optional[str] = None
+    notes: Optional[str] = None
+    is_current: bool
     created_by: Optional[str] = None
     created_at: datetime
 

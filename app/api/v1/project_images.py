@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import func
+from sqlalchemy import func, text
 from sqlalchemy.orm import Session, selectinload
 
 from app.api import deps
@@ -179,6 +179,74 @@ def update_project_image(
     db.refresh(image)
 
     logger.info("Project image updated", extra={"image_id": image.id, "project_id": project.id})
+    return _serialize_image(image)
+
+
+@router.get("/{image_id}/versions", response_model=List[ImageVersionRead])
+def list_image_versions(image: models.Image = Depends(deps.get_project_image)) -> List[ImageVersionRead]:
+    logger.debug("Listing image versions", extra={"image_id": image.id, "version_count": len(image.versions)})
+    return [ImageVersionRead.model_validate(version) for version in image.versions]
+
+
+@router.post("/{image_id}/versions/{version_id}/restore", response_model=ImageRead)
+def restore_image_version(
+    version_id: str,
+    image: models.Image = Depends(deps.get_project_image),
+    current_user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> ImageRead:
+    logger.debug(
+        "Restoring image version",
+        extra={"image_id": image.id, "version_id": version_id, "user_id": current_user.id},
+    )
+
+    project = image.project
+    if current_user.role == UserRole.CLIENT or current_user.studio_id != project.studio_id:
+        logger.warning(
+            "Unauthorized version restore attempt",
+            extra={"image_id": image.id, "user_id": current_user.id},
+        )
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to restore versions")
+
+    version = next((item for item in image.versions if item.id == version_id), None)
+    if not version:
+        logger.warning(
+            "Version not found for restore",
+            extra={"image_id": image.id, "version_id": version_id},
+        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Version not found")
+
+    previous_size = image.file_size_bytes or 0
+    new_size = version.file_size_bytes or previous_size
+
+    for existing in image.versions:
+        existing.is_current = existing.id == version_id
+
+    image.s3_key_original = version.s3_key
+    image.s3_key_thumbnail = version.s3_key
+    image.file_size_bytes = new_size
+    image.mime_type = version.mime_type or image.mime_type
+    image.width = version.width
+    image.height = version.height
+    image.updated_at = datetime.utcnow()
+    image.uploaded_at = datetime.utcnow()
+
+    size_delta = new_size - previous_size
+    if size_delta != 0:
+        db.execute(
+            text(
+                "UPDATE projects SET storage_used_bytes = COALESCE(storage_used_bytes, 0) + :delta, updated_at = :updated_at WHERE id = :project_id"
+            ),
+            {"delta": size_delta, "updated_at": datetime.utcnow(), "project_id": project.id},
+        )
+
+    db.commit()
+    db.refresh(image)
+
+    logger.info(
+        "Restored image version",
+        extra={"image_id": image.id, "version_id": version_id, "project_id": project.id},
+    )
     return _serialize_image(image)
 
 

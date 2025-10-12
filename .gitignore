@@ -2,6 +2,8 @@ __pycache__/
 __pycache__/*
 __pycache__
 uploads/*
+logs/*
+logs/
 venv
 venv/*
 .venv

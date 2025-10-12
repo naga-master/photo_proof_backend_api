@@ -263,7 +263,12 @@ class Image(Base):
     project: Mapped[Project] = relationship("Project", back_populates="images")
     category: Mapped[Category] = relationship("Category", back_populates="images", foreign_keys=[category_id])
     uploader: Mapped[User] = relationship("User", back_populates="uploaded_images")
-    versions: Mapped[list["ImageVersion"]] = relationship("ImageVersion", back_populates="image", cascade="all, delete-orphan")
+    versions: Mapped[list["ImageVersion"]] = relationship(
+        "ImageVersion",
+        back_populates="image",
+        cascade="all, delete-orphan",
+        order_by="desc(ImageVersion.created_at)",
+    )
     selections: Mapped[list["ImageSelection"]] = relationship("ImageSelection", back_populates="image", cascade="all, delete-orphan")
     comments: Mapped[list["Comment"]] = relationship("Comment", back_populates="image", cascade="all, delete-orphan")
     tags: Mapped[list["Tag"]] = relationship("Tag", secondary="image_tags", back_populates="images")
@@ -276,9 +281,14 @@ class ImageVersion(Base):
     image_id: Mapped[str] = mapped_column(ForeignKey("images.id", ondelete="CASCADE"), nullable=False, index=True)
     version_name: Mapped[str] = mapped_column(String(100), nullable=False)
     s3_key: Mapped[str] = mapped_column(Text, nullable=False)
+    original_filename: Mapped[str] = mapped_column(String(255), nullable=False)
+    mime_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
     file_size_bytes: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
     width: Mapped[int | None] = mapped_column(Integer, nullable=True)
     height: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    checksum: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    is_current: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     created_by: Mapped[str | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
