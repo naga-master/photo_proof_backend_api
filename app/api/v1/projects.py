@@ -182,7 +182,7 @@ def create_project(
 ) -> ProjectDetail:
     logger.debug(
         "Creating project",
-        extra={"user_id": current_user.id, "studio_id": current_user.studio_id, "name": request.name},
+        extra={"user_id": current_user.id, "studio_id": current_user.studio_id, "project_name": request.name},
     )
     if current_user.role == UserRole.CLIENT:
         logger.warning("Client attempted to create project", extra={"user_id": current_user.id})

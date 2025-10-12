@@ -30,22 +30,22 @@ def _client_query(db: Session, studio_id: str):
 @router.get("/", response_model=List[ClientRead])
 def list_clients(
     search: Optional[str] = Query(None, description="Filter by name, email, or phone"),
-    current_user: UserRead = Depends(get_current_user),
+    studio_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> List[ClientRead]:
-    if not current_user.studio_id:
+    if not studio_user.studio_id:
         logger.debug(
             "List clients skipped due to missing studio",
-            extra={"user_id": current_user.id},
+            extra={"user_id": studio_user.id},
         )
         return []
 
-    query = _client_query(db, current_user.studio_id).order_by(models.Client.created_at.desc())
+    query = _client_query(db, studio_user.studio_id).order_by(models.Client.created_at.desc())
 
     if search:
         logger.debug(
             "Filtering clients",
-            extra={"studio_id": current_user.studio_id, "search": search},
+            extra={"studio_id": studio_user.studio_id, "search": search},
         )
         like_pattern = f"%{search.lower()}%"
         phone_filter = models.Client.phone.ilike(like_pattern) if like_pattern else None
@@ -60,7 +60,7 @@ def list_clients(
     clients = query.all()
     logger.debug(
         "Clients retrieved",
-        extra={"count": len(clients), "studio_id": current_user.studio_id},
+        extra={"count": len(clients), "studio_id": studio_user.studio_id},
     )
     return [ClientRead.model_validate(client) for client in clients]
 
