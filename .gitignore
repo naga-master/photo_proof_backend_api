@@ -1,7 +1,12 @@
 __pycache__/
 __pycache__/*
 __pycache__
+uploads/*
 venv
 venv/*
+.venv
+.venv/*
+photo_proof.db
+uploads/
 tmpchunk.bin
 uvicorn.out

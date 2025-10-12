@@ -10,18 +10,9 @@ from datetime import datetime, timedelta
 from typing import List
 import random
 
-from app.schemas import (
-    Comment,
-    ImageMetadata,
-    ImageVersion,
-    Project,
-    ProjectCategory,
-    ProjectImage,
-    ProjectSettings,
-    ProjectStatus,
-    Studio,
-    User,
-    UserRole,
+from models import (
+    User, Studio, Project, ProjectImage, ProjectCategory, Comment,
+    ProjectStatus, UserRole, ImageVersion, ImageMetadata, ProjectSettings
 )
 from data_manager import data_manager
 

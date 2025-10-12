@@ -4,6 +4,7 @@ from fastapi import APIRouter
 
 from app.api.v1 import (
     batch_actions,
+    clients,
     health,
     project_categories,
     project_comments,
@@ -21,10 +22,12 @@ api_router = APIRouter()
 
 api_router.include_router(health.router)
 api_router.include_router(studios.router)
+api_router.include_router(clients.router)
 api_router.include_router(users.router)
 api_router.include_router(projects.router)
 api_router.include_router(project_categories.router)
 api_router.include_router(project_images.router)
+api_router.include_router(project_images.gallery_router)
 api_router.include_router(project_comments.router)
 api_router.include_router(stats.router)
 api_router.include_router(uploads.router)
