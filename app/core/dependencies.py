@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.db import models
@@ -15,18 +15,18 @@ from app.schemas import UserRead, UserRole
 logger = logging.getLogger(__name__)
 
 
-def get_current_user(db: Session = Depends(get_db)) -> UserRead:
-    """Return a representative authenticated user for demo purposes."""
+def get_current_user(request: Request, db: Session = Depends(get_db)) -> UserRead:
+    """Resolve the authenticated user from the request headers."""
 
-    logger.debug("Resolving current user for request")
-    user = (
-        db.query(models.User)
-        .filter(models.User.role.in_([UserRole.STUDIO_OWNER.value, UserRole.STUDIO_ADMIN.value]))
-        .order_by(models.User.created_at.asc())
-        .first()
-    )
+    user_id = request.headers.get("x-user-id")
+    if not user_id:
+        logger.warning("Missing authentication header for request")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
+
+    logger.debug("Resolving current user for request", extra={"user_id": user_id})
+    user = db.query(models.User).filter(models.User.id == user_id).first()
     if not user:
-        logger.error("No eligible user found for request context")
+        logger.error("Authenticated user not found", extra={"user_id": user_id})
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authenticated user not found")
 
     logger.debug("Current user resolved", extra={"user_id": user.id})

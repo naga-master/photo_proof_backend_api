@@ -5,6 +5,13 @@ import bcrypt
 from app.db import models
 from app.db.session import session_scope
 
+"""
+
+   •  Username (Email): olivia@freshlightstudio.com
+   •  Password: password
+   •  User ID: 878152f6-bd5b-41c1-b3e7-cc2d1d4ae966
+
+"""
 email = "john@elegantmoments.com"
 password = "password"
 password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
@@ -31,4 +38,4 @@ with session_scope() as session:
             updated_at=datetime.utcnow(),
         )
         session.add(user)
-                print({"created_user_id": user_id})
+        print({"created_user_id": user_id})

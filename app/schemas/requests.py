@@ -32,6 +32,22 @@ class CreateClientRequest(BaseModel):
     phone: Optional[str] = None
 
 
+class CreateStudioRequest(BaseModel):
+    name: str
+    email: str
+    business_name: Optional[str] = None
+    phone: Optional[str] = None
+    website: Optional[str] = None
+    address_line1: Optional[str] = None
+    address_line2: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    postal_code: Optional[str] = None
+    country: Optional[str] = None
+    logo_url: Optional[str] = None
+    brand_color: Optional[str] = None
+
+
 class UpdateImageRequest(BaseModel):
     category_id: Optional[str] = Field(default=None, alias="categoryId")
     is_selected: Optional[bool] = Field(default=None, alias="isSelected")
