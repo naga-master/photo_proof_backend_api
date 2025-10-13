@@ -46,6 +46,25 @@ class CreateStudioRequest(BaseModel):
     country: Optional[str] = None
     logo_url: Optional[str] = None
     brand_color: Optional[str] = None
+    password: Optional[str] = None
+    password_encoding: Optional[str] = Field(default="plain", alias="passwordEncoding")
+
+    model_config = {
+        "populate_by_name": True,
+        "str_strip_whitespace": True,
+    }
+
+
+class StudioOnboardingRequest(CreateStudioRequest):
+    owner_name: str = Field(alias="ownerName")
+    password: str
+    password_confirm: str = Field(alias="passwordConfirm")
+    password_encoding: Optional[str] = Field(default="plain", alias="passwordEncoding")
+
+    model_config = {
+        "populate_by_name": True,
+        "str_strip_whitespace": True,
+    }
 
 
 class UpdateImageRequest(BaseModel):

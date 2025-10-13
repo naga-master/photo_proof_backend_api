@@ -1,10 +1,12 @@
 """Studio related endpoints backed by SQLite."""
 
+import base64
 import logging
 from datetime import datetime
 from typing import List
 from uuid import uuid4
 
+import bcrypt
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -14,6 +16,27 @@ from app.core.dependencies import get_current_user
 from app.db import models
 from app.db.session import get_db
 from app.schemas import CreateStudioRequest, StudioRead, UserRead, UserRole
+def _decode_password(value: str | None, encoding: str | None) -> str:
+    if not value:
+        return ""
+
+    password_encoding = (encoding or "plain").lower()
+
+    if password_encoding == "plain":
+        return value
+
+    if password_encoding == "base64":
+        try:
+            return base64.b64decode(value.encode("utf-8")).decode("utf-8")
+        except (ValueError, UnicodeDecodeError) as decode_error:
+            logger.warning("Invalid base64 password encoding", exc_info=decode_error)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid password encoding",
+            ) from decode_error
+
+    logger.warning("Unsupported password encoding provided", extra={"encoding": encoding})
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unsupported password encoding")
 
 
 logger = logging.getLogger(__name__)
@@ -107,6 +130,11 @@ def create_studio_for_current_user(
         )
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Studio already exists")
 
+    password = _decode_password((request.password or "").strip(), request.password_encoding)
+    if not password:
+        logger.warning("Studio onboarding without password attempted", extra={"user_id": current_user.id})
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password is required to onboard studio")
+
     studio = models.Studio(
         id=str(uuid4()),
         name=request.name,
@@ -136,6 +164,7 @@ def create_studio_for_current_user(
     user = db.query(models.User).filter(models.User.id == current_user.id).first()
     if user:
         user.studio_id = studio.id
+        user.password_hash = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
         user.updated_at = datetime.utcnow()
 
     try:

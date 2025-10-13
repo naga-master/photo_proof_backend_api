@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 from app.schemas.comments import CommentRead
 from app.schemas.images import ImageRead
 from app.schemas.projects import ProjectDetail, ProjectSummary
+from app.schemas.users import StudioRead, UserRead
 
 
 class ProjectListResponse(BaseModel):
@@ -58,3 +59,8 @@ class CompleteUploadResponse(BaseModel):
     model_config = {
         "populate_by_name": True,
     }
+
+
+class StudioOnboardingResponse(BaseModel):
+    studio: StudioRead
+    user: UserRead

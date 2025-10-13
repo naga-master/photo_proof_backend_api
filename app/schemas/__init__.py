@@ -13,6 +13,7 @@ from .requests import (
     CreateStudioRequest,
     CompleteUploadRequest,
     InitiateUploadRequest,
+    StudioOnboardingRequest,
     UpdateImageRequest,
     UploadFileDescriptor,
 )
@@ -21,6 +22,7 @@ from .responses import (
     CompleteUploadResponse,
     ImageListResponse,
     ProjectListResponse,
+    StudioOnboardingResponse,
     UploadInitiateResponse,
     UploadUrlInfo,
 )
@@ -43,6 +45,7 @@ __all__ = [
     "CreateStudioRequest",
     "CompleteUploadRequest",
     "InitiateUploadRequest",
+    "StudioOnboardingRequest",
     "ImageListResponse",
     "ImageRead",
     "ImageStatus",
@@ -54,6 +57,7 @@ __all__ = [
     "ProjectSettingsRead",
     "ProjectStatus",
     "StudioRead",
+    "StudioOnboardingResponse",
     "UpdateImageRequest",
     "UploadInitiateResponse",
     "UploadUrlInfo",
