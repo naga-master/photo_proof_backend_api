@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import logging
 import mimetypes
 import re
@@ -224,40 +223,6 @@ def _extract_image_metadata(file_path: Path) -> Tuple[Optional[int], Optional[in
         return None, None
 
 
-def _calculate_checksum(file_path: Path) -> Optional[str]:
-    try:
-        digest = hashlib.md5()
-        with file_path.open("rb") as handle:
-            for chunk in iter(lambda: handle.read(8192), b""):
-                if not chunk:
-                    break
-                digest.update(chunk)
-        return digest.hexdigest()
-    except Exception:
-        logger.exception("Failed to calculate checksum", extra={"file": str(file_path)})
-        return None
-
-
-def _detect_conflicts(existing: models.Image, new_size: int, width: Optional[int], height: Optional[int]) -> List[str]:
-    warnings: List[str] = []
-
-    if existing.file_size_bytes and existing.file_size_bytes > 0:
-        size_delta = abs(existing.file_size_bytes - new_size)
-        threshold = max(5_242, int(existing.file_size_bytes * 0.1))
-        if size_delta > threshold:
-            warnings.append(
-                f"File size differs significantly from the current image ({existing.file_size_bytes} bytes → {new_size} bytes)."
-            )
-
-    if existing.width and width and existing.width != width:
-        warnings.append(f"Image width mismatch: existing {existing.width}px vs uploaded {width}px.")
-
-    if existing.height and height and existing.height != height:
-        warnings.append(f"Image height mismatch: existing {existing.height}px vs uploaded {height}px.")
-
-    return warnings
-
-
 def _serialize_image(image: models.Image) -> ImageRead:
     base = ImageRead.model_validate(image)
     versions = [ImageVersionRead.model_validate(version) for version in image.versions]
@@ -297,63 +262,10 @@ def initiate_uploads(
     project_segment = _sanitize_segment(project.id)
     upload_urls: List[UploadUrlInfo] = []
 
-    image_cache: dict[str, models.Image] = {}
-
     for descriptor in payload.files:
-        target_image: Optional[models.Image] = None
-        version_label: Optional[str] = None
-
-        if descriptor.replace_image_id:
-            if current_user.role != UserRole.STUDIO_OWNER:
-                logger.warning(
-                    "Unauthorized edited upload attempt",
-                    extra={"user_id": current_user.id, "image_id": descriptor.replace_image_id},
-                )
-                raise HTTPException(
-                    status_code=status.HTTP_403_FORBIDDEN,
-                    detail="Only studio owners can upload edited photos",
-                )
-
-            target_image = image_cache.get(descriptor.replace_image_id)
-            if not target_image:
-                target_image = (
-                    db.query(models.Image)
-                    .options(selectinload(models.Image.project))
-                    .filter(
-                        models.Image.id == descriptor.replace_image_id,
-                        models.Image.project_id == project.id,
-                    )
-                    .first()
-                )
-
-                if not target_image:
-                    logger.warning(
-                        "Target image for edited upload not found",
-                        extra={
-                            "project_id": project.id,
-                            "image_id": descriptor.replace_image_id,
-                        },
-                    )
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Requested image to replace was not found in this project",
-                    )
-                image_cache[descriptor.replace_image_id] = target_image
-
-            category_id = target_image.category_id
-            category_segment = _sanitize_segment(category_id) if category_id else "uncategorized"
-
-            sanitized_original_name = _sanitize_segment(descriptor.file_name)
-            version_label = descriptor.version_name or "edited"
-            version_label = re.sub(r"[^A-Za-z0-9_-]", "-", version_label).strip("-") or "edited"
-            timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
-            file_name = f"{timestamp}-{version_label}-{sanitized_original_name}"
-        else:
-            file_name = _sanitize_segment(descriptor.file_name)
-            category_id = _resolve_category_id(project, descriptor.category_id)
-            category_segment = _sanitize_segment(category_id) if category_id else "uncategorized"
-
-        file_name = file_name[:200]
+        file_name = _sanitize_segment(descriptor.file_name)
+        category_id = _resolve_category_id(project, descriptor.category_id)
+        category_segment = _sanitize_segment(category_id) if category_id else "uncategorized"
 
         destination_dir = UPLOADS_ROOT / project_segment / category_segment
         destination_dir.mkdir(parents=True, exist_ok=True)
@@ -368,8 +280,6 @@ def initiate_uploads(
                 target_url=target_url,
                 upload_id=upload_id,
                 category_id=category_id,
-                replace_image_id=descriptor.replace_image_id,
-                version_name=version_label,
             )
         )
 
@@ -484,67 +394,29 @@ def complete_upload(
         extra={"project_id": payload.project_id, "file_name": payload.file_name},
     )
     
-    replacing_image: Optional[models.Image] = None
-    project: Optional[models.Project] = None
-    resolved_category_id: Optional[str] = None
-
     try:
         if current_user.role == UserRole.CLIENT:
             logger.warning("Client attempted to complete upload", extra={"user_id": current_user.id})
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only studio users can upload images")
 
-        if payload.replace_image_id:
-            if current_user.role != UserRole.STUDIO_OWNER:
-                logger.warning(
-                    "Non owner attempted edited upload",
-                    extra={"user_id": current_user.id, "image_id": payload.replace_image_id},
-                )
-                raise HTTPException(
-                    status_code=status.HTTP_403_FORBIDDEN,
-                    detail="Only studio owners can upload edited photos",
-                )
+        project = (
+            db.query(models.Project)
+            .options(selectinload(models.Project.categories))
+            .filter(models.Project.id == payload.project_id)
+            .first()
+        )
+        if not project:
+            logger.warning("Project not found during upload completion", extra={"project_id": payload.project_id})
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
 
-            replacing_image = (
-                db.query(models.Image)
-                .options(
-                    selectinload(models.Image.project).selectinload(models.Project.categories),
-                    selectinload(models.Image.versions),
-                )
-                .filter(models.Image.id == payload.replace_image_id)
-                .first()
+        category_id = _resolve_category_id(project, payload.category_id)
+        resolved_category_id = category_id or (project.categories[0].id if project.categories else None)
+        if not resolved_category_id:
+            logger.warning(
+                "No category available for upload",
+                extra={"project_id": payload.project_id},
             )
-
-            if not replacing_image or replacing_image.project_id != payload.project_id:
-                logger.warning(
-                    "Target image for version upload not found",
-                    extra={
-                        "project_id": payload.project_id,
-                        "image_id": payload.replace_image_id,
-                    },
-                )
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found for project")
-
-            project = replacing_image.project
-            resolved_category_id = replacing_image.category_id
-        else:
-            project = (
-                db.query(models.Project)
-                .options(selectinload(models.Project.categories))
-                .filter(models.Project.id == payload.project_id)
-                .first()
-            )
-            if not project:
-                logger.warning("Project not found during upload completion", extra={"project_id": payload.project_id})
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
-
-            category_id = _resolve_category_id(project, payload.category_id)
-            resolved_category_id = category_id or (project.categories[0].id if project.categories else None)
-            if not resolved_category_id:
-                logger.warning(
-                    "No category available for upload",
-                    extra={"project_id": payload.project_id},
-                )
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No category available for project")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No category available for project")
 
     except HTTPException:
         # Re-raise HTTP exceptions as-is
@@ -589,164 +461,111 @@ def complete_upload(
 
     file_size = stored_path.stat().st_size
     mime_type = payload.content_type or mimetypes.guess_type(sanitized_name)[0] or "application/octet-stream"
+    # Generate static serving URL instead of using upload API URL
     asset_url = f"/uploads/{project_segment}/{category_segment}/{sanitized_name}"
+
+    # Extract image metadata (width, height) if it's an image file
     width, height = _extract_image_metadata(stored_path)
-    checksum = payload.checksum or _calculate_checksum(stored_path)
 
-    version_created = False
-    warnings: List[str] = []
-    replaced_image_id: Optional[str] = None
-    image: Optional[models.Image] = None
-
-    if not replacing_image:
+    duplicate = (
+        db.query(models.Image)
+        .filter(
+            models.Image.project_id == project.id,
+            models.Image.original_filename == payload.original_file_name,
+            models.Image.category_id == resolved_category_id,
+        )
+        .first()
+    )
+    if duplicate:
         duplicate = (
             db.query(models.Image)
-            .filter(
-                models.Image.project_id == project.id,
-                models.Image.original_filename == payload.original_file_name,
-                models.Image.category_id == resolved_category_id,
-            )
+            .options(selectinload(models.Image.versions), selectinload(models.Image.tags))
+            .filter(models.Image.id == duplicate.id)
             .first()
         )
-        if duplicate:
-            duplicate = (
-                db.query(models.Image)
-                .options(selectinload(models.Image.versions), selectinload(models.Image.tags))
-                .filter(models.Image.id == duplicate.id)
-                .first()
-            )
-            logger.info(
-                "Duplicate upload detected",
-                extra={"project_id": payload.project_id, "file_name": payload.file_name},
-            )
-            return CompleteUploadResponse(
-                image=_serialize_image(duplicate),
-                already_exists=True,
-                version_created=False,
-                warnings=[],
-                replaced_image_id=None,
-            )
+        logger.info(
+            "Duplicate upload detected",
+            extra={"project_id": payload.project_id, "file_name": payload.file_name},
+        )
+        return CompleteUploadResponse(image=_serialize_image(duplicate), already_exists=True)
 
     try:
-        if replacing_image:
-            warnings = _detect_conflicts(replacing_image, file_size, width, height)
-            if warnings and not payload.force_replace:
-                stored_path.unlink(missing_ok=True)
-                raise HTTPException(
-                    status_code=status.HTTP_409_CONFLICT,
-                    detail={
-                        "message": f"Replacing image '{replacing_image.original_filename}' requires confirmation.",
-                        "conflicts": warnings,
-                        "code": "version_conflict",
-                    },
-                )
+        # Create the image record
+        image = models.Image(
+            id=str(uuid.uuid4()),
+            project_id=project.id,
+            category_id=resolved_category_id,
+            uploaded_by=current_user.id,
+            original_filename=payload.original_file_name,
+            s3_key_original=asset_url,
+            s3_key_thumbnail=asset_url,
+            s3_key_preview=None,
+            s3_key_print=None,
+            file_size_bytes=file_size,
+            mime_type=mime_type,
+            width=width,
+            height=height,
+            is_favorite=False,
+            is_selected=False,
+            comment_count=0,
+            status="ready",
+            uploaded_at=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
+        )
+        db.add(image)
+        db.flush()
 
-            for existing_version in replacing_image.versions:
-                existing_version.is_current = False
+        version = models.ImageVersion(
+            id=str(uuid.uuid4()),
+            image_id=image.id,
+            version_name="original",
+            s3_key=asset_url,
+            file_size_bytes=file_size,
+            width=width,
+            height=height,
+            created_by=current_user.id,
+            created_at=datetime.utcnow(),
+        )
+        db.add(version)
 
-            version_name = payload.version_name or f"edited-{datetime.utcnow().strftime('%Y%m%dT%H%M%S')}"
-            version_name = re.sub(r"[^A-Za-z0-9_-]", "-", version_name).strip("-") or "edited"
+        # Use atomic updates to prevent race conditions
+        # Update project stats atomically
+        db.execute(
+            text("UPDATE projects SET total_images = COALESCE(total_images, 0) + 1, storage_used_bytes = COALESCE(storage_used_bytes, 0) + :file_size, updated_at = :updated_at WHERE id = :project_id"),
+            {"file_size": file_size, "updated_at": datetime.utcnow(), "project_id": project.id}
+        )
+        
+        # Update category count atomically
+        db.execute(
+            text("UPDATE categories SET image_count = COALESCE(image_count, 0) + 1, updated_at = :updated_at WHERE id = :category_id"),
+            {"updated_at": datetime.utcnow(), "category_id": resolved_category_id}
+        )
 
-            previous_size = replacing_image.file_size_bytes or 0
-            new_version = models.ImageVersion(
-                id=str(uuid.uuid4()),
-                image_id=replacing_image.id,
-                version_name=version_name,
-                s3_key=asset_url,
-                original_filename=payload.original_file_name,
-                mime_type=mime_type,
-                file_size_bytes=file_size,
-                width=width,
-                height=height,
-                checksum=checksum,
-                notes=None,
-                is_current=True,
-                created_by=current_user.id,
-                created_at=datetime.utcnow(),
-            )
-            db.add(new_version)
-            replacing_image.s3_key_original = asset_url
-            replacing_image.s3_key_thumbnail = asset_url
-            replacing_image.file_size_bytes = file_size
-            replacing_image.mime_type = mime_type
-            replacing_image.width = width
-            replacing_image.height = height
-            replacing_image.updated_at = datetime.utcnow()
-            replacing_image.uploaded_at = datetime.utcnow()
-
-            size_delta = file_size - previous_size
-            db.execute(
-                text(
-                    "UPDATE projects SET storage_used_bytes = COALESCE(storage_used_bytes, 0) + :delta, updated_at = :updated_at WHERE id = :project_id"
-                ),
-                {"delta": size_delta, "updated_at": datetime.utcnow(), "project_id": project.id},
-            )
-
-            version_created = True
-            replaced_image_id = replacing_image.id
-            image = replacing_image
-        else:
-            image = models.Image(
-                id=str(uuid.uuid4()),
-                project_id=project.id,
-                category_id=resolved_category_id,
-                uploaded_by=current_user.id,
-                original_filename=payload.original_file_name,
-                s3_key_original=asset_url,
-                s3_key_thumbnail=asset_url,
-                s3_key_preview=None,
-                s3_key_print=None,
-                file_size_bytes=file_size,
-                mime_type=mime_type,
-                width=width,
-                height=height,
-                is_favorite=False,
-                is_selected=False,
-                comment_count=0,
-                status="ready",
-                uploaded_at=datetime.utcnow(),
-                updated_at=datetime.utcnow(),
-            )
-            db.add(image)
-            db.flush()
-
-            version = models.ImageVersion(
-                id=str(uuid.uuid4()),
-                image_id=image.id,
-                version_name="original",
-                s3_key=asset_url,
-                original_filename=payload.original_file_name,
-                mime_type=mime_type,
-                file_size_bytes=file_size,
-                width=width,
-                height=height,
-                checksum=checksum,
-                notes=None,
-                is_current=True,
-                created_by=current_user.id,
-                created_at=datetime.utcnow(),
-            )
-            db.add(version)
-
-            db.execute(
-                text(
-                    "UPDATE projects SET total_images = COALESCE(total_images, 0) + 1, storage_used_bytes = COALESCE(storage_used_bytes, 0) + :file_size, updated_at = :updated_at WHERE id = :project_id"
-                ),
-                {"file_size": file_size, "updated_at": datetime.utcnow(), "project_id": project.id},
-            )
-
-            db.execute(
-                text(
-                    "UPDATE categories SET image_count = COALESCE(image_count, 0) + 1, updated_at = :updated_at WHERE id = :category_id"
-                ),
-                {"updated_at": datetime.utcnow(), "category_id": resolved_category_id},
-            )
+        logger.debug(
+            "Atomically updated project and category",
+            extra={
+                "project_id": project.id,
+                "category_id": resolved_category_id,
+                "file_name": payload.file_name,
+            },
+        )
 
         db.commit()
         logger.debug("Committed upload changes", extra={"file_name": payload.file_name})
 
-    except HTTPException:
-        raise
+        # Refresh the objects to get updated counts
+        db.refresh(project)
+        category = next((cat for cat in project.categories if cat.id == resolved_category_id), None)
+        logger.debug(
+            "Post-upload stats",
+            extra={
+                "project_id": project.id,
+                "total_images": project.total_images,
+                "category_id": resolved_category_id,
+                "category_images": category.image_count if category else None,
+            },
+        )
+
     except Exception as e:
         logger.exception(
             "Database error during upload completion",
@@ -758,22 +577,15 @@ def complete_upload(
             detail=f"Database error during upload completion: {str(e)}"
         )
 
-    target_image_id = image.id
-    hydrated_image = (
+    image = (
         db.query(models.Image)
         .options(selectinload(models.Image.versions), selectinload(models.Image.tags))
-        .filter(models.Image.id == target_image_id)
+        .filter(models.Image.id == image.id)
         .first()
     )
 
     logger.info(
         "Upload completed",
-        extra={"project_id": payload.project_id, "image_id": target_image_id},
+        extra={"project_id": payload.project_id, "image_id": image.id},
     )
-    return CompleteUploadResponse(
-        image=_serialize_image(hydrated_image),
-        already_exists=False,
-        version_created=version_created,
-        warnings=warnings,
-        replaced_image_id=replaced_image_id,
-    )
+    return CompleteUploadResponse(image=_serialize_image(image), already_exists=False)
