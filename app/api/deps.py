@@ -73,6 +73,20 @@ def get_studio(
     return studio
 
 
+def get_current_studio_user(
+    current_user: UserRead = Depends(get_current_user),
+) -> UserRead:
+    """Ensure the current user is a studio user (not a client)."""
+    if current_user.role == UserRole.CLIENT:
+        logger.warning("Client attempted to access studio-only resource", extra={"user_id": current_user.id})
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail="Studio access required"
+        )
+    logger.debug("Studio user access validated", extra={"user_id": current_user.id})
+    return current_user
+
+
 def ensure_studio_access(
     studio: models.Studio = Depends(get_studio),
     current_user: UserRead = Depends(get_current_user),

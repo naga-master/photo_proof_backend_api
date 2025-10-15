@@ -1,12 +1,7 @@
 """Gallery layout management API endpoints."""
 
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-
-from app.api.deps import get_current_user, get_current_studio_user
-from app.db.session import get_db
-from app.schemas import UserRead
+from fastapi import APIRouter, HTTPException, status
 
 # Import our models from the root models.py
 import sys
@@ -17,12 +12,9 @@ from models import (
     LayoutConfigResponse,
     UpdateLayoutRequest,
     PresetLayoutsResponse,
-    LayoutListResponse,
     LayoutHeaderStyle,
     LayoutGridPattern,
     LayoutColorTheme,
-    Project,
-    ProjectSettings,
 )
 
 
@@ -115,35 +107,69 @@ PRESET_LAYOUTS = [
 ]
 
 
-@router.get("/presets", response_model=PresetLayoutsResponse)
+@router.get("/layouts/presets", response_model=PresetLayoutsResponse)
 async def get_preset_layouts():
-    """Get all available preset layouts."""
+    """Get all available preset gallery layouts."""
     return PresetLayoutsResponse(presets=PRESET_LAYOUTS)
 
 
-@router.get("/project/{project_id}/layout", response_model=LayoutConfigResponse)
-async def get_project_layout(
-    project_id: str,
-    db: Session = Depends(get_db),
-    current_user: UserRead = Depends(get_current_user),
-):
-    """Get the layout configuration for a specific project."""
-    # For now, return default layout - this would normally query the database
+@router.get("/projects/{project_id}/layout", response_model=LayoutConfigResponse)
+async def get_project_layout(project_id: str):
+    """Get the current layout configuration for a project."""
+    # TODO: In real implementation, fetch from database
+    # For now, return a mock response
     return LayoutConfigResponse(
         layout_id="layout-001",
         header_style=LayoutHeaderStyle.COVER,
         grid_pattern=LayoutGridPattern.MASONRY_PORTRAIT,
         color_theme=LayoutColorTheme.WHITE,
+        cover_image_url=None,
+        custom_config=None,
     )
 
 
-@router.put("/project/{project_id}/layout")
+@router.put("/projects/{project_id}/layout", response_model=LayoutConfigResponse)
 async def update_project_layout(
     project_id: str,
-    layout_config: UpdateLayoutRequest,
-    db: Session = Depends(get_db),
-    current_user: UserRead = Depends(get_current_studio_user),
+    layout_request: UpdateLayoutRequest
 ):
-    """Update the layout configuration for a project."""
-    # For now, just return success - this would normally update the database
-    return {"message": "Layout updated successfully", "layout_id": layout_config.layout_id}
+    """Update the layout configuration for a project (studio users only)."""
+    # TODO: Add authentication for studio users
+    # TODO: In real implementation, update database
+    
+    # Validate that the layout_id exists in presets
+    layout_preset = next((l for l in PRESET_LAYOUTS if l.id == layout_request.layout_id), None)
+    if not layout_preset:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid layout_id: {layout_request.layout_id}"
+        )
+    
+    # Use preset values as defaults, override with request values
+    header_style = layout_request.header_style or layout_preset.header_style
+    grid_pattern = layout_request.grid_pattern or layout_preset.grid_pattern
+    color_theme = layout_request.color_theme or layout_preset.color_theme
+    
+    return LayoutConfigResponse(
+        layout_id=layout_request.layout_id,
+        header_style=header_style,
+        grid_pattern=grid_pattern,
+        color_theme=color_theme,
+        cover_image_url=None,  # TODO: Generate URL from cover_image_id
+        custom_config=layout_request.custom_config,
+    )
+
+
+@router.get("/client/{client_id}/gallery/{gallery_id}/layout", response_model=LayoutConfigResponse)
+async def get_client_gallery_layout(client_id: str, gallery_id: str):
+    """Get the layout configuration for client gallery view (no auth required)."""
+    # TODO: In real implementation, fetch from database using gallery_id
+    # For now, return a mock response
+    return LayoutConfigResponse(
+        layout_id="layout-001",
+        header_style=LayoutHeaderStyle.COVER,
+        grid_pattern=LayoutGridPattern.MASONRY_PORTRAIT,
+        color_theme=LayoutColorTheme.WHITE,
+        cover_image_url=None,
+        custom_config=None,
+    )
