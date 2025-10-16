@@ -14,11 +14,14 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     Numeric,
+    JSON,
     String,
     Text,
     UniqueConstraint,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from typing import Optional
 
 from .base import Base
 
@@ -179,6 +182,12 @@ class Project(Base):
     )
     categories: Mapped[list["Category"]] = relationship("Category", back_populates="project", cascade="all, delete-orphan")
     images: Mapped[list["Image"]] = relationship("Image", back_populates="project", cascade="all, delete-orphan")
+    layout: Mapped[Optional["ProjectLayout"]] = relationship(
+        "ProjectLayout",
+        back_populates="project",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )
 
 
 class ProjectSettings(Base):
@@ -351,3 +360,20 @@ class Comment(Base):
     user: Mapped[User] = relationship("User", back_populates="comments")
     parent: Mapped[Comment | None] = relationship("Comment", remote_side="Comment.id", back_populates="replies")
     replies: Mapped[list["Comment"]] = relationship("Comment", back_populates="parent", cascade="all, delete-orphan")
+
+
+class ProjectLayout(Base):
+    __tablename__ = "project_layouts"
+
+    project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"), primary_key=True)
+    layout_id: Mapped[str] = mapped_column(String(50), nullable=False, default="layout-001")
+    header_style: Mapped[str] = mapped_column(String(20), nullable=False, default="cover")
+    grid_pattern: Mapped[str] = mapped_column(String(30), nullable=False, default="masonry-portrait")
+    color_theme: Mapped[str] = mapped_column(String(20), nullable=False, default="white")
+    cover_image_id: Mapped[str | None] = mapped_column(ForeignKey("images.id", ondelete="SET NULL"), nullable=True)
+    custom_config: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    project: Mapped[Project] = relationship("Project", back_populates="layout")
+    cover_image: Mapped[Image | None] = relationship("Image")

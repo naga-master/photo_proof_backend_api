@@ -24,10 +24,78 @@ gallery_router = APIRouter(prefix="/api/gallery", tags=["Gallery"])
 
 
 def _serialize_image(image: models.Image) -> ImageRead:
-    base = ImageRead.model_validate(image)
-    versions = [ImageVersionRead.model_validate(version) for version in image.versions]
+    # Create base object excluding problematic fields
+    base_data = {
+        "id": image.id,
+        "project_id": image.project_id,
+        "category_id": image.category_id,
+        "original_filename": image.original_filename,
+        "original_url": image.s3_key_original,
+        "thumbnail_url": image.s3_key_thumbnail,
+        "preview_url": image.s3_key_preview,
+        "print_url": image.s3_key_print,
+        "file_size_bytes": image.file_size_bytes,
+        "mime_type": image.mime_type,
+        "width": image.width,
+        "height": image.height,
+        "captured_at": image.captured_at,
+        "camera_make": image.camera_make,
+        "camera_model": image.camera_model,
+        "focal_length": image.focal_length,
+        "shutter_speed": image.shutter_speed,
+        "rating": image.rating,
+        "is_favorite": image.is_favorite,
+        "is_selected": image.is_selected,
+        "comment_count": image.comment_count,
+        "status": image.status,
+        "uploaded_at": image.uploaded_at,
+        "updated_at": image.updated_at,
+    }
+    
+    # Process versions and add frontend-expected fields
+    versions = []
+    for version in image.versions:
+        # Manually construct version data to avoid Pydantic validation issues
+        version_data = {
+            "id": version.id,
+            "image_id": version.image_id,
+            "version_name": version.version_name,
+            "s3_key": version.s3_key,
+            "url": f"/uploads/{version.s3_key}",
+            "thumbnail": f"/uploads/{version.s3_key}",  # Same as URL for now
+            "file_name": version.original_filename,
+            "original_filename": version.original_filename,
+            "mime_type": version.mime_type,
+            "file_size": version.file_size_bytes,
+            "file_size_bytes": version.file_size_bytes,
+            "width": version.width,
+            "height": version.height,
+            "checksum": version.checksum,
+            "notes": version.notes,
+            "is_current": version.is_current,
+            "is_latest": version.is_current,  # Same as is_current
+            "uploaded_at": version.created_at,
+            "created_by": version.created_by,
+            "created_at": version.created_at,
+        }
+        versions.append(ImageVersionRead(**version_data))
+    
     tags = [tag.name for tag in image.tags]
-    return base.model_copy(update={"versions": versions, "tags": tags})
+    
+    # Create metadata object that frontend expects
+    metadata = {
+        "width": image.width or 0,
+        "height": image.height or 0,
+    }
+    
+    # Add the processed fields
+    base_data.update({
+        "versions": versions,
+        "tags": tags,
+        "metadata": metadata
+    })
+    
+    return ImageRead(**base_data)
 
 
 def _build_image_query(db: Session, project_id: str, category_id: Optional[str]):
@@ -185,7 +253,32 @@ def update_project_image(
 @router.get("/{image_id}/versions", response_model=List[ImageVersionRead])
 def list_image_versions(image: models.Image = Depends(deps.get_project_image)) -> List[ImageVersionRead]:
     logger.debug("Listing image versions", extra={"image_id": image.id, "version_count": len(image.versions)})
-    return [ImageVersionRead.model_validate(version) for version in image.versions]
+    versions = []
+    for version in image.versions:
+        version_data = {
+            "id": version.id,
+            "image_id": version.image_id,
+            "version_name": version.version_name,
+            "s3_key": version.s3_key,
+            "url": version.url,
+            "thumbnail": version.thumbnail,
+            "file_name": version.file_name,
+            "original_filename": version.original_filename,
+            "mime_type": version.mime_type,
+            "file_size": version.file_size,
+            "file_size_bytes": version.file_size_bytes,
+            "width": version.width,
+            "height": version.height,
+            "checksum": version.checksum,
+            "notes": version.notes,
+            "is_current": version.is_current,
+            "is_latest": version.is_latest,
+            "uploaded_at": version.uploaded_at,
+            "created_by": version.created_by,
+            "created_at": version.created_at,
+        }
+        versions.append(ImageVersionRead(**version_data))
+    return versions
 
 
 @router.post("/{image_id}/versions/{version_id}/restore", response_model=ImageRead)

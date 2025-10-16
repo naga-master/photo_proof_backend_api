@@ -45,10 +45,70 @@ def _default_category_templates() -> Iterable[CreateCategoryRequest]:
 
 
 def _serialize_image(image: models.Image) -> ImageRead:
-    image_model = ImageRead.model_validate(image)
-    versions = [ImageVersionRead.model_validate(version) for version in image.versions]
+    # Manually construct data dictionary to avoid Pydantic validation issues with SQLAlchemy metadata
+    base_data = {
+        "id": image.id,
+        "project_id": image.project_id,
+        "category_id": image.category_id,
+        "original_filename": image.original_filename,
+        "s3_key_original": image.s3_key_original,
+        "s3_key_thumbnail": image.s3_key_thumbnail,
+        "s3_key_preview": image.s3_key_preview,
+        "s3_key_print": image.s3_key_print,
+        "file_size_bytes": image.file_size_bytes,
+        "mime_type": image.mime_type,
+        "width": image.width,
+        "height": image.height,
+        "metadata": {"width": image.width or 0, "height": image.height or 0},  # Create a simple metadata dict
+        "captured_at": image.captured_at,
+        "camera_make": image.camera_make,
+        "camera_model": image.camera_model,
+        "focal_length": image.focal_length,
+        "shutter_speed": image.shutter_speed,
+        "rating": image.rating,
+        "is_favorite": image.is_favorite,
+        "is_selected": image.is_selected,
+        "comment_count": image.comment_count,
+        "status": image.status,
+        "uploaded_at": image.uploaded_at,
+        "updated_at": image.updated_at,
+    }
+    
+    # Serialize versions manually
+    versions = []
+    for version in image.versions:
+        version_data = {
+            "id": version.id,
+            "image_id": version.image_id,
+            "version_name": version.version_name,
+            "s3_key": version.s3_key,
+            "url": f"/uploads/{version.s3_key}",  # Generate URL from s3_key
+            "thumbnail": f"/uploads/{version.s3_key}",  # Generate thumbnail URL from s3_key
+            "file_name": version.original_filename,  # Use original_filename as file_name
+            "original_filename": version.original_filename,
+            "mime_type": version.mime_type,
+            "file_size": version.file_size_bytes,  # Use file_size_bytes as file_size
+            "file_size_bytes": version.file_size_bytes,
+            "width": version.width,
+            "height": version.height,
+            "checksum": version.checksum,
+            "notes": version.notes,
+            "is_current": version.is_current,
+            "is_latest": version.is_current,  # Use is_current as is_latest
+            "uploaded_at": version.created_at,  # Use created_at as uploaded_at
+            "created_by": version.created_by,
+            "created_at": version.created_at,
+        }
+        versions.append(ImageVersionRead(**version_data))
+    
+    # Get tags
     tags = [tag.name for tag in image.tags]
-    return image_model.model_copy(update={"versions": versions, "tags": tags})
+    
+    # Add versions and tags to base data
+    base_data["versions"] = versions
+    base_data["tags"] = tags
+    
+    return ImageRead(**base_data)
 
 
 def _project_detail(project: models.Project, include_images: bool = True, db: Optional[Session] = None) -> ProjectDetail:
@@ -180,10 +240,28 @@ def create_project(
     current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> ProjectDetail:
+    # Add debug logging for request validation
     logger.debug(
-        "Creating project",
-        extra={"user_id": current_user.id, "studio_id": current_user.studio_id, "name": request.name},
+        "Received project creation request",
+        extra={
+            "user_id": current_user.id, 
+            "studio_id": current_user.studio_id,
+            "request_type": type(request).__name__,
+            "has_name": hasattr(request, 'name'),
+            "request_dict": request.model_dump() if hasattr(request, 'model_dump') else str(request)
+        }
     )
+    
+    try:
+        project_name = getattr(request, 'name', 'Unknown')
+        logger.debug(
+            "Creating project",
+            extra={"user_id": current_user.id, "studio_id": current_user.studio_id, "name": project_name},
+        )
+    except Exception as e:
+        logger.error(f"Error logging project creation: {e}")
+        logger.debug("Creating project - logging failed", extra={"user_id": current_user.id, "studio_id": current_user.studio_id})
+    
     if current_user.role == UserRole.CLIENT:
         logger.warning("Client attempted to create project", extra={"user_id": current_user.id})
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only studio users can create projects")
@@ -316,6 +394,154 @@ def create_project(
 
     logger.info("Project created", extra={"project_id": project.id})
     return _project_detail(refreshed, include_images=True)
+
+
+@router.patch("/{project_id}", response_model=ProjectDetail)
+def update_project(
+    project_id: str,
+    project_update: dict,
+    current_user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Update an existing project."""
+    logger.debug("Updating project", extra={"project_id": project_id, "user_id": current_user.id})
+    
+    # Get the existing project
+    project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if not project:
+        logger.warning("Project not found for update", extra={"project_id": project_id})
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+
+    # Check authorization
+    if current_user.role == UserRole.CLIENT or current_user.studio_id != project.studio_id:
+        logger.warning(
+            "Unauthorized project update attempt",
+            extra={"project_id": project_id, "user_id": current_user.id},
+        )
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to update this project")
+
+    # Update project fields
+    if "name" in project_update:
+        project.name = project_update["name"]
+    if "description" in project_update:
+        project.description = project_update["description"]
+    
+    # Update categories if provided
+    if "categories" in project_update:
+        # Get existing categories
+        existing_categories = db.query(models.Category).filter(models.Category.project_id == project_id).all()
+        existing_names = {cat.display_name for cat in existing_categories}
+        new_names = set(project_update["categories"])
+        
+        # Remove categories that are no longer needed (but keep their images by reassigning)
+        categories_to_remove = existing_names - new_names
+        if categories_to_remove:
+            # Find the first category to reassign images to (or create a default one)
+            default_category = None
+            if new_names:
+                # Use the first new category as default
+                default_category_name = list(new_names)[0]
+                default_category = db.query(models.Category).filter(
+                    models.Category.project_id == project_id,
+                    models.Category.display_name == default_category_name
+                ).first()
+            
+            if not default_category and new_names:
+                # Create the first new category to reassign images to
+                first_new_category = list(new_names)[0]
+                default_category = models.Category(
+                    id=str(uuid.uuid4()),
+                    project_id=project_id,
+                    name=first_new_category.lower(),
+                    display_name=first_new_category,
+                    description="",
+                    order_index=1,
+                    is_default=True
+                )
+                db.add(default_category)
+                db.flush()  # Get the ID
+            
+            # Reassign images from categories being deleted to the default category
+            if default_category:
+                for cat_name in categories_to_remove:
+                    cat_to_remove = next((cat for cat in existing_categories if cat.display_name == cat_name), None)
+                    if cat_to_remove:
+                        # Reassign all images to the default category
+                        db.query(models.Image).filter(
+                            models.Image.category_id == cat_to_remove.id
+                        ).update({"category_id": default_category.id})
+                        
+                        # Now safe to delete the category
+                        db.delete(cat_to_remove)
+        
+        # Add new categories
+        for idx, category_name in enumerate(project_update["categories"]):
+            # Check if category already exists
+            existing_cat = next((cat for cat in existing_categories if cat.display_name == category_name), None)
+            if not existing_cat:
+                category = models.Category(
+                    id=str(uuid.uuid4()),
+                    project_id=project_id,
+                    name=category_name.lower(),
+                    display_name=category_name,
+                    description="",
+                    order_index=idx + 1,
+                    is_default=(idx == 0)
+                )
+                db.add(category)
+            else:
+                # Update order for existing category
+                existing_cat.order_index = idx + 1
+                existing_cat.is_default = (idx == 0)
+    
+    # Update settings if provided
+    if "settings" in project_update:
+        settings_data = project_update["settings"]
+        if project.settings:
+            # Update existing settings
+            if "is_password_protected" in settings_data:
+                project.settings.is_password_protected = settings_data["is_password_protected"]
+            if "password" in settings_data:
+                project.settings.password = settings_data["password"]
+            if "allow_downloads" in settings_data:
+                project.settings.allow_downloads = settings_data["allow_downloads"]
+            if "allow_comments" in settings_data:
+                project.settings.allow_comments = settings_data["allow_comments"]
+        else:
+            # Create new settings
+            project.settings = models.ProjectSettings(
+                project_id=project_id,
+                is_password_protected=settings_data.get("is_password_protected", False),
+                password=settings_data.get("password", ""),
+                allow_downloads=settings_data.get("allow_downloads", True),
+                allow_comments=settings_data.get("allow_comments", True)
+            )
+
+    project.updated_at = datetime.utcnow()
+    
+    try:
+        db.commit()
+        
+        # Refresh with all relationships
+        refreshed = (
+            db.query(models.Project)
+            .options(
+                selectinload(models.Project.categories),
+                selectinload(models.Project.images).selectinload(models.Image.versions),
+                selectinload(models.Project.images).selectinload(models.Image.tags),
+                selectinload(models.Project.settings),
+                selectinload(models.Project.client),
+            )
+            .filter(models.Project.id == project_id)
+            .first()
+        )
+        
+        logger.info("Project updated", extra={"project_id": project_id})
+        return _project_detail(refreshed, include_images=True)
+    except Exception as e:
+        db.rollback()
+        logger.error("Failed to update project", extra={"project_id": project_id, "error": str(e)})
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to update project")
 
 
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)

@@ -8,6 +8,7 @@ from app.api.v1 import (
     batch_actions,
     clients,
     deliveries,
+    gallery_layouts,
     health,
     invoices,
     layouts,
@@ -44,6 +45,7 @@ api_router.include_router(settings.router)
 api_router.include_router(batch_actions.router)
 # New feature endpoints
 api_router.include_router(layouts.router)
+api_router.include_router(gallery_layouts.router)
 api_router.include_router(invoices.router)
 api_router.include_router(analytics.router)
 api_router.include_router(notifications.router)

@@ -1,124 +1,37 @@
 """Gallery layout management API endpoints."""
 
-from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_current_studio_user
 from app.db.session import get_db
 from app.schemas import UserRead
+from app.services.layouts_service import (
+    InvalidLayoutPresetError,
+    ProjectNotFoundError,
+    get_project_layout as service_get_project_layout,
+    list_presets,
+    update_project_layout as service_update_project_layout,
+)
 
 # Import our models from the root models.py
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 from models import (
-    PresetLayout,
     LayoutConfigResponse,
     UpdateLayoutRequest,
     PresetLayoutsResponse,
-    LayoutListResponse,
-    LayoutHeaderStyle,
-    LayoutGridPattern,
-    LayoutColorTheme,
-    Project,
-    ProjectSettings,
 )
 
 
-router = APIRouter(prefix="/api/v1", tags=["gallery-layouts"])
-
-
-# Preset Layouts Configuration
-PRESET_LAYOUTS = [
-    PresetLayout(
-        id="layout-001",
-        name="Classic Portrait",
-        description="Clean, professional portrait gallery with hero cover",
-        header_style=LayoutHeaderStyle.COVER,
-        grid_pattern=LayoutGridPattern.MASONRY_PORTRAIT,
-        color_theme=LayoutColorTheme.WHITE,
-    ),
-    PresetLayout(
-        id="layout-002",
-        name="ShootProof Inspired",
-        description="Generous whitespace, light minimalistic design",
-        header_style=LayoutHeaderStyle.COVER,
-        grid_pattern=LayoutGridPattern.MASONRY_PORTRAIT,
-        color_theme=LayoutColorTheme.GREY,
-        reference_url="https://thescobeys.shootproof.com/gallery/11726124/album/8602603",
-    ),
-    PresetLayout(
-        id="layout-003",
-        name="Modern Minimal",
-        description="Minimal header with portrait masonry",
-        header_style=LayoutHeaderStyle.TITLE_ONLY,
-        grid_pattern=LayoutGridPattern.MASONRY_PORTRAIT,
-        color_theme=LayoutColorTheme.GREY,
-    ),
-    PresetLayout(
-        id="layout-004",
-        name="Landscape Showcase",
-        description="Warm tones for landscape photography",
-        header_style=LayoutHeaderStyle.COVER,
-        grid_pattern=LayoutGridPattern.MASONRY_LANDSCAPE,
-        color_theme=LayoutColorTheme.CREAM,
-    ),
-    PresetLayout(
-        id="layout-005",
-        name="Clean Landscape",
-        description="Elegant minimalist landscape layout",
-        header_style=LayoutHeaderStyle.TITLE_ONLY,
-        grid_pattern=LayoutGridPattern.MASONRY_LANDSCAPE,
-        color_theme=LayoutColorTheme.CREAM,
-    ),
-    PresetLayout(
-        id="layout-006",
-        name="Editorial Grid",
-        description="Magazine-style uniform grid",
-        header_style=LayoutHeaderStyle.COVER,
-        grid_pattern=LayoutGridPattern.GRID,
-        color_theme=LayoutColorTheme.GREY,
-    ),
-    PresetLayout(
-        id="layout-007",
-        name="Bold Grid",
-        description="High contrast uniform grid",
-        header_style=LayoutHeaderStyle.TITLE_ONLY,
-        grid_pattern=LayoutGridPattern.GRID,
-        color_theme=LayoutColorTheme.BLACK,
-    ),
-    PresetLayout(
-        id="layout-008",
-        name="Story Stack",
-        description="Narrative single-column layout",
-        header_style=LayoutHeaderStyle.COVER,
-        grid_pattern=LayoutGridPattern.STACKED,
-        color_theme=LayoutColorTheme.BLACK,
-    ),
-    PresetLayout(
-        id="layout-009",
-        name="Elegant Stack",
-        description="Warm, flowing single-column display",
-        header_style=LayoutHeaderStyle.TITLE_ONLY,
-        grid_pattern=LayoutGridPattern.STACKED,
-        color_theme=LayoutColorTheme.CREAM,
-    ),
-    PresetLayout(
-        id="layout-010",
-        name="Minimalist Pure",
-        description="No header, pure photo focus",
-        header_style=LayoutHeaderStyle.MINIMAL,
-        grid_pattern=LayoutGridPattern.MASONRY_PORTRAIT,
-        color_theme=LayoutColorTheme.WHITE,
-    ),
-]
+router = APIRouter(prefix="/api/v1/layouts", tags=["gallery-layouts"])
 
 
 @router.get("/presets", response_model=PresetLayoutsResponse)
 async def get_preset_layouts():
     """Get all available preset layouts."""
-    return PresetLayoutsResponse(presets=PRESET_LAYOUTS)
+    return PresetLayoutsResponse(presets=list(list_presets()))
 
 
 @router.get("/project/{project_id}/layout", response_model=LayoutConfigResponse)
@@ -128,16 +41,13 @@ async def get_project_layout(
     current_user: UserRead = Depends(get_current_user),
 ):
     """Get the layout configuration for a specific project."""
-    # For now, return default layout - this would normally query the database
-    return LayoutConfigResponse(
-        layout_id="layout-001",
-        header_style=LayoutHeaderStyle.COVER,
-        grid_pattern=LayoutGridPattern.MASONRY_PORTRAIT,
-        color_theme=LayoutColorTheme.WHITE,
-    )
+    try:
+        return service_get_project_layout(db, project_id)
+    except ProjectNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found") from None
 
 
-@router.put("/project/{project_id}/layout")
+@router.put("/project/{project_id}/layout", response_model=LayoutConfigResponse)
 async def update_project_layout(
     project_id: str,
     layout_config: UpdateLayoutRequest,
@@ -145,5 +55,9 @@ async def update_project_layout(
     current_user: UserRead = Depends(get_current_studio_user),
 ):
     """Update the layout configuration for a project."""
-    # For now, just return success - this would normally update the database
-    return {"message": "Layout updated successfully", "layout_id": layout_config.layout_id}
+    try:
+        return service_update_project_layout(db, project_id, layout_config)
+    except ProjectNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found") from None
+    except InvalidLayoutPresetError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid layout_id: {exc}") from None
