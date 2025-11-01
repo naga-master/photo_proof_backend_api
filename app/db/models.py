@@ -100,6 +100,7 @@ class User(Base):
     studio_id: Mapped[str | None] = mapped_column(ForeignKey("studios.id", ondelete="SET NULL"), nullable=True, index=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
+    username: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
     password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)
     role: Mapped[str] = mapped_column(UserRole, nullable=False, index=True)
     avatar_url: Mapped[str | None] = mapped_column(Text, nullable=True)

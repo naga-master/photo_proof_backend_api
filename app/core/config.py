@@ -20,6 +20,8 @@ class Settings(BaseModel):
     cors_origins: List[str] = Field(
         default_factory=lambda: [
             "http://localhost:3000",
+            "http://localhost:3001",
+            "http://localhost:3002",
             "http://localhost:5173",
         ]
     )

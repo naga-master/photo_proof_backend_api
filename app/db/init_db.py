@@ -17,6 +17,11 @@ from app.core.config import get_settings
 from . import engine, session_scope
 from .base import Base
 from . import models
+from .models import (
+    Studio, User, Client, Project, Folder, Photo, Comment,
+    ServicePackage, Invoice, Product, ProductOption,
+    LayoutTemplate, Notification, UserPhotoFavorite, UserPhotoSelection
+)
 
 
 def _namespace_uuid(value: str) -> str:
@@ -495,23 +500,26 @@ def init_db() -> None:
 
     Base.metadata.create_all(bind=engine)
     inspector = inspect(engine)
-    columns = {column["name"] for column in inspector.get_columns("image_versions")}
-    alterations: list[str] = []
-    if "original_filename" not in columns:
-        alterations.append("ALTER TABLE image_versions ADD COLUMN original_filename VARCHAR(255)")
-    if "mime_type" not in columns:
-        alterations.append("ALTER TABLE image_versions ADD COLUMN mime_type VARCHAR(100)")
-    if "checksum" not in columns:
-        alterations.append("ALTER TABLE image_versions ADD COLUMN checksum VARCHAR(128)")
-    if "notes" not in columns:
-        alterations.append("ALTER TABLE image_versions ADD COLUMN notes TEXT")
-    if "is_current" not in columns:
-        alterations.append("ALTER TABLE image_versions ADD COLUMN is_current BOOLEAN DEFAULT 0")
+    
+    # Only check for columns if table exists
+    if inspector.has_table("image_versions"):
+        columns = {column["name"] for column in inspector.get_columns("image_versions")}
+        alterations: list[str] = []
+        if "original_filename" not in columns:
+            alterations.append("ALTER TABLE image_versions ADD COLUMN original_filename VARCHAR(255)")
+        if "mime_type" not in columns:
+            alterations.append("ALTER TABLE image_versions ADD COLUMN mime_type VARCHAR(100)")
+        if "checksum" not in columns:
+            alterations.append("ALTER TABLE image_versions ADD COLUMN checksum VARCHAR(128)")
+        if "notes" not in columns:
+            alterations.append("ALTER TABLE image_versions ADD COLUMN notes TEXT")
+        if "is_current" not in columns:
+            alterations.append("ALTER TABLE image_versions ADD COLUMN is_current BOOLEAN DEFAULT 0")
 
-    if alterations:
-        with engine.begin() as connection:
-            for statement in alterations:
-                connection.exec_driver_sql(statement)
+        if alterations:
+            with engine.begin() as connection:
+                for statement in alterations:
+                    connection.exec_driver_sql(statement)
 
             connection.exec_driver_sql(
                 """
@@ -565,5 +573,6 @@ def init_db() -> None:
                 """
             )
 
-    with session_scope() as session:
-        seed_database(session)
+    # Legacy JSON seeding disabled - use seed_data.py script instead
+    # with session_scope() as session:
+    #     seed_database(session)
