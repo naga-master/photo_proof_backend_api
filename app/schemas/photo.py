@@ -144,6 +144,40 @@ class PresignedUploadResponse(BaseModel):
     method: str = "PUT"
 
 
+class BatchPresignedUploadRequest(BaseModel):
+    """Request for batch presigned upload URLs."""
+    project_id: int
+    folder_id: Optional[str] = None
+    files: List[dict] = Field(..., min_length=1, max_length=100, description="List of files with filename, content_type, file_size")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "project_id": 1,
+                "folder_id": None,
+                "files": [
+                    {
+                        "filename": "photo1.jpg",
+                        "content_type": "image/jpeg",
+                        "file_size": 1024000
+                    },
+                    {
+                        "filename": "photo2.png",
+                        "content_type": "image/png",
+                        "file_size": 2048000
+                    }
+                ]
+            }
+        }
+
+
+class BatchPresignedUploadResponse(BaseModel):
+    """Response with batch presigned upload URLs."""
+    tokens: List[PresignedUploadResponse]
+    session_id: str  # UUID string
+    total_files: int
+
+
 # ============================================================================
 # FAVORITE & SELECTION SCHEMAS
 # ============================================================================

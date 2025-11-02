@@ -11,6 +11,8 @@ from app.services.upload_service import UploadService
 from app.schemas.photo import (
     PresignedUploadRequest,
     PresignedUploadResponse,
+    BatchPresignedUploadRequest,
+    BatchPresignedUploadResponse,
     PhotoResponse,
 )
 
@@ -137,11 +139,14 @@ def create_upload_session(
         total_files=total_files,
     )
     
+    # Get values from upload_rules JSON
+    upload_rules = session.upload_rules or {}
+    
     return {
         "session_id": session.id,
         "project_id": session.project_id,
-        "total_files": session.total_files,
-        "uploaded_files": session.uploaded_files,
+        "total_files": upload_rules.get('total_files', 0),
+        "uploaded_files": upload_rules.get('uploaded_files', 0),
         "status": session.status,
     }
 
@@ -164,12 +169,116 @@ def update_upload_session(
             uploaded_count=uploaded_count,
         )
         
+        # Get values from upload_rules JSON
+        upload_rules = session.upload_rules or {}
+        
         return {
             "session_id": session.id,
-            "total_files": session.total_files,
-            "uploaded_files": session.uploaded_files,
+            "total_files": upload_rules.get('total_files', 0),
+            "uploaded_files": upload_rules.get('uploaded_files', 0),
             "status": session.status,
         }
+    
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
+
+
+@router.post("/batch/presigned", response_model=BatchPresignedUploadResponse)
+def generate_batch_presigned_urls(
+    request: BatchPresignedUploadRequest,
+    user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Generate batch presigned URLs for multiple photo uploads.
+    
+    This endpoint creates a single upload session and generates presigned URLs
+    for all files in the batch, reducing the number of API calls.
+    
+    Client flow:
+    1. Call this endpoint once with all file metadata
+    2. Receive array of presigned URLs and tokens
+    3. Upload each file to its corresponding URL using PUT
+    4. Optionally call verification endpoint to check batch status
+    """
+    storage = get_storage_service()
+    upload_service = UploadService(storage)
+    
+    try:
+        # Validate file count
+        if len(request.files) > 100:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Maximum 100 files per batch"
+            )
+        
+        # Generate batch tokens
+        upload_session, tokens_and_urls = upload_service.generate_batch_upload_tokens(
+            db=db,
+            project_id=request.project_id,
+            files=request.files,
+            user_id=user.id,
+            folder_id=request.folder_id,
+        )
+        
+        # Build response
+        token_responses = []
+        for upload_token, upload_url in tokens_and_urls:
+            token_responses.append(
+                PresignedUploadResponse(
+                    upload_url=upload_url,
+                    photo_id=0,  # Will be created on upload completion
+                    token=upload_token.token,
+                    expires_at=upload_token.expires_at,
+                    method="PUT",
+                )
+            )
+        
+        # Get total_files from upload_rules JSON
+        upload_rules = upload_session.upload_rules or {}
+        total_files = upload_rules.get('total_files', len(request.files))
+        
+        return BatchPresignedUploadResponse(
+            tokens=token_responses,
+            session_id=upload_session.id,
+            total_files=total_files,
+        )
+    
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+
+
+@router.get("/batch/verify/{session_id}")
+async def verify_batch_upload(
+    session_id: int,
+    user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Verify batch upload completion status.
+    
+    Returns summary of upload status including:
+    - Total files in batch
+    - Completed uploads
+    - Failed uploads
+    - Pending uploads
+    """
+    storage = get_storage_service()
+    upload_service = UploadService(storage)
+    
+    try:
+        summary = await upload_service.complete_batch_upload_verification(
+            db=db,
+            session_id=session_id,
+        )
+        
+        return summary
     
     except ValueError as e:
         raise HTTPException(
