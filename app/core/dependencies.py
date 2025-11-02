@@ -27,12 +27,17 @@ def get_current_user(
 ) -> UserRead:
     """Resolve the authenticated user from JWT token in cookie or Authorization header."""
     
+    # Debug logging
+    logger.info(f"Auth check - Cookie: {bool(access_token)}, Header: {bool(credentials)}")
+    
     # Try to get token from Authorization header first, then from cookie
     token = None
     if credentials:
         token = credentials.credentials
+        logger.info("Using token from Authorization header")
     elif access_token:
         token = access_token
+        logger.info("Using token from cookie")
     
     if not token:
         logger.warning("No authentication token provided")

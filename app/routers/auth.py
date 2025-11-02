@@ -7,6 +7,7 @@ from typing import Optional
 
 from app.db.session import get_db
 from app.services.auth_service import AuthService
+from app.core.dependencies import get_current_user
 from app.schemas.auth import (
     LoginRequest,
     LoginResponse,
@@ -16,6 +17,7 @@ from app.schemas.auth import (
     StudioResponse,
     ClientResponse,
 )
+from app.schemas import UserRead
 
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
@@ -155,45 +157,49 @@ def register_studio(register_data: RegisterRequest, db: Session = Depends(get_db
         )
 
 
-@router.get("/me")
-def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+@router.get("/me", response_model=UserResponse)
+def get_current_user_info(
+    current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Get current authenticated user."""
-    token = credentials.credentials
-    user_data = AuthService.get_current_user(db, token)
-    
-    if not user_data:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token"
-        )
-    
-    return user_data
+    """
+    Get current authenticated user.
+    Supports both httpOnly cookies and Authorization header.
+    """
+    return UserResponse(
+        id=str(current_user.id),
+        email=current_user.email,
+        username=current_user.username,
+        name=current_user.name,
+        role=current_user.role,
+        studio_id=str(current_user.studio_id) if current_user.studio_id else None,
+        is_active=current_user.is_active,
+        email_verified=current_user.email_verified,
+        phone=current_user.phone,
+        avatar_url=current_user.avatar_url,
+        created_at=current_user.created_at.isoformat() if current_user.created_at else None,
+        updated_at=current_user.updated_at.isoformat() if current_user.updated_at else None
+    )
 
 
 @router.post("/refresh", response_model=TokenResponse)
 def refresh_token(
     response: Response,
     refresh_token: Optional[str] = Cookie(None),
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
     db: Session = Depends(get_db)
 ):
-    """Refresh access token using refresh token from cookie or Authorization header."""
-    # Try to get refresh token from cookie first, then from Authorization header
-    token = refresh_token
-    if not token and credentials:
-        token = credentials.credentials
-    
-    if not token:
+    """
+    Refresh access token using refresh token from httpOnly cookie.
+    The refresh_token is automatically sent by the browser in the cookie.
+    """
+    if not refresh_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Refresh token not provided"
         )
     
     # Verify refresh token
-    payload = AuthService.verify_refresh_token(token)
+    payload = AuthService.verify_refresh_token(refresh_token)
     if not payload:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
