@@ -54,6 +54,7 @@ def studio_login(login_data: LoginRequest, response: Response, db: Session = Dep
         httponly=True,
         secure=False,  # Set to True in production with HTTPS
         samesite="lax",
+        path="/",  # Explicitly set path to root
         max_age=30 * 60  # 30 minutes
     )
     
@@ -64,6 +65,7 @@ def studio_login(login_data: LoginRequest, response: Response, db: Session = Dep
         httponly=True,
         secure=False,  # Set to True in production with HTTPS
         samesite="lax",
+        path="/",  # Explicitly set path to root
         max_age=7 * 24 * 60 * 60  # 7 days
     )
     
@@ -109,6 +111,7 @@ def client_login(login_data: LoginRequest, response: Response, db: Session = Dep
         httponly=True,
         secure=False,  # Set to True in production with HTTPS
         samesite="lax",
+        path="/",  # Explicitly set path to root
         max_age=30 * 60  # 30 minutes
     )
     
@@ -119,6 +122,7 @@ def client_login(login_data: LoginRequest, response: Response, db: Session = Dep
         httponly=True,
         secure=False,  # Set to True in production with HTTPS
         samesite="lax",
+        path="/",  # Explicitly set path to root
         max_age=7 * 24 * 60 * 60  # 7 days
     )
     

@@ -13,6 +13,7 @@ class UserRead(BaseModel):
     studio_id: Optional[str] = None
     name: str
     email: str
+    username: str  # Added missing username field
     role: UserRole
     avatar_url: Optional[str] = None
     phone: Optional[str] = None
