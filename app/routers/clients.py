@@ -40,6 +40,16 @@ def list_clients(
     # Base query filtered by studio
     query = db.query(Client).filter(Client.studio_id == current_user.studio_id)
     
+    # Filter out clients with invalid data (empty name or email)
+    # This prevents validation errors when returning data
+    query = query.filter(
+        Client.name != "",
+        Client.name.isnot(None),
+        Client.email != "",
+        Client.email.isnot(None),
+        Client.email.contains("@")  # Basic email validation
+    )
+    
     # Apply search filter
     if search:
         search_pattern = f"%{search}%"
@@ -115,6 +125,19 @@ def create_client(
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only studio users can create clients"
+        )
+    
+    # Validate required fields
+    if not client_data.name or len(client_data.name.strip()) < 2:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Client name must be at least 2 characters"
+        )
+    
+    if not client_data.email or '@' not in client_data.email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Valid email address is required"
         )
     
     # Check if email already exists for this studio

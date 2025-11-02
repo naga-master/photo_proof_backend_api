@@ -1,11 +1,11 @@
 """Photo upload router with presigned URLs."""
 
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.services.auth_service import AuthService
+from app.core.dependencies import get_current_user
+from app.schemas import UserRead
 from app.services.storage_service import get_storage_service
 from app.services.upload_service import UploadService
 from app.schemas.photo import (
@@ -15,31 +15,13 @@ from app.schemas.photo import (
 )
 
 
-router = APIRouter(prefix="/api/upload", tags=["Upload"])
-security = HTTPBearer()
-
-
-def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_db)
-):
-    """Dependency to get current authenticated user."""
-    token = credentials.credentials
-    user_data = AuthService.get_current_user(db, token)
-    
-    if not user_data:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token"
-        )
-    
-    return user_data
+router = APIRouter(tags=["Upload"])
 
 
 @router.post("/presigned", response_model=PresignedUploadResponse)
 def generate_presigned_upload(
     request: PresignedUploadRequest,
-    user = Depends(get_current_user),
+    user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -60,7 +42,7 @@ def generate_presigned_upload(
             filename=request.filename,
             content_type=request.content_type,
             file_size=request.file_size,
-            user_id=user["id"],
+            user_id=user.id,
             folder_id=request.folder_id,
         )
         
@@ -141,7 +123,7 @@ async def complete_upload(
 def create_upload_session(
     project_id: int,
     total_files: int,
-    user = Depends(get_current_user),
+    user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Create batch upload session for progress tracking."""
@@ -151,7 +133,7 @@ def create_upload_session(
     session = upload_service.create_upload_session(
         db=db,
         project_id=project_id,
-        user_id=user["id"],
+        user_id=user.id,
         total_files=total_files,
     )
     
@@ -168,7 +150,7 @@ def create_upload_session(
 def update_upload_session(
     session_id: int,
     uploaded_count: int,
-    user = Depends(get_current_user),
+    user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Update upload session progress."""

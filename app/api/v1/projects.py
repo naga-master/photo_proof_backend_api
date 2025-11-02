@@ -44,126 +44,72 @@ def _default_category_templates() -> Iterable[CreateCategoryRequest]:
     ]
 
 
-def _serialize_image(image: models.Image) -> ImageRead:
-    # Manually construct data dictionary to avoid Pydantic validation issues with SQLAlchemy metadata
-    base_data = {
-        "id": image.id,
-        "project_id": image.project_id,
-        "category_id": image.category_id,
-        "original_filename": image.original_filename,
-        "s3_key_original": image.s3_key_original,
-        "s3_key_thumbnail": image.s3_key_thumbnail,
-        "s3_key_preview": image.s3_key_preview,
-        "s3_key_print": image.s3_key_print,
-        "file_size_bytes": image.file_size_bytes,
-        "mime_type": image.mime_type,
-        "width": image.width,
-        "height": image.height,
-        "metadata": {"width": image.width or 0, "height": image.height or 0},  # Create a simple metadata dict
-        "captured_at": image.captured_at,
-        "camera_make": image.camera_make,
-        "camera_model": image.camera_model,
-        "focal_length": image.focal_length,
-        "shutter_speed": image.shutter_speed,
-        "rating": image.rating,
-        "is_favorite": image.is_favorite,
-        "is_selected": image.is_selected,
-        "comment_count": image.comment_count,
-        "status": image.status,
-        "uploaded_at": image.uploaded_at,
-        "updated_at": image.updated_at,
+# DEPRECATED: This function references non-existent Image model
+# The actual model is Photo in app.db.models.photo
+# This function is not currently used and should be removed or rewritten
+def _serialize_image(image: models.Photo) -> ImageRead:  # Changed to models.Photo but function is deprecated
+    """
+    DEPRECATED: Legacy function for Image serialization.
+    Current schema uses Photo model, not Image model.
+    This function is not used by any active endpoints.
+    """
+    raise NotImplementedError("Image serialization is deprecated. Use Photo model instead.")
+
+
+def _project_detail(project: models.Project, include_images: bool = True, db: Optional[Session] = None) -> dict:
+    """
+    Convert Project model to dictionary matching ProjectDetail schema.
+    Note: Returns plain dict instead of ProjectDetail to avoid schema validation issues.
+    """
+    # Manually create project summary dict matching actual Project model fields
+    summary_dict = {
+        "id": str(project.id),
+        "client_id": str(project.client_id),
+        "name": project.title,  # Map title to name
+        "total_images": project.photo_count,  # Map photo_count to total_images
+        "selected_images": 0,  # Not tracked in current schema
+        "total_comments": 0,  # Not tracked at project level
+        "storage_used_bytes": 0,  # Not tracked in current schema
+        "access_url": None,  # Not in current schema
     }
     
-    # Serialize versions manually
-    versions = []
-    for version in image.versions:
-        version_data = {
-            "id": version.id,
-            "image_id": version.image_id,
-            "version_name": version.version_name,
-            "s3_key": version.s3_key,
-            "url": f"/uploads/{version.s3_key}",  # Generate URL from s3_key
-            "thumbnail": f"/uploads/{version.s3_key}",  # Generate thumbnail URL from s3_key
-            "file_name": version.original_filename,  # Use original_filename as file_name
-            "original_filename": version.original_filename,
-            "mime_type": version.mime_type,
-            "file_size": version.file_size_bytes,  # Use file_size_bytes as file_size
-            "file_size_bytes": version.file_size_bytes,
-            "width": version.width,
-            "height": version.height,
-            "checksum": version.checksum,
-            "notes": version.notes,
-            "is_current": version.is_current,
-            "is_latest": version.is_current,  # Use is_current as is_latest
-            "uploaded_at": version.created_at,  # Use created_at as uploaded_at
-            "created_by": version.created_by,
-            "created_at": version.created_at,
-        }
-        versions.append(ImageVersionRead(**version_data))
+    # Get client data if available
+    client = None
+    if project.client:
+        try:
+            client = ClientRead.model_validate(project.client)
+        except Exception as e:
+            logger.warning(f"Failed to validate client: {e}")
+            client = None
     
-    # Get tags
-    tags = [tag.name for tag in image.tags]
-    
-    # Add versions and tags to base data
-    base_data["versions"] = versions
-    base_data["tags"] = tags
-    
-    return ImageRead(**base_data)
-
-
-def _project_detail(project: models.Project, include_images: bool = True, db: Optional[Session] = None) -> ProjectDetail:
-    # Update total_images count if database session is provided
-    if db:
-        actual_count = db.query(func.count(models.Image.id)).filter(
-            models.Image.project_id == project.id
-        ).scalar() or 0
-        
-        if project.total_images != actual_count:
-            project.total_images = actual_count
-            db.add(project)
-            db.commit()
-            logger.debug(
-                "Synchronized project total images",
-                extra={"project_id": project.id, "total_images": actual_count},
-            )
-    
-    summary = ProjectSummary.model_validate(project)
-    categories = [
-        ProjectCategoryRead.model_validate(category)
-        for category in sorted(project.categories, key=lambda cat: (cat.order_index, cat.created_at))
-    ]
-    settings = ProjectSettingsRead.model_validate(project.settings) if project.settings else None
-    client = ClientRead.model_validate(project.client) if project.client else None
+    # Note: categories, settings, and images relationships don't exist in current schema
+    categories = []
+    settings = None
     images: List[ImageRead] = []
-    if include_images:
-        images = [
-            _serialize_image(image)
-            for image in sorted(project.images, key=lambda img: img.uploaded_at or img.created_at)
-        ]
-
-    detail_payload = summary.model_dump()
-    detail_payload.update(
-        {
-            "delivery_date": project.delivery_date,
-            "location": project.location,
-            "view_count": project.view_count,
-            "last_viewed_at": project.last_viewed_at,
-            "client": client,
-            "settings": settings,
-            "categories": categories,
-            "images": images,
-        }
-    )
-    return ProjectDetail(**detail_payload)
+    
+    # Build detail payload
+    detail_payload = {
+        **summary_dict,
+        "delivery_date": None,  # Not in current schema
+        "location": None,  # Not in current schema
+        "view_count": 0,  # Not in current schema
+        "last_viewed_at": None,  # Not in current schema
+        "client": client,
+        "settings": settings,
+        "categories": categories,
+        "images": images,
+    }
+    
+    return detail_payload
 
 
-@router.get("/", response_model=ProjectListResponse)
+@router.get("/")
 def list_projects(
     studio_id: Optional[str] = Query(None, description="Filter by studio ID"),
     status: Optional[ProjectStatus] = Query(None, description="Filter by status"),
     current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> ProjectListResponse:
+) -> dict:
     logger.debug(
         "Listing projects",
         extra={
@@ -184,62 +130,58 @@ def list_projects(
 
     projects = query.all()
     
-    # Recalculate actual image counts for each project
-    recalculated = 0
+    # Note: Image count syncing removed - Project model uses photo_count, not total_images
+    # The photo_count should be updated when photos are added/removed
+    
+    # Create simplified project summaries matching actual model
+    summaries = []
     for project in projects:
-        actual_count = db.query(func.count(models.Image.id)).filter(
-            models.Image.project_id == project.id
-        ).scalar() or 0
-        
-        if project.total_images != actual_count:
-            project.total_images = actual_count
-            db.add(project)
-            recalculated += 1
+        summaries.append({
+            "id": str(project.id),
+            "studio_id": project.studio_id,
+            "client_id": str(project.client_id),
+            "title": project.title,
+            "shoot_date": project.shoot_date.isoformat() if project.shoot_date else None,
+            "cover_photo_id": project.cover_photo_id,
+            "photo_count": project.photo_count,
+            "is_locked": project.is_locked,
+            "layout": project.layout,
+            "payment_status": project.payment_status,
+            "price": float(project.price) if project.price else None,
+            "package_id": project.package_id,
+            "status": project.status,
+            "has_folders": project.has_folders,
+            "created_at": project.created_at.isoformat() if project.created_at else None,
+            "updated_at": project.updated_at.isoformat() if project.updated_at else None,
+        })
     
-    db.commit()
-
-    if recalculated:
-        logger.debug("Recalculated project image totals", extra={"projects_updated": recalculated})
-    
-    summaries = [ProjectSummary.model_validate(project) for project in projects]
     logger.debug("Projects retrieved", extra={"count": len(summaries)})
-    return ProjectListResponse(projects=summaries, total=len(summaries))
+    return {"projects": summaries, "total": len(summaries)}
 
 
-@router.get("/{project_id}", response_model=ProjectDetail)
-def get_project(project: models.Project = Depends(deps.get_project), db: Session = Depends(get_db)) -> ProjectDetail:
+@router.get("/{project_id}")
+def get_project(project: models.Project = Depends(deps.get_project), db: Session = Depends(get_db)) -> dict:
     logger.debug("Fetching project detail", extra={"project_id": project.id})
     return _project_detail(project, include_images=True, db=db)
 
 
-@router.get("/access/{access_url}", response_model=ProjectDetail)
-def get_project_by_access_url(access_url: str, db: Session = Depends(get_db)) -> ProjectDetail:
+@router.get("/access/{access_url}")
+def get_project_by_access_url(access_url: str, db: Session = Depends(get_db)) -> dict:
     logger.debug("Fetching project by access url", extra={"access_url": access_url})
-    project = (
-        db.query(models.Project)
-        .options(
-            selectinload(models.Project.categories),
-            selectinload(models.Project.images).selectinload(models.Image.versions),
-            selectinload(models.Project.images).selectinload(models.Image.tags),
-            selectinload(models.Project.settings),
-            selectinload(models.Project.client),
-        )
-        .filter(models.Project.access_url == access_url)
-        .first()
+    # Note: Project model doesn't have access_url field in current schema
+    # This endpoint may need to be updated to use project ID or a different lookup method
+    raise HTTPException(
+        status_code=status.HTTP_501_NOT_IMPLEMENTED,
+        detail="Access URL lookup not implemented in current schema"
     )
-    if not project:
-        logger.warning("Project not found by access url", extra={"access_url": access_url})
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
-    logger.debug("Project resolved by access url", extra={"project_id": project.id})
-    return _project_detail(project, include_images=True, db=db)
 
 
-@router.post("/", response_model=ProjectDetail, status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 def create_project(
     request: CreateProjectRequest,
     current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> ProjectDetail:
+) -> dict:
     # Add debug logging for request validation
     logger.debug(
         "Received project creation request",
@@ -300,16 +242,12 @@ def create_project(
             )
 
         client = models.Client(
-            id=str(uuid.uuid4()),
             studio_id=current_user.studio_id,
             user_id=None,
             name=request.client_name,
             email=normalized_email,
             phone=request.client_phone,
             status="active",
-            total_projects=0,
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
         )
         db.add(client)
         db.flush()
@@ -320,83 +258,84 @@ def create_project(
     access_url = f"{slug}-{project_id[:6]}"
 
     project = models.Project(
-        id=project_id,
         studio_id=current_user.studio_id,
         client_id=client.id,
-        created_by=current_user.id,
-        name=request.name,
-        description=request.description,
-        project_type=request.project_type,
+        title=request.name,
         shoot_date=request.shoot_date,
-        access_url=access_url,
-        status=ProjectStatus.DRAFT.value,
-        total_images=0,
-        selected_images=0,
-        total_comments=0,
-        storage_used_bytes=0,
-        view_count=0,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
+        status='draft',
+        has_folders=False,
     )
     db.add(project)
     db.flush()
 
-    settings = models.ProjectSettings(
-        id=str(uuid.uuid4()),
-        project_id=project.id,
-        is_password_protected=False,
-        allow_downloads=True,
-        allow_comments=True,
-        allow_selections=True,
-        allow_favorites=True,
-        watermark_enabled=False,
-        auto_archive_days=90,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
-    )
-    db.add(settings)
+    # Note: ProjectSettings is not in the current schema, skipping for now
+    # settings = models.ProjectSettings(
+    #     id=str(uuid.uuid4()),
+    #     project_id=project.id,
+    #     is_password_protected=False,
+    #     allow_downloads=True,
+    #     allow_comments=True,
+    #     allow_selections=True,
+    #     allow_favorites=True,
+    #     watermark_enabled=False,
+    #     auto_archive_days=90,
+    #     created_at=datetime.utcnow(),
+    #     updated_at=datetime.utcnow(),
+    # )
+    # db.add(settings)
 
-    incoming_categories = request.categories or list(_default_category_templates())
-    for index, category_req in enumerate(incoming_categories, start=1):
-        order_index = category_req.order_index or index
-        db.add(
-            models.Category(
-                id=str(uuid.uuid4()),
-                project_id=project.id,
-                name=category_req.name,
-                display_name=category_req.display_name,
-                description=category_req.description,
-                order_index=order_index,
-                is_default=category_req.is_default,
-                image_count=0,
-                created_at=datetime.utcnow(),
-                updated_at=datetime.utcnow(),
-            )
-        )
+    # Note: Category is not in the current schema, skipping for now
+    # incoming_categories = request.categories or list(_default_category_templates())
+    # for index, category_req in enumerate(incoming_categories, start=1):
+    #     order_index = category_req.order_index or index
+    #     db.add(
+    #         models.Category(
+    #             id=str(uuid.uuid4()),
+    #             project_id=project.id,
+    #             name=category_req.name,
+    #             display_name=category_req.display_name,
+    #             description=category_req.description,
+    #             order_index=order_index,
+    #             is_default=category_req.is_default,
+    #             image_count=0,
+    #             created_at=datetime.utcnow(),
+    #             updated_at=datetime.utcnow(),
+    #         )
+    #     )
 
-    client.total_projects = (client.total_projects or 0) + 1
-    client.updated_at = datetime.utcnow()
+    # Note: Client.total_projects doesn't exist in current schema
+    # client.total_projects = (client.total_projects or 0) + 1
+    # client.updated_at = datetime.utcnow()
 
     db.commit()
 
-    refreshed = (
-        db.query(models.Project)
-        .options(
-            selectinload(models.Project.categories),
-            selectinload(models.Project.images).selectinload(models.Image.versions),
-            selectinload(models.Project.images).selectinload(models.Image.tags),
-            selectinload(models.Project.settings),
-            selectinload(models.Project.client),
-        )
-        .filter(models.Project.id == project.id)
-        .first()
-    )
+    # Refresh the project to get updated data
+    db.refresh(project)
 
     logger.info("Project created", extra={"project_id": project.id})
-    return _project_detail(refreshed, include_images=True)
+    
+    # Return a simplified project detail that matches our actual model
+    return {
+        "id": str(project.id),
+        "studio_id": project.studio_id,
+        "client_id": project.client_id,
+        "title": project.title,
+        "shoot_date": project.shoot_date.isoformat() if project.shoot_date else None,
+        "cover_photo_id": project.cover_photo_id,
+        "photo_count": project.photo_count,
+        "is_locked": project.is_locked,
+        "layout": project.layout,
+        "payment_status": project.payment_status,
+        "price": float(project.price) if project.price else None,
+        "package_id": project.package_id,
+        "status": project.status,
+        "has_folders": project.has_folders,
+        "created_at": project.created_at.isoformat() if project.created_at else None,
+        "updated_at": project.updated_at.isoformat() if project.updated_at else None,
+    }
 
 
-@router.patch("/{project_id}", response_model=ProjectDetail)
+@router.patch("/{project_id}")
 def update_project(
     project_id: str,
     project_update: dict,
@@ -406,8 +345,25 @@ def update_project(
     """Update an existing project."""
     logger.debug("Updating project", extra={"project_id": project_id, "user_id": current_user.id})
     
+    # Convert project_id to integer (Project model uses Integer ID)
+    try:
+        project_id_int = int(project_id)
+    except ValueError:
+        # Check if it's a UUID format (from old frontend mock data)
+        if len(project_id) == 36 and project_id.count('-') == 4:
+            logger.warning("UUID project ID received (old mock data)", extra={"project_id": project_id})
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Project not found. This appears to be mock data. Please refresh the project list."
+            )
+        logger.warning("Invalid project ID format", extra={"project_id": project_id})
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid project ID format. Expected numeric ID."
+        )
+    
     # Get the existing project
-    project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    project = db.query(models.Project).filter(models.Project.id == project_id_int).first()
     if not project:
         logger.warning("Project not found for update", extra={"project_id": project_id})
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
@@ -425,97 +381,36 @@ def update_project(
         project.name = project_update["name"]
     if "description" in project_update:
         project.description = project_update["description"]
+    if "cover_photo_id" in project_update:
+        # Validate that the photo exists and belongs to this project
+        photo_id = project_update["cover_photo_id"]
+        if photo_id is not None:
+            photo = db.query(models.Photo).filter(
+                models.Photo.id == photo_id,
+                models.Photo.project_id == project_id
+            ).first()
+            if not photo:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Cover photo must belong to this project"
+                )
+        project.cover_photo_id = photo_id
     
-    # Update categories if provided
+    # DEPRECATED: Categories functionality - Category model doesn't exist in current schema
+    # The code below references models.Category and models.Image which don't exist
+    # This section has been disabled until the schema is updated
     if "categories" in project_update:
-        # Get existing categories
-        existing_categories = db.query(models.Category).filter(models.Category.project_id == project_id).all()
-        existing_names = {cat.display_name for cat in existing_categories}
-        new_names = set(project_update["categories"])
-        
-        # Remove categories that are no longer needed (but keep their images by reassigning)
-        categories_to_remove = existing_names - new_names
-        if categories_to_remove:
-            # Find the first category to reassign images to (or create a default one)
-            default_category = None
-            if new_names:
-                # Use the first new category as default
-                default_category_name = list(new_names)[0]
-                default_category = db.query(models.Category).filter(
-                    models.Category.project_id == project_id,
-                    models.Category.display_name == default_category_name
-                ).first()
-            
-            if not default_category and new_names:
-                # Create the first new category to reassign images to
-                first_new_category = list(new_names)[0]
-                default_category = models.Category(
-                    id=str(uuid.uuid4()),
-                    project_id=project_id,
-                    name=first_new_category.lower(),
-                    display_name=first_new_category,
-                    description="",
-                    order_index=1,
-                    is_default=True
-                )
-                db.add(default_category)
-                db.flush()  # Get the ID
-            
-            # Reassign images from categories being deleted to the default category
-            if default_category:
-                for cat_name in categories_to_remove:
-                    cat_to_remove = next((cat for cat in existing_categories if cat.display_name == cat_name), None)
-                    if cat_to_remove:
-                        # Reassign all images to the default category
-                        db.query(models.Image).filter(
-                            models.Image.category_id == cat_to_remove.id
-                        ).update({"category_id": default_category.id})
-                        
-                        # Now safe to delete the category
-                        db.delete(cat_to_remove)
-        
-        # Add new categories
-        for idx, category_name in enumerate(project_update["categories"]):
-            # Check if category already exists
-            existing_cat = next((cat for cat in existing_categories if cat.display_name == category_name), None)
-            if not existing_cat:
-                category = models.Category(
-                    id=str(uuid.uuid4()),
-                    project_id=project_id,
-                    name=category_name.lower(),
-                    display_name=category_name,
-                    description="",
-                    order_index=idx + 1,
-                    is_default=(idx == 0)
-                )
-                db.add(category)
-            else:
-                # Update order for existing category
-                existing_cat.order_index = idx + 1
-                existing_cat.is_default = (idx == 0)
+        logger.warning("Categories update requested but not implemented in current schema", 
+                      extra={"project_id": project_id})
+        # Skip categories update - not supported in current schema
     
     # Update settings if provided
+    # Note: ProjectSettings model also doesn't exist in current schema
     if "settings" in project_update:
-        settings_data = project_update["settings"]
-        if project.settings:
-            # Update existing settings
-            if "is_password_protected" in settings_data:
-                project.settings.is_password_protected = settings_data["is_password_protected"]
-            if "password" in settings_data:
-                project.settings.password = settings_data["password"]
-            if "allow_downloads" in settings_data:
-                project.settings.allow_downloads = settings_data["allow_downloads"]
-            if "allow_comments" in settings_data:
-                project.settings.allow_comments = settings_data["allow_comments"]
-        else:
-            # Create new settings
-            project.settings = models.ProjectSettings(
-                project_id=project_id,
-                is_password_protected=settings_data.get("is_password_protected", False),
-                password=settings_data.get("password", ""),
-                allow_downloads=settings_data.get("allow_downloads", True),
-                allow_comments=settings_data.get("allow_comments", True)
-            )
+        logger.warning("Settings update requested but not implemented in current schema",
+                      extra={"project_id": project_id})
+        # Skip settings update - ProjectSettings model doesn't exist
+        # The Project model doesn't have a settings relationship
 
     project.updated_at = datetime.utcnow()
     
@@ -526,13 +421,11 @@ def update_project(
         refreshed = (
             db.query(models.Project)
             .options(
-                selectinload(models.Project.categories),
-                selectinload(models.Project.images).selectinload(models.Image.versions),
-                selectinload(models.Project.images).selectinload(models.Image.tags),
-                selectinload(models.Project.settings),
                 selectinload(models.Project.client),
+                selectinload(models.Project.photos),
+                selectinload(models.Project.folders),
             )
-            .filter(models.Project.id == project_id)
+            .filter(models.Project.id == project_id_int)
             .first()
         )
         
@@ -551,7 +444,25 @@ def delete_project(
     db: Session = Depends(get_db),
 ) -> None:
     logger.debug("Deleting project", extra={"project_id": project_id, "user_id": current_user.id})
-    project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    
+    # Convert project_id to integer (Project model uses Integer ID)
+    try:
+        project_id_int = int(project_id)
+    except ValueError:
+        # Check if it's a UUID format (from old frontend mock data)
+        if len(project_id) == 36 and project_id.count('-') == 4:
+            logger.warning("UUID project ID received (old mock data)", extra={"project_id": project_id})
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Project not found. This appears to be mock data. Please refresh the project list from the server."
+            )
+        logger.warning("Invalid project ID format", extra={"project_id": project_id})
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid project ID format. Expected numeric ID."
+        )
+    
+    project = db.query(models.Project).filter(models.Project.id == project_id_int).first()
     if not project:
         logger.warning("Project not found for deletion", extra={"project_id": project_id})
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
