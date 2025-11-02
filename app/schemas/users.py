@@ -54,7 +54,7 @@ class StudioRead(BaseModel):
 
 
 class ClientRead(BaseModel):
-    id: str
+    id: int
     studio_id: str
     user_id: Optional[str] = None
     name: str

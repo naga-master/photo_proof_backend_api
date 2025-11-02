@@ -147,7 +147,7 @@ class UploadService:
         # Create Photo record
         photo = Photo(
             project_id=upload_session.project_id,
-            folder_id=None,
+            folder_id=upload_token.folder_id,
             original_filename=upload_token.filename,
             storage_path=upload_token.storage_path,
             src=url,
@@ -166,11 +166,15 @@ class UploadService:
         upload_token.status = 'completed'
         upload_token.photo_id = photo.id
         
+        # Flush to make the photo visible to subsequent queries
+        db.flush()
+        
         # Update project photo count
+        # Count all photos with status='completed' (the default status for successfully uploaded photos)
         project.photo_count = db.query(Photo).filter(
             Photo.project_id == project.id,
-            Photo.status == "active"
-        ).count() + 1
+            Photo.status == "completed"
+        ).count()
         
         db.commit()
         db.refresh(photo)
@@ -281,6 +285,7 @@ class UploadService:
                 storage_path=storage_path,
                 content_type=file_info.get('content_type', 'image/jpeg'),
                 file_size=file_info.get('file_size', 0),
+                folder_id=folder_id,
                 status='pending',
                 expires_at=datetime.utcnow() + timedelta(hours=1),
             )

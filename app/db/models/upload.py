@@ -59,6 +59,7 @@ class UploadToken(Base, TimestampMixin):
     file_size = Column(Integer, nullable=False)
     
     # Destination
+    folder_id = Column(String(36), ForeignKey("folders.id", ondelete="SET NULL"), nullable=True)
     photo_id = Column(Integer, ForeignKey("photos.id", ondelete="SET NULL"), nullable=True)
     storage_path = Column(String(1000), nullable=True)
     
@@ -71,6 +72,7 @@ class UploadToken(Base, TimestampMixin):
 
     # Relationships
     upload_session = relationship("UploadSession", back_populates="upload_tokens")
+    folder = relationship("Folder")
     photo = relationship("Photo")
 
     def is_expired(self):
