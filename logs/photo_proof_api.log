@@ -3401,3 +3401,110 @@ total
 2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:64000 - "GET /v2/invoices/ HTTP/1.1" 200
 2025-11-02 08:14:35 | DEBUG | app.db.session | Database session committed
 2025-11-02 08:14:35 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:38:33 | INFO | app.main | Application initialized
+2025-11-02 08:38:33 | INFO | uvicorn.error | Started server process [67706]
+2025-11-02 08:38:33 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-02 08:38:33 | INFO | uvicorn.error | Application startup complete.
+2025-11-02 08:38:35 | INFO | uvicorn.access | 127.0.0.1:54313 - "OPTIONS /api/auth/studio/login HTTP/1.1" 200
+2025-11-02 08:38:35 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54315 - "POST /api/auth/studio/login HTTP/1.1" 200
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54313 - "OPTIONS /api/projects HTTP/1.1" 200
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54315 - "GET /api/projects HTTP/1.1" 307
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54313 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:38:36 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:38:36 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:38:36 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-02 08:38:36 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54315 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54313 - "OPTIONS /v2/clients HTTP/1.1" 200
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54315 - "GET /v2/clients HTTP/1.1" 307
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54313 - "OPTIONS /v2/clients/ HTTP/1.1" 200
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:38:36 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:38:36 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54315 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54313 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54315 - "GET /v2/packages HTTP/1.1" 307
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54313 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:38:36 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:38:36 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54315 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54313 - "OPTIONS /v2/invoices HTTP/1.1" 200
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54315 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54313 - "OPTIONS /v2/invoices/ HTTP/1.1" 200
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:38:36 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:38:36 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:38:36 | INFO | uvicorn.access | 127.0.0.1:54315 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:38:36 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55569 - "GET /api/projects HTTP/1.1" 307
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55569 - "GET /api/projects HTTP/1.1" 307
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:43:20 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-02 08:43:20 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55569 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:43:20 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-02 08:43:20 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55571 - "GET /v2/clients HTTP/1.1" 307
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55569 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55569 - "GET /v2/clients HTTP/1.1" 307
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55571 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55571 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55571 - "GET /v2/packages HTTP/1.1" 307
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55571 - "GET /v2/packages HTTP/1.1" 307
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55571 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55571 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55571 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55571 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55571 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:43:20 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:43:20 | INFO | uvicorn.access | 127.0.0.1:55571 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:43:20 | DEBUG | app.db.session | Database session closed

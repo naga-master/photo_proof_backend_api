@@ -18,6 +18,7 @@ class LoginRequest(BaseModel):
 class LoginResponse(BaseModel):
     """Login response with token and user info."""
     token: str
+    refresh_token: Optional[str] = None
     user: "UserResponse"
     client_id: Optional[int] = None  # Set if user is a client
     

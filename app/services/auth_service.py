@@ -26,7 +26,8 @@ from app.schemas.auth import (
 # Configuration from environment
 SECRET_KEY = os.getenv("SECRET_KEY", "YOUR_SECRET_KEY_HERE")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))  # Short-lived: 30 minutes
+REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7"))  # 7 days
 
 
 class AuthService:
@@ -58,7 +59,16 @@ class AuthService:
         else:
             expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         
-        to_encode.update({"exp": expire, "iat": datetime.utcnow()})
+        to_encode.update({"exp": expire, "iat": datetime.utcnow(), "type": "access"})
+        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+        return encoded_jwt
+    
+    @staticmethod
+    def create_refresh_token(data: dict) -> str:
+        """Create JWT refresh token with longer expiration."""
+        to_encode = data.copy()
+        expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+        to_encode.update({"exp": expire, "iat": datetime.utcnow(), "type": "refresh"})
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
     
@@ -68,8 +78,16 @@ class AuthService:
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             return payload
-        except JWTError:
+        except JWTError as e:
             return None
+    
+    @staticmethod
+    def verify_refresh_token(token: str) -> Optional[dict]:
+        """Verify refresh token and return payload if valid."""
+        payload = AuthService.decode_token(token)
+        if not payload or payload.get("type") != "refresh":
+            return None
+        return payload
     
     @staticmethod
     def studio_login(db: Session, login_data: LoginRequest) -> Optional[Tuple[User, str]]:

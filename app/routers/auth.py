@@ -1,8 +1,9 @@
 """Authentication router."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Cookie
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
+from typing import Optional
 
 from app.db.session import get_db
 from app.services.auth_service import AuthService
@@ -22,8 +23,8 @@ security = HTTPBearer()
 
 
 @router.post("/studio/login", response_model=LoginResponse)
-def studio_login(login_data: LoginRequest, db: Session = Depends(get_db)):
-    """Studio user login."""
+def studio_login(login_data: LoginRequest, response: Response, db: Session = Depends(get_db)):
+    """Studio user login with httpOnly cookie support."""
     result = AuthService.studio_login(db, login_data)
     
     if not result:
@@ -34,15 +35,46 @@ def studio_login(login_data: LoginRequest, db: Session = Depends(get_db)):
     
     user, access_token = result
     
+    # Create refresh token
+    token_data = {
+        "sub": user.id,
+        "email": user.email,
+        "role": user.role,
+        "studio_id": user.studio_id,
+    }
+    refresh_token = AuthService.create_refresh_token(token_data)
+    
+    # Set httpOnly cookies for better security
+    # Access token - short lived
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=False,  # Set to True in production with HTTPS
+        samesite="lax",
+        max_age=30 * 60  # 30 minutes
+    )
+    
+    # Refresh token - longer lived
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=False,  # Set to True in production with HTTPS
+        samesite="lax",
+        max_age=7 * 24 * 60 * 60  # 7 days
+    )
+    
     return LoginResponse(
         token=access_token,
+        refresh_token=refresh_token,
         user=UserResponse.model_validate(user)
     )
 
 
 @router.post("/client/login", response_model=LoginResponse)
-def client_login(login_data: LoginRequest, db: Session = Depends(get_db)):
-    """Client user login."""
+def client_login(login_data: LoginRequest, response: Response, db: Session = Depends(get_db)):
+    """Client user login with httpOnly cookie support."""
     result = AuthService.client_login(db, login_data)
     
     if not result:
@@ -57,8 +89,40 @@ def client_login(login_data: LoginRequest, db: Session = Depends(get_db)):
     from app.db.models import Client
     client = db.query(Client).filter(Client.user_id == user.id).first()
     
+    # Create refresh token
+    token_data = {
+        "sub": user.id,
+        "email": user.email,
+        "role": user.role,
+        "studio_id": user.studio_id,
+        "client_id": client.id if client else None
+    }
+    refresh_token = AuthService.create_refresh_token(token_data)
+    
+    # Set httpOnly cookies for better security
+    # Access token - short lived
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=False,  # Set to True in production with HTTPS
+        samesite="lax",
+        max_age=30 * 60  # 30 minutes
+    )
+    
+    # Refresh token - longer lived
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=False,  # Set to True in production with HTTPS
+        samesite="lax",
+        max_age=7 * 24 * 60 * 60  # 7 days
+    )
+    
     return LoginResponse(
         token=access_token,
+        refresh_token=refresh_token,
         user=UserResponse.model_validate(user),
         client_id=client.id if client else None
     )
@@ -111,35 +175,82 @@ def get_current_user(
 
 @router.post("/refresh", response_model=TokenResponse)
 def refresh_token(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    response: Response,
+    refresh_token: Optional[str] = Cookie(None),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
     db: Session = Depends(get_db)
 ):
-    """Refresh access token."""
-    token = credentials.credentials
-    user_data = AuthService.get_current_user(db, token)
+    """Refresh access token using refresh token from cookie or Authorization header."""
+    # Try to get refresh token from cookie first, then from Authorization header
+    token = refresh_token
+    if not token and credentials:
+        token = credentials.credentials
     
-    if not user_data:
+    if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token"
+            detail="Refresh token not provided"
         )
     
-    # Generate new token
+    # Verify refresh token
+    payload = AuthService.verify_refresh_token(token)
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired refresh token"
+        )
+    
+    user_id = payload.get("sub")
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token payload"
+        )
+    
+    # Fetch user from database to ensure they still exist and are active
+    from app.db.models import User
+    user = db.query(User).filter(User.id == user_id, User.is_active == True).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found or inactive"
+        )
+    
+    # Generate new access token
     token_data = {
-        "sub": user_data["id"],
-        "email": user_data["email"],
-        "role": user_data["role"],
+        "sub": user.id,
+        "email": user.email,
+        "role": user.role,
+        "studio_id": user.studio_id,
     }
     
-    if user_data["role"] == "studio":
-        token_data["studio_name"] = user_data.get("studio_name")
-    elif user_data["role"] == "client":
-        token_data["client_id"] = user_data.get("client_id")
-        token_data["studio_id"] = user_data.get("studio_id")
+    if user.role == "client":
+        from app.db.models import Client
+        client = db.query(Client).filter(Client.user_id == user.id).first()
+        if client:
+            token_data["client_id"] = client.id
     
-    new_token = AuthService.create_access_token(token_data)
+    new_access_token = AuthService.create_access_token(token_data)
+    
+    # Set new access token in cookie
+    response.set_cookie(
+        key="access_token",
+        value=new_access_token,
+        httponly=True,
+        secure=False,  # Set to True in production with HTTPS
+        samesite="lax",
+        max_age=30 * 60  # 30 minutes
+    )
     
     return TokenResponse(
-        access_token=new_token,
+        access_token=new_access_token,
         token_type="bearer"
     )
+
+
+@router.post("/logout")
+def logout(response: Response):
+    """Logout user by clearing authentication cookies."""
+    response.delete_cookie(key="access_token")
+    response.delete_cookie(key="refresh_token")
+    return {"message": "Successfully logged out"}
