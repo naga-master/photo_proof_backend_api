@@ -8,7 +8,7 @@ venv
 venv/*
 .venv
 .venv/*
-photo_proof.db
+# photo_proof.db
 uploads/
 tmpchunk.bin
 uvicorn.out
