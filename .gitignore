@@ -12,3 +12,6 @@ photo_proof.db
 uploads/
 tmpchunk.bin
 uvicorn.out
+*.log
+logs/*.log
+/logs/photo_proof_api.log
