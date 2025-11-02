@@ -4,8 +4,7 @@ from typing import List, Optional
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user, get_db
 from app.db.models import ServicePackage, User
@@ -21,10 +20,10 @@ router = APIRouter()
 
 
 @router.get("/", response_model=ServicePackageListResponse)
-async def get_service_packages(
+def get_service_packages(
     studio_id: Optional[str] = None,
     category: Optional[str] = None,
-    db: AsyncSession = Depends(get_db),
+    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ServicePackageListResponse:
     """
@@ -42,32 +41,29 @@ async def get_service_packages(
         target_studio_id = current_user.studio_id
     
     # Build query
-    query = select(ServicePackage).where(ServicePackage.studio_id == target_studio_id)
+    query = db.query(ServicePackage).filter(ServicePackage.studio_id == target_studio_id)
     
     if category:
-        query = query.where(ServicePackage.category == category)
+        query = query.filter(ServicePackage.category == category)
     
     query = query.order_by(ServicePackage.category, ServicePackage.price)
     
-    result = await db.execute(query)
-    packages = result.scalars().all()
+    packages = query.all()
     
     return ServicePackageListResponse(
-        packages=[ServicePackageResponse.model_validate(pkg) for pkg in packages]
+        packages=[ServicePackageResponse.model_validate(pkg) for pkg in packages],
+        total=len(packages)
     )
 
 
 @router.get("/{package_id}", response_model=ServicePackageResponse)
-async def get_service_package(
+def get_service_package(
     package_id: str,
-    db: AsyncSession = Depends(get_db),
+    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ServicePackageResponse:
     """Get a single service package by ID."""
-    result = await db.execute(
-        select(ServicePackage).where(ServicePackage.id == package_id)
-    )
-    package = result.scalar_one_or_none()
+    package = db.query(ServicePackage).filter(ServicePackage.id == package_id).first()
     
     if not package:
         raise HTTPException(
@@ -86,9 +82,9 @@ async def get_service_package(
 
 
 @router.post("/", response_model=ServicePackageResponse, status_code=status.HTTP_201_CREATED)
-async def create_service_package(
+def create_service_package(
     package_data: ServicePackageCreate,
-    db: AsyncSession = Depends(get_db),
+    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ServicePackageResponse:
     """
@@ -114,17 +110,17 @@ async def create_service_package(
     )
     
     db.add(new_package)
-    await db.commit()
-    await db.refresh(new_package)
+    db.commit()
+    db.refresh(new_package)
     
     return ServicePackageResponse.model_validate(new_package)
 
 
 @router.patch("/{package_id}", response_model=ServicePackageResponse)
-async def update_service_package(
+def update_service_package(
     package_id: str,
     package_data: ServicePackageUpdate,
-    db: AsyncSession = Depends(get_db),
+    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> ServicePackageResponse:
     """
@@ -139,10 +135,7 @@ async def update_service_package(
         )
     
     # Get package
-    result = await db.execute(
-        select(ServicePackage).where(ServicePackage.id == package_id)
-    )
-    package = result.scalar_one_or_none()
+    package = db.query(ServicePackage).filter(ServicePackage.id == package_id).first()
     
     if not package:
         raise HTTPException(
@@ -169,16 +162,16 @@ async def update_service_package(
     if package_data.features is not None:
         package.features = package_data.features
     
-    await db.commit()
-    await db.refresh(package)
+    db.commit()
+    db.refresh(package)
     
     return ServicePackageResponse.model_validate(package)
 
 
 @router.delete("/{package_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_service_package(
+def delete_service_package(
     package_id: str,
-    db: AsyncSession = Depends(get_db),
+    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> None:
     """
@@ -193,10 +186,7 @@ async def delete_service_package(
         )
     
     # Get package
-    result = await db.execute(
-        select(ServicePackage).where(ServicePackage.id == package_id)
-    )
-    package = result.scalar_one_or_none()
+    package = db.query(ServicePackage).filter(ServicePackage.id == package_id).first()
     
     if not package:
         raise HTTPException(
@@ -211,5 +201,5 @@ async def delete_service_package(
             detail="Not authorized to delete this service package"
         )
     
-    await db.delete(package)
-    await db.commit()
+    db.delete(package)
+    db.commit()

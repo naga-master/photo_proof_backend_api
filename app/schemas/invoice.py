@@ -44,7 +44,7 @@ class ServicePackageResponse(ServicePackageBase):
     id: str
     studio_id: str
     features: List[ServicePackageFeature]
-    deliverables: List[str]
+    deliverables: Optional[List[str]] = []
     created_at: datetime
     updated_at: datetime
     

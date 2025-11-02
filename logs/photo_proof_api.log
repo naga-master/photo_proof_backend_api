@@ -2433,3 +2433,971 @@ TypeError: object ChunkedIteratorResult can't be used in 'await' expression
 2025-11-02 08:03:13 | INFO | uvicorn.access | 127.0.0.1:60910 - "GET /v2/invoices/ HTTP/1.1" 200
 2025-11-02 08:03:13 | DEBUG | app.db.session | Database session committed
 2025-11-02 08:03:13 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:05:25 | INFO | uvicorn.error | Shutting down
+2025-11-02 08:05:25 | INFO | uvicorn.error | Waiting for application shutdown.
+2025-11-02 08:05:25 | INFO | uvicorn.error | Application shutdown complete.
+2025-11-02 08:05:25 | INFO | uvicorn.error | Finished server process [14383]
+2025-11-02 08:06:12 | INFO | app.main | Application initialized
+2025-11-02 08:06:12 | INFO | uvicorn.error | Started server process [21811]
+2025-11-02 08:06:12 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-02 08:06:12 | INFO | uvicorn.error | Application startup complete.
+2025-11-02 08:06:38 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:06:38 | INFO | uvicorn.access | 127.0.0.1:61834 - "POST /api/auth/studio/login HTTP/1.1" 200
+2025-11-02 08:06:38 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:06:38 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:06:38 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:06:38 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:06:38 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:06:38 | ERROR | app.db.session | Database session rolled back due to exception
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/db/session.py", line 66, in get_db
+    yield db
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/concurrency.py", line 27, in contextmanager_in_threadpool
+    yield await run_in_threadpool(cm.__enter__)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/routers/service_packages.py", line 54, in get_service_packages
+    packages=[ServicePackageResponse.model_validate(pkg) for pkg in packages]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/pydantic/main.py", line 705, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj, strict=strict, from_attributes=from_attributes, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ServicePackageResponse
+deliverables
+  Field required [type=missing, input_value=<ServicePackage(id=6cbdfd...te Event, price=800.00)>, input_type=ServicePackage]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+2025-11-02 08:06:38 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:06:38 | INFO | uvicorn.access | 127.0.0.1:61836 - "GET /v2/packages/ HTTP/1.1" 500
+2025-11-02 08:06:38 | ERROR | uvicorn.error | Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/routers/service_packages.py", line 54, in get_service_packages
+    packages=[ServicePackageResponse.model_validate(pkg) for pkg in packages]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/pydantic/main.py", line 705, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj, strict=strict, from_attributes=from_attributes, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ServicePackageResponse
+deliverables
+  Field required [type=missing, input_value=<ServicePackage(id=6cbdfd...te Event, price=800.00)>, input_type=ServicePackage]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+2025-11-02 08:06:49 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:06:49 | INFO | uvicorn.access | 127.0.0.1:61888 - "POST /api/auth/studio/login HTTP/1.1" 200
+2025-11-02 08:06:49 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:06:49 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:06:49 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:06:49 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:06:49 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:06:49 | ERROR | app.db.session | Database session rolled back due to exception
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/db/session.py", line 66, in get_db
+    yield db
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/concurrency.py", line 27, in contextmanager_in_threadpool
+    yield await run_in_threadpool(cm.__enter__)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/routers/service_packages.py", line 54, in get_service_packages
+    packages=[ServicePackageResponse.model_validate(pkg) for pkg in packages]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/pydantic/main.py", line 705, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj, strict=strict, from_attributes=from_attributes, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ServicePackageResponse
+deliverables
+  Field required [type=missing, input_value=<ServicePackage(id=6cbdfd...te Event, price=800.00)>, input_type=ServicePackage]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+2025-11-02 08:06:49 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:06:49 | INFO | uvicorn.access | 127.0.0.1:61890 - "GET /v2/packages/ HTTP/1.1" 500
+2025-11-02 08:06:49 | ERROR | uvicorn.error | Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/routers/service_packages.py", line 54, in get_service_packages
+    packages=[ServicePackageResponse.model_validate(pkg) for pkg in packages]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/pydantic/main.py", line 705, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj, strict=strict, from_attributes=from_attributes, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ServicePackageResponse
+deliverables
+  Field required [type=missing, input_value=<ServicePackage(id=6cbdfd...te Event, price=800.00)>, input_type=ServicePackage]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+2025-11-02 08:07:17 | INFO | uvicorn.error | Shutting down
+2025-11-02 08:07:17 | INFO | uvicorn.error | Waiting for application shutdown.
+2025-11-02 08:07:17 | INFO | uvicorn.error | Application shutdown complete.
+2025-11-02 08:07:17 | INFO | uvicorn.error | Finished server process [21811]
+2025-11-02 08:08:02 | INFO | app.main | Application initialized
+2025-11-02 08:08:02 | INFO | uvicorn.error | Started server process [26178]
+2025-11-02 08:08:02 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-02 08:08:02 | INFO | uvicorn.error | Application startup complete.
+2025-11-02 08:08:13 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:08:13 | INFO | uvicorn.access | 127.0.0.1:62266 - "POST /api/auth/studio/login HTTP/1.1" 200
+2025-11-02 08:08:13 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:08:13 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:08:13 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:08:13 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:08:13 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:08:13 | ERROR | app.db.session | Database session rolled back due to exception
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/db/session.py", line 66, in get_db
+    yield db
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/concurrency.py", line 27, in contextmanager_in_threadpool
+    yield await run_in_threadpool(cm.__enter__)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/routers/service_packages.py", line 54, in get_service_packages
+    packages=[ServicePackageResponse.model_validate(pkg) for pkg in packages]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/pydantic/main.py", line 705, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj, strict=strict, from_attributes=from_attributes, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ServicePackageResponse
+deliverables
+  Field required [type=missing, input_value=<ServicePackage(id=6cbdfd...te Event, price=800.00)>, input_type=ServicePackage]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+2025-11-02 08:08:13 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:08:13 | INFO | uvicorn.access | 127.0.0.1:62272 - "GET /v2/packages/ HTTP/1.1" 500
+2025-11-02 08:08:13 | ERROR | uvicorn.error | Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/routers/service_packages.py", line 54, in get_service_packages
+    packages=[ServicePackageResponse.model_validate(pkg) for pkg in packages]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/pydantic/main.py", line 705, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj, strict=strict, from_attributes=from_attributes, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ServicePackageResponse
+deliverables
+  Field required [type=missing, input_value=<ServicePackage(id=6cbdfd...te Event, price=800.00)>, input_type=ServicePackage]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+2025-11-02 08:08:19 | DEBUG | app.api.v1.health | Health check evaluated
+2025-11-02 08:08:19 | INFO | uvicorn.access | 127.0.0.1:62297 - "GET /api/health HTTP/1.1" 200
+2025-11-02 08:08:26 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:08:26 | INFO | uvicorn.access | 127.0.0.1:62338 - "POST /api/auth/studio/login HTTP/1.1" 200
+2025-11-02 08:08:26 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:08:26 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:08:26 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:08:26 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:08:26 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:08:26 | ERROR | app.db.session | Database session rolled back due to exception
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/db/session.py", line 66, in get_db
+    yield db
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/concurrency.py", line 27, in contextmanager_in_threadpool
+    yield await run_in_threadpool(cm.__enter__)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/routers/service_packages.py", line 54, in get_service_packages
+    packages=[ServicePackageResponse.model_validate(pkg) for pkg in packages]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/pydantic/main.py", line 705, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj, strict=strict, from_attributes=from_attributes, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ServicePackageResponse
+deliverables
+  Field required [type=missing, input_value=<ServicePackage(id=6cbdfd...te Event, price=800.00)>, input_type=ServicePackage]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+2025-11-02 08:08:26 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:08:26 | INFO | uvicorn.access | 127.0.0.1:62340 - "GET /v2/packages/ HTTP/1.1" 500
+2025-11-02 08:08:26 | ERROR | uvicorn.error | Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/routers/service_packages.py", line 54, in get_service_packages
+    packages=[ServicePackageResponse.model_validate(pkg) for pkg in packages]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/pydantic/main.py", line 705, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj, strict=strict, from_attributes=from_attributes, context=context, by_alias=by_alias, by_name=by_name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ServicePackageResponse
+deliverables
+  Field required [type=missing, input_value=<ServicePackage(id=6cbdfd...te Event, price=800.00)>, input_type=ServicePackage]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+2025-11-02 08:10:27 | INFO | uvicorn.error | Shutting down
+2025-11-02 08:10:27 | INFO | uvicorn.error | Waiting for application shutdown.
+2025-11-02 08:10:27 | INFO | uvicorn.error | Application shutdown complete.
+2025-11-02 08:10:27 | INFO | uvicorn.error | Finished server process [26178]
+2025-11-02 08:10:30 | INFO | app.main | Application initialized
+2025-11-02 08:10:30 | INFO | uvicorn.error | Started server process [30260]
+2025-11-02 08:10:30 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-02 08:10:30 | INFO | uvicorn.error | Application startup complete.
+2025-11-02 08:10:36 | DEBUG | app.api.v1.health | Health check evaluated
+2025-11-02 08:10:36 | INFO | uvicorn.access | 127.0.0.1:62904 - "GET /api/health HTTP/1.1" 200
+2025-11-02 08:10:57 | INFO | uvicorn.access | 127.0.0.1:63015 - "POST /api/auth/login HTTP/1.1" 404
+2025-11-02 08:10:58 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:10:58 | ERROR | app.db.session | Database session rolled back due to exception
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/db/session.py", line 66, in get_db
+    yield db
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/concurrency.py", line 27, in contextmanager_in_threadpool
+    yield await run_in_threadpool(cm.__enter__)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 377, in app
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/dependencies/utils.py", line 624, in solve_dependencies
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/dependencies/utils.py", line 646, in solve_dependencies
+    solved = await call(**solved_result.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/security/http.py", line 308, in __call__
+    raise HTTPException(
+        status_code=HTTP_403_FORBIDDEN, detail="Not authenticated"
+    )
+fastapi.exceptions.HTTPException: 403: Not authenticated
+2025-11-02 08:10:58 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:10:58 | INFO | uvicorn.access | 127.0.0.1:63017 - "GET /v2/packages/ HTTP/1.1" 403
+2025-11-02 08:12:09 | INFO | uvicorn.access | 127.0.0.1:63328 - "OPTIONS /api/auth/studio/login HTTP/1.1" 200
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:12:09 | INFO | uvicorn.access | 127.0.0.1:63328 - "POST /api/auth/studio/login HTTP/1.1" 200
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:12:09 | INFO | uvicorn.access | 127.0.0.1:63328 - "GET /api/projects HTTP/1.1" 307
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:12:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:12:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:12:09 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-02 08:12:09 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-02 08:12:09 | INFO | uvicorn.access | 127.0.0.1:63328 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:12:09 | INFO | uvicorn.access | 127.0.0.1:63328 - "GET /v2/clients HTTP/1.1" 307
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:12:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:12:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:12:09 | INFO | uvicorn.access | 127.0.0.1:63328 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:12:09 | INFO | uvicorn.access | 127.0.0.1:63328 - "GET /v2/packages HTTP/1.1" 307
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:12:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:12:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:12:09 | ERROR | app.db.session | Database session rolled back due to exception
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/db/session.py", line 66, in get_db
+    yield db
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/concurrency.py", line 27, in contextmanager_in_threadpool
+    yield await run_in_threadpool(cm.__enter__)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/routers/service_packages.py", line 53, in get_service_packages
+    return ServicePackageListResponse(
+        packages=[ServicePackageResponse.model_validate(pkg) for pkg in packages]
+    )
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/pydantic/main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ServicePackageListResponse
+total
+  Field required [type=missing, input_value={'packages': [ServicePack..., 13, 54, 20, 324107))]}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:12:09 | INFO | uvicorn.access | 127.0.0.1:63328 - "GET /v2/packages/ HTTP/1.1" 500
+2025-11-02 08:12:09 | ERROR | uvicorn.error | Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/routers/service_packages.py", line 53, in get_service_packages
+    return ServicePackageListResponse(
+        packages=[ServicePackageResponse.model_validate(pkg) for pkg in packages]
+    )
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/pydantic/main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for ServicePackageListResponse
+total
+  Field required [type=missing, input_value={'packages': [ServicePack..., 13, 54, 20, 324107))]}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+2025-11-02 08:12:09 | INFO | uvicorn.access | 127.0.0.1:63330 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:12:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:12:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:12:09 | INFO | uvicorn.access | 127.0.0.1:63330 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:12:09 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:12:58 | INFO | uvicorn.error | Shutting down
+2025-11-02 08:12:58 | INFO | uvicorn.error | Waiting for application shutdown.
+2025-11-02 08:12:58 | INFO | uvicorn.error | Application shutdown complete.
+2025-11-02 08:12:58 | INFO | uvicorn.error | Finished server process [30260]
+2025-11-02 08:13:01 | INFO | app.main | Application initialized
+2025-11-02 08:13:01 | INFO | uvicorn.error | Started server process [34505]
+2025-11-02 08:13:01 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-02 08:13:01 | INFO | uvicorn.error | Application startup complete.
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63648 - "POST /api/auth/studio/login HTTP/1.1" 200
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63648 - "OPTIONS /api/projects HTTP/1.1" 200
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63648 - "GET /api/projects HTTP/1.1" 307
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63648 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:13:19 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:13:19 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:13:19 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-02 08:13:19 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63650 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63650 - "OPTIONS /v2/clients HTTP/1.1" 200
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63648 - "GET /v2/clients HTTP/1.1" 307
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63648 - "OPTIONS /v2/clients/ HTTP/1.1" 200
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:13:19 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:13:19 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63650 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63650 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63648 - "GET /v2/packages HTTP/1.1" 307
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63648 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:13:19 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:13:19 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63650 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63650 - "OPTIONS /v2/invoices HTTP/1.1" 200
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63648 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63648 - "OPTIONS /v2/invoices/ HTTP/1.1" 200
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:13:19 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:13:19 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:13:19 | INFO | uvicorn.access | 127.0.0.1:63650 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:13:19 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:13:59 | INFO | uvicorn.access | 127.0.0.1:63829 - "OPTIONS /api/auth/client/login HTTP/1.1" 200
+2025-11-02 08:13:59 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:00 | INFO | uvicorn.access | 127.0.0.1:63829 - "POST /api/auth/client/login HTTP/1.1" 200
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:00 | INFO | uvicorn.access | 127.0.0.1:63829 - "GET /api/projects HTTP/1.1" 307
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:00 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:00 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:00 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-02 08:14:00 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-02 08:14:00 | INFO | uvicorn.access | 127.0.0.1:63829 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:00 | INFO | uvicorn.access | 127.0.0.1:63829 - "GET /v2/clients HTTP/1.1" 307
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:00 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:00 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:00 | INFO | uvicorn.access | 127.0.0.1:63829 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:00 | INFO | uvicorn.access | 127.0.0.1:63829 - "GET /v2/packages HTTP/1.1" 307
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:00 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:00 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:00 | INFO | uvicorn.access | 127.0.0.1:63829 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:00 | INFO | uvicorn.access | 127.0.0.1:63829 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:00 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:00 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:00 | INFO | uvicorn.access | 127.0.0.1:63829 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:00 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:04 | INFO | uvicorn.access | 127.0.0.1:63829 - "OPTIONS /v2/products HTTP/1.1" 200
+2025-11-02 08:14:04 | INFO | uvicorn.access | 127.0.0.1:63831 - "OPTIONS /v2/products HTTP/1.1" 200
+2025-11-02 08:14:04 | INFO | uvicorn.access | 127.0.0.1:63829 - "GET /v2/products HTTP/1.1" 307
+2025-11-02 08:14:04 | INFO | uvicorn.access | 127.0.0.1:63829 - "GET /v2/products HTTP/1.1" 307
+2025-11-02 08:14:04 | INFO | uvicorn.access | 127.0.0.1:63831 - "OPTIONS /v2/products/ HTTP/1.1" 200
+2025-11-02 08:14:04 | INFO | uvicorn.access | 127.0.0.1:63829 - "OPTIONS /v2/products/ HTTP/1.1" 200
+2025-11-02 08:14:04 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:04 | INFO | uvicorn.access | 127.0.0.1:63854 - "GET /v2/products/ HTTP/1.1" 200
+2025-11-02 08:14:04 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:04 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:04 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:04 | INFO | uvicorn.access | 127.0.0.1:63854 - "GET /v2/products/ HTTP/1.1" 200
+2025-11-02 08:14:04 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:04 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:18 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:19 | INFO | uvicorn.access | 127.0.0.1:63915 - "POST /api/auth/studio/login HTTP/1.1" 200
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:19 | INFO | uvicorn.access | 127.0.0.1:63915 - "GET /api/projects HTTP/1.1" 307
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:19 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:19 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:19 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-02 08:14:19 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-02 08:14:19 | INFO | uvicorn.access | 127.0.0.1:63915 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:19 | INFO | uvicorn.access | 127.0.0.1:63915 - "GET /v2/clients HTTP/1.1" 307
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:19 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:19 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:19 | INFO | uvicorn.access | 127.0.0.1:63915 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:19 | INFO | uvicorn.access | 127.0.0.1:63915 - "GET /v2/packages HTTP/1.1" 307
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:19 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:19 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:19 | INFO | uvicorn.access | 127.0.0.1:63915 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:19 | INFO | uvicorn.access | 127.0.0.1:63915 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:19 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:19 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:19 | INFO | uvicorn.access | 127.0.0.1:63915 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:19 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:63998 - "GET /api/projects HTTP/1.1" 307
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:63998 - "GET /api/projects HTTP/1.1" 307
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:35 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-02 08:14:35 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:63998 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:64000 - "GET /v2/clients HTTP/1.1" 307
+2025-11-02 08:14:35 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-02 08:14:35 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:63998 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:64000 - "GET /v2/clients HTTP/1.1" 307
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:63998 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:64000 - "GET /v2/packages HTTP/1.1" 307
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:63998 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:64000 - "GET /v2/packages HTTP/1.1" 307
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:63998 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:63998 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:64000 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:63998 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:64000 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session closed
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session opened
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-02 08:14:35 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-02 08:14:35 | INFO | uvicorn.access | 127.0.0.1:64000 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session committed
+2025-11-02 08:14:35 | DEBUG | app.db.session | Database session closed
