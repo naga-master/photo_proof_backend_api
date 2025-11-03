@@ -41,24 +41,30 @@ class ProductResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-@router.get("/", response_model=List[ProductResponse])
+class ProductListResponse(BaseModel):
+    """Product list response with pagination info."""
+    products: List[ProductResponse]
+    total: int
+
+
+@router.get("/", response_model=ProductListResponse)
 def list_products(
     active_only: bool = Query(True, description="Show only active products"),
     db: Session = Depends(get_db),
-) -> List[Product]:
+) -> ProductListResponse:
     """
     List all products available in the store.
     
     Public endpoint - no authentication required.
     """
-    query = db.query(Product)
+    query = db.query(Product).options(joinedload(Product.options))
     
     if active_only:
         query = query.filter(Product.is_active == True)
     
     products = query.all()
     
-    return products
+    return ProductListResponse(products=products, total=len(products))
 
 
 @router.get("/{product_id}", response_model=ProductResponse)
