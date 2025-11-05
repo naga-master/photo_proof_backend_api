@@ -387,3 +387,73 @@ def delete_project(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
         )
+
+
+@router.get("/{project_id}/folders")
+def get_project_folders(
+    project_id: int,
+    user = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get all folders for a project.
+    
+    Returns folders with cover photo information.
+    """
+    from sqlalchemy.orm import joinedload
+    
+    # Get project and verify access
+    project = db.query(Project).filter(Project.id == project_id).first()
+    
+    if not project:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found"
+        )
+    
+    # Authorization check
+    if user["role"] == "studio":
+        if project.studio_id != user["studio_id"]:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to access this project"
+            )
+    elif user["role"] == "client":
+        if project.client_id != user.get("client_id"):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to access this project"
+            )
+    
+    # Get folders with cover photos
+    folders = (
+        db.query(Folder)
+        .options(joinedload(Folder.cover_photo))
+        .filter(Folder.project_id == project_id)
+        .order_by(Folder.order_index, Folder.created_at)
+        .all()
+    )
+    
+    # Format response
+    folder_list = []
+    for folder in folders:
+        cover_photo_src = None
+        if folder.cover_photo:
+            cover_photo_src = f"/uploads/{folder.cover_photo.storage_path}"
+        
+        folder_list.append({
+            "id": folder.id,
+            "name": folder.name,
+            "project_id": folder.project_id,
+            "photo_count": folder.photo_count,
+            "cover_photo_id": folder.cover_photo_id,
+            "cover_photo_src": cover_photo_src,
+            "order_index": folder.order_index,
+            "created_at": folder.created_at.isoformat() if folder.created_at else None,
+            "updated_at": folder.updated_at.isoformat() if folder.updated_at else None,
+        })
+    
+    return {
+        "folders": folder_list,
+        "total": len(folder_list)
+    }

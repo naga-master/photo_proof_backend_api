@@ -477,3 +477,101 @@ def delete_project(
     db.delete(project)
     db.commit()
     logger.info("Project deleted", extra={"project_id": project_id})
+
+
+@router.get("/{project_id}/folders")
+def get_project_folders(
+    project_id: str,
+    current_user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Get all folders for a project.
+    
+    Returns folders with cover photo information.
+    """
+    from sqlalchemy.orm import joinedload
+    
+    logger.debug("Fetching project folders", extra={"project_id": project_id, "user_id": current_user.id})
+    
+    # Convert project_id to integer
+    try:
+        project_id_int = int(project_id)
+    except ValueError:
+        if len(project_id) == 36 and project_id.count('-') == 4:
+            logger.warning("UUID project ID received", extra={"project_id": project_id})
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Project not found. This appears to be mock data."
+            )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid project ID format. Expected numeric ID."
+        )
+    
+    # Get project and verify access
+    project = db.query(models.Project).filter(models.Project.id == project_id_int).first()
+    
+    if not project:
+        logger.warning("Project not found", extra={"project_id": project_id})
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found"
+        )
+    
+    # Authorization check
+    if current_user.role == UserRole.CLIENT:
+        if project.client_id != current_user.id:
+            logger.warning(
+                "Unauthorized folder access attempt",
+                extra={"project_id": project_id, "user_id": current_user.id}
+            )
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to access this project"
+            )
+    else:  # Studio user
+        if project.studio_id != current_user.studio_id:
+            logger.warning(
+                "Unauthorized folder access attempt",
+                extra={"project_id": project_id, "user_id": current_user.id}
+            )
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to access this project"
+            )
+    
+    # Get folders with cover photos
+    folders = (
+        db.query(models.Folder)
+        .options(joinedload(models.Folder.cover_photo))
+        .filter(models.Folder.project_id == project_id_int)
+        .order_by(models.Folder.order_index, models.Folder.created_at)
+        .all()
+    )
+    
+    # Format response
+    folder_list = []
+    for folder in folders:
+        cover_photo_src = None
+        if folder.cover_photo:
+            cover_photo_src = f"/uploads/{folder.cover_photo.storage_path}"
+        
+        folder_list.append({
+            "id": folder.id,
+            "name": folder.name,
+            "project_id": folder.project_id,
+            "photo_count": folder.photo_count if hasattr(folder, 'photo_count') else 0,
+            "cover_photo_id": folder.cover_photo_id,
+            "cover_photo_src": cover_photo_src,
+            "order_index": folder.order_index if hasattr(folder, 'order_index') else 0,
+            "created_at": folder.created_at.isoformat() if folder.created_at else None,
+            "updated_at": folder.updated_at.isoformat() if folder.updated_at else None,
+        })
+    
+    logger.info("Project folders retrieved", extra={"project_id": project_id, "folder_count": len(folder_list)})
+    
+    return {
+        "folders": folder_list,
+        "total": len(folder_list)
+    }
