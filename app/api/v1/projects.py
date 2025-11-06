@@ -9,7 +9,7 @@ from typing import Iterable, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, or_
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import Session, selectinload, joinedload
 
 from app.api import deps
 from app.core.dependencies import get_current_user
@@ -110,6 +110,11 @@ def list_projects(
     current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
+    print("\n" + "="*80)
+    print("[COVER DEBUG] list_projects endpoint called!")
+    print(f"[COVER DEBUG] User: {current_user.email}, Role: {current_user.role}")
+    print("="*80)
+    
     logger.debug(
         "Listing projects",
         extra={
@@ -119,7 +124,10 @@ def list_projects(
             "user_role": current_user.role,
         },
     )
-    query = db.query(models.Project).order_by(models.Project.created_at.desc())
+    query = db.query(models.Project).options(joinedload(models.Project.cover_photo)).order_by(models.Project.created_at.desc())
+    print("\n" + "="*80)
+    print("[COVER DEBUG] Executing query with joinedload for cover_photo relationship")
+    print("="*80 + "\n")
 
     # Client users should only see their own projects
     if current_user.role == UserRole.CLIENT:
@@ -150,13 +158,22 @@ def list_projects(
     # Create simplified project summaries matching actual model
     summaries = []
     for project in projects:
-        summaries.append({
+        # Get cover photo src using eager loaded relationship
+        cover_photo_src = None
+        if project.cover_photo:
+            cover_photo_src = project.cover_photo.src
+            print(f"[COVER DEBUG] Project {project.id} ({project.title}) - Has cover_photo, src: {cover_photo_src}")
+        else:
+            print(f"[COVER DEBUG] Project {project.id} ({project.title}) - No cover_photo, cover_photo_id: {project.cover_photo_id}")
+        
+        project_dict = {
             "id": str(project.id),
             "studio_id": project.studio_id,
             "client_id": str(project.client_id),
             "title": project.title,
             "shoot_date": project.shoot_date.isoformat() if project.shoot_date else None,
             "cover_photo_id": project.cover_photo_id,
+            "cover_photo_src": cover_photo_src,
             "photo_count": project.photo_count,
             "is_locked": project.is_locked,
             "layout": project.layout,
@@ -167,7 +184,13 @@ def list_projects(
             "has_folders": project.has_folders,
             "created_at": project.created_at.isoformat() if project.created_at else None,
             "updated_at": project.updated_at.isoformat() if project.updated_at else None,
-        })
+        }
+        summaries.append(project_dict)
+        print(f"[COVER DEBUG] Project {project.id} response dict: cover_photo_src={project_dict.get('cover_photo_src')}")
+    
+    print(f"\n[COVER DEBUG] Returning {len(summaries)} projects")
+    print(f"[COVER DEBUG] Sample response: {summaries[0] if summaries else 'No projects'}")
+    print("="*80 + "\n")
     
     logger.debug("Projects retrieved", extra={"count": len(summaries)})
     return {"projects": summaries, "total": len(summaries)}

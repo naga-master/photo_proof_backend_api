@@ -179,6 +179,14 @@ class UploadService:
             Photo.status == "completed"
         ).count()
         
+        # Set project cover photo if not already set
+        if not project.cover_photo_id:
+            project.cover_photo_id = photo.id
+            logger.info(f"Set project cover photo", extra={
+                "project_id": project.id,
+                "photo_id": photo.id
+            })
+        
         # Update folder photo count and set cover photo if this photo belongs to a folder
         if upload_token.folder_id:
             from app.db.models.project import Folder

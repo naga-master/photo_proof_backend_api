@@ -27,7 +27,7 @@ Key principles:
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 
 from app.db.session import get_db
@@ -145,8 +145,8 @@ def list_projects(
     - Apply query parameters (pagination, filters)
     - Return list with total count
     """
-    # Build query based on user role
-    query = db.query(Project)
+    # Build query based on user role with eager loading for cover_photo
+    query = db.query(Project).options(joinedload(Project.cover_photo))
     
     if user["role"] == "studio":
         # Studio sees all their projects
@@ -169,12 +169,10 @@ def list_projects(
     # Build responses
     project_responses = []
     for project in projects:
-        # Get cover photo if exists
+        # Get cover photo if exists (using eager loaded relationship)
         cover_photo_src = None
-        if project.cover_photo_id:
-            photo = db.query(Photo).filter(Photo.id == project.cover_photo_id).first()
-            if photo:
-                cover_photo_src = photo.src
+        if project.cover_photo:
+            cover_photo_src = project.cover_photo.src
         
         project_responses.append(ProjectResponse(
             id=project.id,
@@ -216,7 +214,7 @@ def get_project(
     - Check user permissions
     - Return detailed resource
     """
-    project = db.query(Project).filter(Project.id == project_id).first()
+    project = db.query(Project).options(joinedload(Project.cover_photo)).filter(Project.id == project_id).first()
     
     if not project:
         raise HTTPException(
@@ -237,12 +235,10 @@ def get_project(
             detail="Access denied"
         )
     
-    # Get cover photo
+    # Get cover photo (using eager loaded relationship)
     cover_photo_src = None
-    if project.cover_photo_id:
-        photo = db.query(Photo).filter(Photo.id == project.cover_photo_id).first()
-        if photo:
-            cover_photo_src = photo.src
+    if project.cover_photo:
+        cover_photo_src = project.cover_photo.src
     
     return ProjectResponse(
         id=project.id,
