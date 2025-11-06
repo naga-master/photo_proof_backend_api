@@ -177,6 +177,7 @@ class ClientResponse(ClientBase):
     email_opt_in: bool
     last_activity: Optional[str] = None
     status: str
+    total_projects: int = 0  # Computed field for project count
     created_at: datetime
     updated_at: datetime
     

@@ -10,7 +10,7 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.core.dependencies import get_current_user
 from app.db import models
@@ -42,7 +42,10 @@ def list_clients(
         )
         return []
 
-    query = _client_query(db, studio_user.studio_id).order_by(models.Client.created_at.desc())
+    # Eagerly load projects relationship to get counts efficiently
+    query = _client_query(db, studio_user.studio_id).options(
+        joinedload(models.Client.projects)
+    ).order_by(models.Client.created_at.desc())
 
     if search:
         logger.debug(
@@ -60,11 +63,44 @@ def list_clients(
         query = query.filter(or_(*filters))
 
     clients = query.all()
+    
+    # Build response with computed project counts from eagerly loaded relationships
+    result = []
+    for client in clients:
+        # Use the loaded projects relationship to count
+        project_count = len(client.projects) if client.projects else 0
+        
+        # Create response with computed project count
+        client_data = {
+            'id': client.id,
+            'studio_id': client.studio_id,
+            'user_id': client.user_id,
+            'name': client.name,
+            'email': client.email,
+            'phone': client.phone,
+            'secondary_email': None,
+            'address_line1': client.address,  # Map old field to new
+            'address_line2': None,
+            'city': None,
+            'state': None,
+            'postal_code': None,
+            'country': None,
+            'company_name': None,
+            'notes': None,
+            'status': client.status or 'active',
+            'total_projects': project_count,  # Computed from relationship
+            'last_project_date': None,
+            'created_at': client.created_at,
+            'updated_at': client.updated_at,
+        }
+        result.append(ClientRead(**client_data))
+    
     logger.debug(
-        "Clients retrieved",
-        extra={"count": len(clients), "studio_id": studio_user.studio_id},
+        "Clients retrieved with project counts",
+        extra={"count": len(result), "studio_id": studio_user.studio_id},
     )
-    return [ClientRead.model_validate(client) for client in clients]
+    
+    return result
 
 
 @router.post("/", response_model=ClientRead, status_code=status.HTTP_201_CREATED)
@@ -170,6 +206,51 @@ def create_client(
     # TODO: Send email to client with their credentials
     # TODO: Or display password in response for studio to share
     
+    return ClientRead.model_validate(client)
+
+
+@router.patch("/{client_id}", response_model=ClientRead)
+def update_client(
+    client_id: str,
+    updates: dict,
+    current_user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> ClientRead:
+    """Update client information including profile picture."""
+    logger.debug(
+        "Updating client",
+        extra={"client_id": client_id, "user_id": current_user.id},
+    )
+    
+    if current_user.role == UserRole.CLIENT:
+        logger.warning("Client user attempted to update client", extra={"user_id": current_user.id})
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to update clients")
+
+    if not current_user.studio_id:
+        logger.warning("User missing studio assignment during client update", extra={"user_id": current_user.id})
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Studio assignment required")
+
+    client = _client_query(db, current_user.studio_id).filter(models.Client.id == client_id).first()
+    if not client:
+        logger.warning(
+            "Client not found for update",
+            extra={"client_id": client_id, "studio_id": current_user.studio_id},
+        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Client not found")
+
+    # Update allowed fields
+    allowed_fields = ['name', 'email', 'phone', 'address', 'profile_picture', 'whatsapp_opt_in', 'email_opt_in']
+    
+    for field, value in updates.items():
+        if field in allowed_fields and hasattr(client, field):
+            setattr(client, field, value)
+            logger.debug(f"Updated client.{field}", extra={"client_id": client_id, "value": str(value)[:50]})
+    
+    client.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(client)
+    
+    logger.info("Client updated", extra={"client_id": client_id, "studio_id": current_user.studio_id})
     return ClientRead.model_validate(client)
 
 

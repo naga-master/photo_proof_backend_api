@@ -2,7 +2,7 @@
 
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
 
 from app.db.session import get_db
@@ -30,6 +30,9 @@ def list_clients(
     Only studio users can access this endpoint.
     Supports search by name/email and filtering by status.
     """
+    print("\n" + "="*80)
+    print("[CLIENTS DEBUG] list_clients endpoint called")
+    print("="*80 + "\n")
     # Only studio users can list clients
     if not current_user.studio_id:
         raise HTTPException(
@@ -37,8 +40,10 @@ def list_clients(
             detail="Only studio users can list clients"
         )
     
-    # Base query filtered by studio
-    query = db.query(Client).filter(Client.studio_id == current_user.studio_id)
+    # Base query filtered by studio with eager loading of projects for counting
+    query = db.query(Client).filter(Client.studio_id == current_user.studio_id).options(
+        joinedload(Client.projects)
+    )
     
     # Filter out clients with invalid data (empty name or email)
     # This prevents validation errors when returning data
@@ -70,7 +75,17 @@ def list_clients(
     # Apply pagination
     clients = query.offset(skip).limit(limit).all()
     
-    return clients
+    # Add project counts to responses
+    result = []
+    for client in clients:
+        # Create response with computed project count
+        client_dict = ClientResponse.model_validate(client).model_dump()
+        client_dict['total_projects'] = len(client.projects) if client.projects else 0
+        result.append(ClientResponse(**client_dict))
+        print(f"[CLIENTS DEBUG] Client {client.id} ({client.name}): {client_dict['total_projects']} projects")
+    
+    print(f"[CLIENTS DEBUG] Returning {len(result)} clients with project counts\n")
+    return result
 
 
 @router.get("/{client_id}", response_model=ClientResponse)
@@ -221,9 +236,9 @@ def update_client(
     if current_user.studio_id == client.studio_id:
         can_update = True
     
-    # Clients can update their own profile
-    if current_user.client_profile and current_user.client_profile.id == client_id:
-        can_update = True
+    # TODO: Allow clients to update their own profile when client login is implemented
+    # if hasattr(current_user, 'client_profile') and current_user.client_profile and current_user.client_profile.id == client_id:
+    #     can_update = True
     
     if not can_update:
         raise HTTPException(
