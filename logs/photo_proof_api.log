@@ -8275,3 +8275,2233 @@ fastapi.exceptions.HTTPException: 401: Invalid or expired authentication token
 2025-11-05 23:02:53 | INFO | uvicorn.access | 127.0.0.1:60649 - "GET /v2/invoices/ HTTP/1.1" 200
 2025-11-05 23:02:53 | DEBUG | app.db.session | Database session committed
 2025-11-05 23:02:53 | DEBUG | app.db.session | Database session closed
+2025-11-05 23:07:34 | DEBUG | app.db.session | Database session opened
+2025-11-05 23:07:34 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-05 23:07:34 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-05 23:07:34 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-05 23:07:34 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-05 23:07:34 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-05 23:07:34 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-05 23:07:34 | INFO | uvicorn.access | 127.0.0.1:61975 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-05 23:07:34 | DEBUG | app.db.session | Database session committed
+2025-11-05 23:07:34 | DEBUG | app.db.session | Database session closed
+2025-11-05 23:07:34 | DEBUG | app.db.session | Database session opened
+2025-11-05 23:07:34 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-05 23:07:34 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-05 23:07:34 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-05 23:07:34 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-05 23:07:34 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-05 23:07:34 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-05 23:07:34 | INFO | uvicorn.access | 127.0.0.1:61975 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-05 23:07:34 | DEBUG | app.db.session | Database session committed
+2025-11-05 23:07:34 | DEBUG | app.db.session | Database session closed
+2025-11-05 23:07:41 | INFO | uvicorn.access | 127.0.0.1:62010 - "OPTIONS /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-05 23:07:41 | DEBUG | app.db.session | Database session opened
+2025-11-05 23:07:41 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-05 23:07:41 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-05 23:07:41 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-05 23:07:41 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-05 23:07:41 | INFO | uvicorn.access | 127.0.0.1:62012 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-05 23:07:41 | DEBUG | app.db.session | Database session committed
+2025-11-05 23:07:41 | DEBUG | app.db.session | Database session closed
+2025-11-05 23:07:42 | INFO | uvicorn.access | 127.0.0.1:62026 - "GET /uploads/projects/4/20251105_154059_fNlNEKbb_IMG_0004.jpg HTTP/1.1" 304
+2025-11-05 23:07:42 | INFO | uvicorn.access | 127.0.0.1:62031 - "GET /uploads/projects/4/20251105_154106_0jUWaCZ5_IMG_0034.jpg HTTP/1.1" 304
+2025-11-05 23:07:42 | INFO | uvicorn.access | 127.0.0.1:62028 - "GET /uploads/projects/4/20251105_154059_9JgETDeY_IMG_0014.jpg HTTP/1.1" 304
+2025-11-05 23:07:42 | INFO | uvicorn.access | 127.0.0.1:62030 - "GET /uploads/projects/4/20251105_154059_VP7DGBNN_IMG_0072.jpg HTTP/1.1" 304
+2025-11-05 23:07:42 | INFO | uvicorn.access | 127.0.0.1:62029 - "GET /uploads/projects/4/20251105_154059_DjJKNLNl_IMG_0028.jpg HTTP/1.1" 304
+2025-11-05 23:07:42 | INFO | uvicorn.access | 127.0.0.1:62012 - "GET /uploads/projects/4/20251105_154106_Dk8w9nYp_IMG_0054.jpg HTTP/1.1" 304
+2025-11-05 23:07:47 | INFO | uvicorn.access | 127.0.0.1:62058 - "GET /uploads/projects/4/20251105_154059_TAO3j42c_IMG_0058.jpg HTTP/1.1" 304
+2025-11-05 23:07:47 | INFO | uvicorn.access | 127.0.0.1:62058 - "GET /uploads/projects/4/20251105_154059_PR5v4iKZ_IMG_0010.jpg HTTP/1.1" 304
+2025-11-05 23:07:47 | INFO | uvicorn.access | 127.0.0.1:62060 - "GET /uploads/projects/4/20251105_154106_QV1sh7ho_IMG_0020.jpg HTTP/1.1" 304
+2025-11-05 23:07:47 | INFO | uvicorn.access | 127.0.0.1:62062 - "GET /uploads/projects/4/20251105_154106_oxZnQKsx_IMG_0040.jpg HTTP/1.1" 304
+2025-11-05 23:07:47 | INFO | uvicorn.access | 127.0.0.1:62062 - "GET /uploads/projects/4/20251105_154059_tYB1oyqO_IMG_2986.jpg HTTP/1.1" 304
+2025-11-05 23:07:47 | INFO | uvicorn.access | 127.0.0.1:62060 - "GET /uploads/projects/4/20251105_154059_531Qv2me_IMG_0066.jpg HTTP/1.1" 304
+2025-11-05 23:07:48 | INFO | uvicorn.access | 127.0.0.1:62060 - "GET /uploads/projects/4/20251105_154059_5ttAA7o5_IMG_2410_%281%29.jpg HTTP/1.1" 304
+2025-11-05 23:07:48 | INFO | uvicorn.access | 127.0.0.1:62058 - "GET /uploads/projects/4/20251105_154059_lPUEV40E_IMG_0067.jpg HTTP/1.1" 304
+2025-11-05 23:07:48 | INFO | uvicorn.access | 127.0.0.1:62062 - "GET /uploads/projects/4/20251105_154059_7G15xFEm_IMG_0038.jpg HTTP/1.1" 304
+2025-11-05 23:07:48 | INFO | uvicorn.access | 127.0.0.1:62062 - "GET /uploads/projects/4/20251105_154059_Zqr8ZCn0_IMG_0063.jpg HTTP/1.1" 304
+2025-11-05 23:07:48 | INFO | uvicorn.access | 127.0.0.1:62062 - "GET /uploads/projects/4/20251105_154106_Tye-CFAO_IMG_0078.jpg HTTP/1.1" 304
+2025-11-05 23:07:48 | INFO | uvicorn.access | 127.0.0.1:62058 - "GET /uploads/projects/4/20251105_154106_a2r8fua8_IMG_0083.jpg HTTP/1.1" 304
+2025-11-05 23:07:48 | INFO | uvicorn.access | 127.0.0.1:62058 - "GET /uploads/projects/4/20251105_154106_wCpTUstP_IMG_0022.jpg HTTP/1.1" 304
+2025-11-05 23:07:48 | INFO | uvicorn.access | 127.0.0.1:62060 - "GET /uploads/projects/4/20251105_154106_taQ2R7_N_IMG_0044.jpg HTTP/1.1" 304
+2025-11-05 23:07:48 | INFO | uvicorn.access | 127.0.0.1:62062 - "GET /uploads/projects/4/20251105_154059_JMlyajDn_IMG_0029.jpg HTTP/1.1" 304
+2025-11-05 23:07:48 | INFO | uvicorn.access | 127.0.0.1:62068 - "GET /uploads/projects/4/20251105_154059_-uyk0ebS_IMG_0077.jpg HTTP/1.1" 304
+2025-11-05 23:07:48 | INFO | uvicorn.access | 127.0.0.1:62068 - "GET /uploads/projects/4/20251105_154059_he6p64F-_IMG_0073.jpg HTTP/1.1" 304
+2025-11-05 23:07:48 | INFO | uvicorn.access | 127.0.0.1:62062 - "GET /uploads/projects/4/20251105_154106_Mhzavv-m_IMG_0036.jpg HTTP/1.1" 304
+2025-11-05 23:18:07 | INFO | uvicorn.access | 127.0.0.1:64861 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-05 23:18:07 | INFO | uvicorn.access | 127.0.0.1:64863 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-05 23:18:07 | DEBUG | app.db.session | Database session opened
+2025-11-05 23:18:07 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-05 23:18:07 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-05 23:18:07 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-05 23:18:07 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-05 23:18:07 | INFO | uvicorn.access | 127.0.0.1:64866 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-05 23:18:07 | DEBUG | app.db.session | Database session committed
+2025-11-05 23:18:07 | DEBUG | app.db.session | Database session closed
+2025-11-05 23:18:07 | DEBUG | app.db.session | Database session opened
+2025-11-05 23:18:07 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-05 23:18:07 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-05 23:18:07 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-05 23:18:07 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-05 23:18:07 | INFO | uvicorn.access | 127.0.0.1:64866 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-05 23:18:07 | DEBUG | app.db.session | Database session committed
+2025-11-05 23:18:07 | DEBUG | app.db.session | Database session closed
+2025-11-05 23:18:07 | INFO | uvicorn.access | 127.0.0.1:64863 - "OPTIONS /api/projects HTTP/1.1" 200
+2025-11-05 23:18:07 | INFO | uvicorn.access | 127.0.0.1:64866 - "GET /api/projects HTTP/1.1" 307
+2025-11-05 23:18:07 | INFO | uvicorn.access | 127.0.0.1:64863 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-05 23:18:07 | DEBUG | app.db.session | Database session opened
+2025-11-05 23:18:07 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-05 23:18:07 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-05 23:18:07 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-05 23:18:07 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-05 23:18:07 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-05 23:18:07 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-05 23:18:07 | INFO | uvicorn.access | 127.0.0.1:64866 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-05 23:18:07 | DEBUG | app.db.session | Database session committed
+2025-11-05 23:18:08 | DEBUG | app.db.session | Database session closed
+2025-11-05 23:18:08 | INFO | uvicorn.access | 127.0.0.1:64863 - "OPTIONS /v2/clients HTTP/1.1" 200
+2025-11-05 23:18:08 | INFO | uvicorn.access | 127.0.0.1:64866 - "GET /v2/clients HTTP/1.1" 307
+2025-11-05 23:18:08 | INFO | uvicorn.access | 127.0.0.1:64863 - "OPTIONS /v2/clients/ HTTP/1.1" 200
+2025-11-05 23:18:08 | DEBUG | app.db.session | Database session opened
+2025-11-05 23:18:08 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-05 23:18:08 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-05 23:18:08 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-05 23:18:08 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-05 23:18:08 | INFO | uvicorn.access | 127.0.0.1:64866 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-05 23:18:08 | DEBUG | app.db.session | Database session committed
+2025-11-05 23:18:08 | DEBUG | app.db.session | Database session closed
+2025-11-05 23:18:08 | INFO | uvicorn.access | 127.0.0.1:64863 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-05 23:18:08 | INFO | uvicorn.access | 127.0.0.1:64866 - "GET /v2/packages HTTP/1.1" 307
+2025-11-05 23:18:08 | INFO | uvicorn.access | 127.0.0.1:64863 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-05 23:18:08 | DEBUG | app.db.session | Database session opened
+2025-11-05 23:18:08 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-05 23:18:08 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-05 23:18:08 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-05 23:18:08 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-05 23:18:08 | INFO | uvicorn.access | 127.0.0.1:64866 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-05 23:18:08 | DEBUG | app.db.session | Database session committed
+2025-11-05 23:18:08 | DEBUG | app.db.session | Database session closed
+2025-11-05 23:18:08 | INFO | uvicorn.access | 127.0.0.1:64863 - "OPTIONS /v2/invoices HTTP/1.1" 200
+2025-11-05 23:18:08 | INFO | uvicorn.access | 127.0.0.1:64866 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-05 23:18:08 | INFO | uvicorn.access | 127.0.0.1:64863 - "OPTIONS /v2/invoices/ HTTP/1.1" 200
+2025-11-05 23:18:08 | DEBUG | app.db.session | Database session opened
+2025-11-05 23:18:08 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-05 23:18:08 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-05 23:18:08 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-05 23:18:08 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-05 23:18:08 | INFO | uvicorn.access | 127.0.0.1:64866 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-05 23:18:08 | DEBUG | app.db.session | Database session committed
+2025-11-05 23:18:08 | DEBUG | app.db.session | Database session closed
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 05:52:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 05:52:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 05:52:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 05:52:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 05:52:29 | INFO | uvicorn.access | 127.0.0.1:50672 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session committed
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session closed
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 05:52:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 05:52:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 05:52:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 05:52:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 05:52:29 | INFO | uvicorn.access | 127.0.0.1:50672 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session committed
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session closed
+2025-11-06 05:52:29 | INFO | uvicorn.access | 127.0.0.1:50672 - "GET /api/projects HTTP/1.1" 307
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 05:52:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 05:52:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 05:52:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 05:52:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 05:52:29 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-06 05:52:29 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-06 05:52:29 | INFO | uvicorn.access | 127.0.0.1:50672 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session committed
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session closed
+2025-11-06 05:52:29 | INFO | uvicorn.access | 127.0.0.1:50672 - "GET /v2/clients HTTP/1.1" 307
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 05:52:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 05:52:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 05:52:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 05:52:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 05:52:29 | INFO | uvicorn.access | 127.0.0.1:50672 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session committed
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session closed
+2025-11-06 05:52:29 | INFO | uvicorn.access | 127.0.0.1:50672 - "GET /v2/packages HTTP/1.1" 307
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 05:52:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 05:52:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 05:52:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 05:52:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 05:52:29 | INFO | uvicorn.access | 127.0.0.1:50672 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session committed
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session closed
+2025-11-06 05:52:29 | INFO | uvicorn.access | 127.0.0.1:50672 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 05:52:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 05:52:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 05:52:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 05:52:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 05:52:29 | INFO | uvicorn.access | 127.0.0.1:50672 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session committed
+2025-11-06 05:52:29 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:21:06 | INFO | uvicorn.access | 127.0.0.1:51973 - "OPTIONS /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:21:06 | INFO | uvicorn.access | 127.0.0.1:51975 - "OPTIONS /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:21:06 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:21:06 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 08:21:06 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:21:06 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:21:06 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:21:06 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:21:06 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:21:06 | INFO | uvicorn.access | 127.0.0.1:51977 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:21:06 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:21:06 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:21:06 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:21:06 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 08:21:06 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:21:06 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:21:06 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:21:06 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:21:06 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:21:06 | INFO | uvicorn.access | 127.0.0.1:51977 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:21:06 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:21:06 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:21:12 | INFO | uvicorn.access | 127.0.0.1:52003 - "OPTIONS /api/auth/logout HTTP/1.1" 200
+2025-11-06 08:21:12 | INFO | uvicorn.access | 127.0.0.1:52005 - "POST /api/auth/logout HTTP/1.1" 200
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52281 - "OPTIONS /api/auth/studio/login HTTP/1.1" 200
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52283 - "POST /api/auth/studio/login HTTP/1.1" 200
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52281 - "OPTIONS /api/projects HTTP/1.1" 200
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52283 - "GET /api/projects HTTP/1.1" 307
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52283 - "GET /api/projects HTTP/1.1" 307
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52281 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:31:54 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-06 08:31:54 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52283 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52281 - "OPTIONS /v2/clients HTTP/1.1" 200
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52285 - "GET /v2/clients HTTP/1.1" 307
+2025-11-06 08:31:54 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-06 08:31:54 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52281 - "OPTIONS /v2/clients/ HTTP/1.1" 200
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52283 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52283 - "GET /v2/clients HTTP/1.1" 307
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52285 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52281 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52283 - "GET /v2/packages HTTP/1.1" 307
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52281 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52285 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52285 - "GET /v2/packages HTTP/1.1" 307
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52283 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52281 - "OPTIONS /v2/invoices HTTP/1.1" 200
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52283 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52281 - "OPTIONS /v2/invoices/ HTTP/1.1" 200
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52285 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52285 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52283 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:31:54 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:31:54 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:31:54 | INFO | uvicorn.access | 127.0.0.1:52283 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:31:54 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:31:59 | INFO | uvicorn.access | 127.0.0.1:52294 - "OPTIONS /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:31:59 | INFO | uvicorn.access | 127.0.0.1:52295 - "OPTIONS /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:31:59 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:31:59 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:31:59 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:31:59 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:31:59 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:31:59 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:31:59 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:31:59 | INFO | uvicorn.access | 127.0.0.1:52283 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:31:59 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:31:59 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:31:59 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:31:59 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:31:59 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:31:59 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:31:59 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:31:59 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:31:59 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:31:59 | INFO | uvicorn.access | 127.0.0.1:52283 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:31:59 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:31:59 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:32:35 | INFO | uvicorn.access | 127.0.0.1:52330 - "OPTIONS /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 08:32:35 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:32:35 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:32:35 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:32:35 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:32:35 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:32:35 | INFO | uvicorn.access | 127.0.0.1:52332 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 08:32:35 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:32:35 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:32:36 | INFO | uvicorn.access | 127.0.0.1:52332 - "GET /uploads/projects/4/20251105_154059_DjJKNLNl_IMG_0028.jpg HTTP/1.1" 304
+2025-11-06 08:32:36 | INFO | uvicorn.access | 127.0.0.1:52337 - "GET /uploads/projects/4/20251105_154059_9JgETDeY_IMG_0014.jpg HTTP/1.1" 304
+2025-11-06 08:32:36 | INFO | uvicorn.access | 127.0.0.1:52338 - "GET /uploads/projects/4/20251105_154059_fNlNEKbb_IMG_0004.jpg HTTP/1.1" 304
+2025-11-06 08:32:36 | INFO | uvicorn.access | 127.0.0.1:52342 - "GET /uploads/projects/4/20251105_154106_Dk8w9nYp_IMG_0054.jpg HTTP/1.1" 304
+2025-11-06 08:32:36 | INFO | uvicorn.access | 127.0.0.1:52340 - "GET /uploads/projects/4/20251105_154059_VP7DGBNN_IMG_0072.jpg HTTP/1.1" 304
+2025-11-06 08:32:36 | INFO | uvicorn.access | 127.0.0.1:52344 - "GET /uploads/projects/4/20251105_154059_TAO3j42c_IMG_0058.jpg HTTP/1.1" 304
+2025-11-06 08:32:36 | INFO | uvicorn.access | 127.0.0.1:52344 - "GET /uploads/projects/4/20251105_154106_0jUWaCZ5_IMG_0034.jpg HTTP/1.1" 304
+2025-11-06 08:34:48 | INFO | uvicorn.access | 127.0.0.1:52436 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-06 08:35:01 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:35:01 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:35:01 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:35:01 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:35:01 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:35:01 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:35:01 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:35:01 | INFO | uvicorn.access | 127.0.0.1:52490 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:35:01 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:35:01 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:35:01 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:35:01 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:35:01 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:35:01 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:35:01 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:35:01 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:35:01 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:35:01 | INFO | uvicorn.access | 127.0.0.1:52490 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:35:01 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:35:01 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:38:52 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:38:52 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:38:52 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:38:52 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:38:52 | INFO | uvicorn.access | 127.0.0.1:53710 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:38:52 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:38:52 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:38:52 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:38:52 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:38:52 | INFO | uvicorn.access | 127.0.0.1:53710 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:38:52 | INFO | uvicorn.access | 127.0.0.1:53710 - "GET /api/projects HTTP/1.1" 307
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:38:52 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:38:52 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:38:52 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:38:52 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:38:52 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-06 08:38:52 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-06 08:38:52 | INFO | uvicorn.access | 127.0.0.1:53710 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:38:52 | INFO | uvicorn.access | 127.0.0.1:53710 - "GET /v2/clients HTTP/1.1" 307
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:38:52 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:38:52 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:38:52 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:38:52 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:38:52 | INFO | uvicorn.access | 127.0.0.1:53710 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:38:52 | INFO | uvicorn.access | 127.0.0.1:53710 - "GET /v2/packages HTTP/1.1" 307
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:38:52 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:38:52 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:38:52 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:38:52 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:38:52 | INFO | uvicorn.access | 127.0.0.1:53710 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:38:52 | INFO | uvicorn.access | 127.0.0.1:53710 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:38:52 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:38:52 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:38:52 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:38:52 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:38:52 | INFO | uvicorn.access | 127.0.0.1:53710 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:38:52 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:38:58 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:38:58 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:38:58 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:38:58 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:38:58 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:38:58 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:38:58 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:38:58 | INFO | uvicorn.access | 127.0.0.1:53746 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:38:58 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:38:58 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:38:58 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:38:58 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:38:58 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:38:58 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:38:58 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:38:58 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:38:58 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:38:58 | INFO | uvicorn.access | 127.0.0.1:53746 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:38:58 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:38:58 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:40:45 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:40:45 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:40:45 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:40:45 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:40:45 | INFO | uvicorn.access | 127.0.0.1:54257 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:40:45 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:40:45 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:40:45 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:40:45 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:40:45 | INFO | uvicorn.access | 127.0.0.1:54257 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:40:45 | INFO | uvicorn.access | 127.0.0.1:54259 - "GET /api/projects HTTP/1.1" 307
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:40:45 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:40:45 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:40:45 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:40:45 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:40:45 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-06 08:40:45 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-06 08:40:45 | INFO | uvicorn.access | 127.0.0.1:54259 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:40:45 | INFO | uvicorn.access | 127.0.0.1:54259 - "GET /v2/clients HTTP/1.1" 307
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:40:45 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:40:45 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:40:45 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:40:45 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:40:45 | INFO | uvicorn.access | 127.0.0.1:54259 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:40:45 | INFO | uvicorn.access | 127.0.0.1:54259 - "GET /v2/packages HTTP/1.1" 307
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:40:45 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:40:45 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:40:45 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:40:45 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:40:45 | INFO | uvicorn.access | 127.0.0.1:54259 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:40:45 | INFO | uvicorn.access | 127.0.0.1:54259 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:40:45 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:40:45 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:40:45 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:40:45 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:40:45 | INFO | uvicorn.access | 127.0.0.1:54259 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:40:45 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:40:51 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:40:51 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:40:51 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:40:51 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:40:51 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:40:51 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:40:51 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:40:51 | INFO | uvicorn.access | 127.0.0.1:54291 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:40:51 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:40:51 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:40:51 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:40:51 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:40:51 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:40:51 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:40:51 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:40:51 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:40:51 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:40:51 | INFO | uvicorn.access | 127.0.0.1:54291 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:40:51 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:40:51 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:41:27 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:41:27 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:41:27 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:41:27 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:41:27 | INFO | uvicorn.access | 127.0.0.1:54476 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:41:27 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:41:27 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:41:27 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:41:27 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:41:27 | INFO | uvicorn.access | 127.0.0.1:54476 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:41:27 | INFO | uvicorn.access | 127.0.0.1:54476 - "GET /api/projects HTTP/1.1" 307
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:41:27 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:41:27 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:41:27 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:41:27 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:41:27 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-06 08:41:27 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-06 08:41:27 | INFO | uvicorn.access | 127.0.0.1:54476 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:41:27 | INFO | uvicorn.access | 127.0.0.1:54476 - "GET /v2/clients HTTP/1.1" 307
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:41:27 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:41:27 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:41:27 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:41:27 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:41:27 | INFO | uvicorn.access | 127.0.0.1:54476 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:41:27 | INFO | uvicorn.access | 127.0.0.1:54476 - "GET /v2/packages HTTP/1.1" 307
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:41:27 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:41:27 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:41:27 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:41:27 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:41:27 | INFO | uvicorn.access | 127.0.0.1:54476 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:41:27 | INFO | uvicorn.access | 127.0.0.1:54476 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:41:27 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:41:27 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:41:27 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:41:27 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:41:27 | INFO | uvicorn.access | 127.0.0.1:54476 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:41:27 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:41:33 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:41:33 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:41:33 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:41:33 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:41:33 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:41:33 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:41:33 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:41:33 | INFO | uvicorn.access | 127.0.0.1:54501 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:41:33 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:41:33 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:41:33 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:41:33 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:41:33 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:41:33 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:41:33 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:41:33 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:41:33 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:41:33 | INFO | uvicorn.access | 127.0.0.1:54501 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:41:33 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:41:33 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:44:02 | INFO | app.main | Application initialized
+2025-11-06 08:46:09 | INFO | uvicorn.access | 127.0.0.1:55946 - "OPTIONS /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:46:09 | INFO | uvicorn.access | 127.0.0.1:55948 - "OPTIONS /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:46:09 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:46:09 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:46:09 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:46:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:46:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:46:09 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:46:09 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:46:09 | INFO | uvicorn.access | 127.0.0.1:55950 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:46:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:46:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:46:09 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:46:09 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:46:09 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:46:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:46:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:46:09 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:46:09 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:46:09 | INFO | uvicorn.access | 127.0.0.1:55950 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:46:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:46:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:46:09 | INFO | uvicorn.access | 127.0.0.1:55948 - "OPTIONS /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 08:46:09 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:46:09 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:46:09 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:46:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:46:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:46:10 | INFO | uvicorn.access | 127.0.0.1:55950 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 08:46:10 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:46:10 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:46:10 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:46:10 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:46:10 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:46:10 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:46:10 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:46:10 | INFO | uvicorn.access | 127.0.0.1:55950 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 08:46:10 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:46:10 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:46:18 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:46:18 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:46:18 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:46:18 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:46:18 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:46:18 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:46:18 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:46:18 | INFO | uvicorn.access | 127.0.0.1:55956 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:46:18 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:46:18 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:46:18 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:46:18 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:46:18 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:46:18 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:46:18 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:46:18 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:46:18 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:46:18 | INFO | uvicorn.access | 127.0.0.1:55956 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:46:18 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:46:18 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:46:18 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:46:18 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:46:18 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:46:18 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:46:18 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:46:18 | INFO | uvicorn.access | 127.0.0.1:55956 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 08:46:18 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:46:18 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:46:18 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:46:18 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:46:18 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:46:18 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:46:18 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:46:18 | INFO | uvicorn.access | 127.0.0.1:55956 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 08:46:18 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:46:18 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56390 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56392 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:47:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:47:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:47:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:47:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56394 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:47:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:47:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:47:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:47:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56394 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56392 - "OPTIONS /api/projects HTTP/1.1" 200
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56394 - "GET /api/projects HTTP/1.1" 307
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56392 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:47:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:47:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:47:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:47:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:47:37 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-06 08:47:37 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56394 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56392 - "OPTIONS /v2/clients HTTP/1.1" 200
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56394 - "GET /v2/clients HTTP/1.1" 307
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56392 - "OPTIONS /v2/clients/ HTTP/1.1" 200
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:47:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:47:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:47:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:47:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56394 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56392 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56394 - "GET /v2/packages HTTP/1.1" 307
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56392 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:47:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:47:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:47:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:47:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56394 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56392 - "OPTIONS /v2/invoices HTTP/1.1" 200
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56394 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56392 - "OPTIONS /v2/invoices/ HTTP/1.1" 200
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:47:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:47:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:47:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:47:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:47:37 | INFO | uvicorn.access | 127.0.0.1:56394 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:47:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:47:43 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:47:43 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:47:43 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:47:43 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:47:43 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:47:43 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:47:43 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:47:43 | INFO | uvicorn.access | 127.0.0.1:56424 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:47:43 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:47:43 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:47:43 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:47:43 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:47:43 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:47:43 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:47:43 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:47:43 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:47:43 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:47:43 | INFO | uvicorn.access | 127.0.0.1:56424 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:47:43 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:47:43 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:47:43 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:47:43 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:47:43 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:47:43 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:47:43 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:47:43 | INFO | uvicorn.access | 127.0.0.1:56424 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 08:47:43 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:47:43 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:47:43 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:47:43 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:47:43 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:47:43 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:47:43 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:47:43 | INFO | uvicorn.access | 127.0.0.1:56424 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 08:47:43 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:47:43 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:52:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:52:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:52:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:52:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:52:37 | INFO | uvicorn.access | 127.0.0.1:57841 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:52:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:52:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:52:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:52:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:52:37 | INFO | uvicorn.access | 127.0.0.1:57841 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:52:37 | INFO | uvicorn.access | 127.0.0.1:57841 - "GET /api/projects HTTP/1.1" 307
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:52:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:52:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:52:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:52:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:52:37 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-06 08:52:37 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-06 08:52:37 | INFO | uvicorn.access | 127.0.0.1:57841 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:52:37 | INFO | uvicorn.access | 127.0.0.1:57841 - "GET /v2/clients HTTP/1.1" 307
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:52:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:52:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:52:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:52:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:52:37 | INFO | uvicorn.access | 127.0.0.1:57841 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:52:37 | INFO | uvicorn.access | 127.0.0.1:57841 - "GET /v2/packages HTTP/1.1" 307
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:52:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:52:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:52:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:52:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:52:37 | INFO | uvicorn.access | 127.0.0.1:57841 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:52:37 | INFO | uvicorn.access | 127.0.0.1:57841 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:52:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:52:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:52:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:52:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:52:37 | INFO | uvicorn.access | 127.0.0.1:57841 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:52:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:52:42 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:52:42 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:52:42 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:52:42 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:52:42 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:52:42 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:52:42 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:52:42 | INFO | uvicorn.access | 127.0.0.1:57871 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:52:42 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:52:42 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:52:42 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:52:42 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:52:42 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:52:42 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:52:42 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:52:42 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 08:52:42 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 08:52:42 | INFO | uvicorn.access | 127.0.0.1:57871 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 08:52:42 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:52:42 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:52:42 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:52:42 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:52:42 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:52:42 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:52:42 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:52:43 | INFO | uvicorn.access | 127.0.0.1:57871 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 08:52:43 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:52:43 | DEBUG | app.db.session | Database session closed
+2025-11-06 08:52:43 | DEBUG | app.db.session | Database session opened
+2025-11-06 08:52:43 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 08:52:43 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 08:52:43 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 08:52:43 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 08:52:43 | INFO | uvicorn.access | 127.0.0.1:57871 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 08:52:43 | DEBUG | app.db.session | Database session committed
+2025-11-06 08:52:43 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:00:44 | INFO | uvicorn.access | 127.0.0.1:60194 - "OPTIONS /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:00:44 | INFO | uvicorn.access | 127.0.0.1:60196 - "OPTIONS /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:00:44 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:00:44 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:00:44 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:00:44 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:00:44 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:00:44 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:00:44 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:00:44 | INFO | uvicorn.access | 127.0.0.1:60198 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:00:44 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:00:44 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:00:44 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:00:44 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:00:44 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:00:44 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:00:44 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:00:44 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:00:44 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:00:44 | INFO | uvicorn.access | 127.0.0.1:60198 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:00:44 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:00:44 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:00:44 | INFO | uvicorn.access | 127.0.0.1:60196 - "OPTIONS /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:00:44 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:00:44 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:00:44 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:00:44 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:00:44 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:00:45 | INFO | uvicorn.access | 127.0.0.1:60198 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:00:45 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:00:45 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:00:45 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:00:45 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:00:45 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:00:45 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:00:45 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:00:45 | INFO | uvicorn.access | 127.0.0.1:60198 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:00:45 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:00:45 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:00:59 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:00:59 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:00:59 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:00:59 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:00:59 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:00:59 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:00:59 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:00:59 | INFO | uvicorn.access | 127.0.0.1:60200 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:00:59 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:00:59 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:00:59 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:00:59 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:00:59 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:00:59 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:00:59 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:00:59 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:00:59 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:00:59 | INFO | uvicorn.access | 127.0.0.1:60200 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:00:59 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:00:59 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:00:59 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:00:59 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:00:59 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:00:59 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:00:59 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:00:59 | INFO | uvicorn.access | 127.0.0.1:60200 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:00:59 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:00:59 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:00:59 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:00:59 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:00:59 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:00:59 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:00:59 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:00:59 | INFO | uvicorn.access | 127.0.0.1:60200 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:00:59 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:00:59 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:01 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:01 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:01 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:01 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:01 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:01 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:01:01 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:01:01 | INFO | uvicorn.access | 127.0.0.1:60200 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:01:01 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:01 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:01 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:01 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:01 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:01 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:01 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:01 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:01:01 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:01:01 | INFO | uvicorn.access | 127.0.0.1:60200 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:01:01 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:01 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:02 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:02 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:02 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:02 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:02 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:02 | INFO | uvicorn.access | 127.0.0.1:60200 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:01:02 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:02 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:02 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:02 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:02 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:02 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:02 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:03 | INFO | uvicorn.access | 127.0.0.1:60274 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:01:03 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:03 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:30 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:30 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:30 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:30 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:30 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:30 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:01:30 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:01:30 | INFO | uvicorn.access | 127.0.0.1:60430 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:01:30 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:30 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:30 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:30 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:30 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:30 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:30 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:30 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:01:30 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:01:30 | INFO | uvicorn.access | 127.0.0.1:60430 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:01:30 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:30 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:30 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:30 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:30 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:30 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:30 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:30 | INFO | uvicorn.access | 127.0.0.1:60430 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:01:30 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:30 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:30 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:30 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:30 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:30 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:30 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:30 | INFO | uvicorn.access | 127.0.0.1:60430 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:01:30 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:30 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:33 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:33 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:33 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:33 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:33 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:33 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:01:33 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:01:33 | INFO | uvicorn.access | 127.0.0.1:60430 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:01:33 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:33 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:33 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:33 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:33 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:33 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:33 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:33 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:01:33 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:01:33 | INFO | uvicorn.access | 127.0.0.1:60430 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:01:33 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:33 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:33 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:33 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:33 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:33 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:33 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:33 | INFO | uvicorn.access | 127.0.0.1:60430 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:01:33 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:33 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:33 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:33 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:33 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:33 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:33 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:33 | INFO | uvicorn.access | 127.0.0.1:60432 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:01:33 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:33 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:35 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:35 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:35 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:35 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:35 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:35 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:01:35 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:01:35 | INFO | uvicorn.access | 127.0.0.1:60432 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:01:35 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:35 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:35 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:35 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:35 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:35 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:35 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:35 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:01:35 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:01:35 | INFO | uvicorn.access | 127.0.0.1:60432 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:01:35 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:35 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:35 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:35 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:35 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:35 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:35 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:35 | INFO | uvicorn.access | 127.0.0.1:60432 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:01:35 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:35 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:35 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:35 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:35 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:35 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:35 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:35 | INFO | uvicorn.access | 127.0.0.1:60430 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:01:35 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:35 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:37 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:01:37 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:01:37 | INFO | uvicorn.access | 127.0.0.1:60430 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:01:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:37 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:01:37 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:01:37 | INFO | uvicorn.access | 127.0.0.1:60430 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:01:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:37 | INFO | uvicorn.access | 127.0.0.1:60430 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:01:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:37 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:38 | INFO | uvicorn.access | 127.0.0.1:60432 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:01:38 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:38 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:39 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:39 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:39 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:39 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:39 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:39 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:01:39 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:01:39 | INFO | uvicorn.access | 127.0.0.1:60432 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:01:39 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:39 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:39 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:39 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:39 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:39 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:39 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:39 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:01:39 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:01:39 | INFO | uvicorn.access | 127.0.0.1:60432 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:01:39 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:39 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:39 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:39 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:39 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:39 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:39 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:39 | INFO | uvicorn.access | 127.0.0.1:60432 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:01:39 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:39 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:01:39 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:01:39 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-06 09:01:39 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:01:39 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:01:39 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:01:40 | INFO | uvicorn.access | 127.0.0.1:60430 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:01:40 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:01:40 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:03:38 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:03:38 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:03:38 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:03:38 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:03:38 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:03:38 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:03:38 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:03:38 | INFO | uvicorn.access | 127.0.0.1:61049 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:03:38 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:03:38 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:03:38 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:03:38 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:03:38 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:03:38 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:03:38 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:03:38 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:03:38 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:03:38 | INFO | uvicorn.access | 127.0.0.1:61049 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:03:38 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:03:38 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:03:38 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:03:38 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:03:38 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:03:38 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:03:38 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:03:38 | INFO | uvicorn.access | 127.0.0.1:61049 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:03:38 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:03:38 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:03:38 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:03:38 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:03:38 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:03:38 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:03:38 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:03:38 | INFO | uvicorn.access | 127.0.0.1:61049 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:03:38 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:03:38 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:04:12 | INFO | app.main | Application initialized
+2025-11-06 09:04:29 | INFO | app.main | Application initialized
+2025-11-06 09:05:01 | INFO | uvicorn.access | 127.0.0.1:61454 - "OPTIONS /api/projects HTTP/1.1" 200
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61456 - "GET /api/projects HTTP/1.1" 307
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61454 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-06 09:05:02 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:05:02 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:05:02 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:05:02 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:05:02 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:05:02 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-06 09:05:02 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61456 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-06 09:05:02 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:05:02 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61454 - "OPTIONS /v2/clients HTTP/1.1" 200
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61456 - "GET /v2/clients HTTP/1.1" 307
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61454 - "OPTIONS /v2/clients/ HTTP/1.1" 200
+2025-11-06 09:05:02 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:05:02 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:05:02 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:05:02 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:05:02 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61456 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-06 09:05:02 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:05:02 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61454 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61456 - "GET /v2/packages HTTP/1.1" 307
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61454 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-06 09:05:02 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:05:02 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:05:02 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:05:02 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:05:02 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61456 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-06 09:05:02 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:05:02 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61454 - "OPTIONS /v2/invoices HTTP/1.1" 200
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61456 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61454 - "OPTIONS /v2/invoices/ HTTP/1.1" 200
+2025-11-06 09:05:02 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:05:02 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:05:02 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:05:02 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:05:02 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:05:02 | INFO | uvicorn.access | 127.0.0.1:61456 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-06 09:05:02 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:05:02 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:07:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:07:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:07:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:07:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:07:29 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:07:29 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:07:29 | INFO | uvicorn.access | 127.0.0.1:62178 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:07:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:07:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:07:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:07:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:07:29 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:07:29 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:07:29 | INFO | uvicorn.access | 127.0.0.1:62178 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:07:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:07:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:07:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:07:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:07:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:07:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:07:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:07:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:07:29 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:07:29 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:07:29 | INFO | uvicorn.access | 127.0.0.1:62180 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:07:29 | INFO | uvicorn.access | 127.0.0.1:62178 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:07:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:07:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:07:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:07:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:07:29 | INFO | uvicorn.access | 127.0.0.1:62180 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:07:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:07:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:07:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:07:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:07:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:07:30 | INFO | uvicorn.access | 127.0.0.1:62178 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:07:30 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:07:30 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:10:08 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:10:08 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:10:08 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:10:08 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:10:08 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:10:08 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:10:08 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:10:08 | INFO | uvicorn.access | 127.0.0.1:62930 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:10:08 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:10:08 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:10:08 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:10:08 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:10:08 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:10:08 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:10:08 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:10:08 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:10:08 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:10:08 | INFO | uvicorn.access | 127.0.0.1:62930 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:10:08 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:10:08 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:10:08 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:10:08 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:10:08 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:10:08 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:10:08 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:10:09 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:10:09 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:10:09 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:10:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:10:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:10:09 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:10:09 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:10:09 | INFO | uvicorn.access | 127.0.0.1:62936 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:10:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:10:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:10:09 | INFO | uvicorn.access | 127.0.0.1:62930 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:10:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:10:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:10:09 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:10:09 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:10:09 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:10:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:10:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:10:09 | INFO | uvicorn.access | 127.0.0.1:62936 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:10:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:10:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:10:09 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:10:09 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:10:09 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:10:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:10:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:10:09 | INFO | uvicorn.access | 127.0.0.1:62930 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:10:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:10:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:12:21 | INFO | uvicorn.error | Shutting down
+2025-11-06 09:12:21 | INFO | uvicorn.error | Waiting for application shutdown.
+2025-11-06 09:12:21 | INFO | uvicorn.error | Application shutdown complete.
+2025-11-06 09:12:21 | INFO | uvicorn.error | Finished server process [23033]
+2025-11-06 09:12:25 | INFO | app.main | Application initialized
+2025-11-06 09:12:25 | INFO | uvicorn.error | Started server process [19293]
+2025-11-06 09:12:25 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-06 09:12:25 | INFO | uvicorn.error | Application startup complete.
+2025-11-06 09:12:44 | INFO | app.main | Application initialized
+2025-11-06 09:13:27 | INFO | app.main | Application initialized
+2025-11-06 09:13:41 | INFO | uvicorn.error | Shutting down
+2025-11-06 09:13:41 | INFO | uvicorn.error | Waiting for application shutdown.
+2025-11-06 09:13:41 | INFO | uvicorn.error | Application shutdown complete.
+2025-11-06 09:13:41 | INFO | uvicorn.error | Finished server process [19293]
+2025-11-06 09:13:43 | INFO | app.main | Application initialized
+2025-11-06 09:13:43 | INFO | uvicorn.error | Started server process [22310]
+2025-11-06 09:13:43 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-06 09:13:43 | INFO | uvicorn.error | Application startup complete.
+2025-11-06 09:15:58 | INFO | uvicorn.access | 127.0.0.1:64638 - "OPTIONS /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:15:58 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:15:58 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:15:58 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:15:58 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:15:58 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:15:58 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:15:58 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:15:58 | INFO | uvicorn.access | 127.0.0.1:64640 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:15:58 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:15:58 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:15:58 | INFO | uvicorn.access | 127.0.0.1:64638 - "OPTIONS /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:15:58 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:15:58 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:15:58 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:15:58 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:15:58 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:15:58 | INFO | uvicorn.access | 127.0.0.1:64640 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:15:58 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:15:58 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:16:28 | INFO | uvicorn.access | 127.0.0.1:64792 - "OPTIONS /api/projects/2/folders HTTP/1.1" 200
+2025-11-06 09:16:28 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:16:28 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:16:28 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:16:28 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:16:28 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:16:28 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:16:28 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:16:28 | INFO | uvicorn.access | 127.0.0.1:64794 - "GET /api/projects/2/folders HTTP/1.1" 200
+2025-11-06 09:16:28 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:16:28 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:16:28 | INFO | uvicorn.access | 127.0.0.1:64792 - "OPTIONS /v2/photos/projects/2/photos HTTP/1.1" 200
+2025-11-06 09:16:28 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:16:28 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:16:28 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:16:28 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:16:28 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:16:28 | INFO | uvicorn.access | 127.0.0.1:64794 - "GET /v2/photos/projects/2/photos HTTP/1.1" 200
+2025-11-06 09:16:28 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:16:28 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:16:29 | INFO | uvicorn.access | 127.0.0.1:64794 - "GET /uploads/projects/2/20251105_153022_EUXnydol_IMG_0070.jpg HTTP/1.1" 200
+2025-11-06 09:16:29 | INFO | uvicorn.access | 127.0.0.1:64801 - "GET /uploads/projects/2/20251105_153022_XmLp2lGD_IMG_7057_%281%29.jpg HTTP/1.1" 200
+2025-11-06 09:16:29 | INFO | uvicorn.access | 127.0.0.1:64803 - "GET /uploads/projects/2/20251105_153820_LkgAxyV-_IMG_0005.jpg HTTP/1.1" 200
+2025-11-06 09:16:29 | INFO | uvicorn.access | 127.0.0.1:64804 - "GET /uploads/projects/2/20251105_153820_E4sMxUhl_IMG_0004.jpg HTTP/1.1" 200
+2025-11-06 09:16:29 | INFO | uvicorn.access | 127.0.0.1:64807 - "GET /uploads/projects/2/20251105_153820_fgceU81R_IMG_0064.jpg HTTP/1.1" 200
+2025-11-06 09:16:29 | INFO | uvicorn.access | 127.0.0.1:64808 - "GET /uploads/projects/2/20251105_153826_Jp8Y5NOZ_IMG_0068.jpg HTTP/1.1" 200
+2025-11-06 09:16:29 | INFO | uvicorn.access | 127.0.0.1:64801 - "GET /uploads/projects/2/20251105_153826_DmST7Pkj_IMG_0008.jpg HTTP/1.1" 200
+2025-11-06 09:16:29 | INFO | uvicorn.access | 127.0.0.1:64794 - "GET /uploads/projects/2/20251105_153826_xYaJW00g_IMG_0040.jpg HTTP/1.1" 200
+2025-11-06 09:16:29 | INFO | uvicorn.access | 127.0.0.1:64803 - "GET /uploads/projects/2/20251105_153826_8wgLLvUM_IMG_0020.jpg HTTP/1.1" 200
+2025-11-06 09:16:32 | INFO | uvicorn.access | 127.0.0.1:64801 - "GET /uploads/projects/2/20251105_153826_MFDJdfCt_IMG_0054.jpg HTTP/1.1" 200
+2025-11-06 09:16:32 | INFO | uvicorn.access | 127.0.0.1:64803 - "GET /uploads/projects/2/20251105_153820_EHiqZ_iZ_IMG_0014.jpg HTTP/1.1" 200
+2025-11-06 09:16:32 | INFO | uvicorn.access | 127.0.0.1:64794 - "GET /uploads/projects/2/20251105_153826_9UkE6ajZ_IMG_0034.jpg HTTP/1.1" 200
+2025-11-06 09:16:32 | INFO | uvicorn.access | 127.0.0.1:64807 - "GET /uploads/projects/2/20251105_153820_RULkG__n_IMG_0058.jpg HTTP/1.1" 200
+2025-11-06 09:16:32 | INFO | uvicorn.access | 127.0.0.1:64803 - "GET /uploads/projects/2/20251105_153820_KRt7PJJp_IMG_0072.jpg HTTP/1.1" 200
+2025-11-06 09:16:32 | INFO | uvicorn.access | 127.0.0.1:64807 - "GET /uploads/projects/2/20251105_153820_F9kpj0QP_IMG_0010.jpg HTTP/1.1" 200
+2025-11-06 09:16:32 | INFO | uvicorn.access | 127.0.0.1:64803 - "GET /uploads/projects/2/20251105_153820_QJG9uKWj_IMG_0028.jpg HTTP/1.1" 200
+2025-11-06 09:16:32 | INFO | uvicorn.access | 127.0.0.1:64794 - "GET /uploads/projects/2/20251105_153826_5C0cn4Dx_IMG_0083.jpg HTTP/1.1" 200
+2025-11-06 09:16:32 | INFO | uvicorn.access | 127.0.0.1:64801 - "GET /uploads/projects/2/20251105_153826_r6-jWZCH_IMG_0022.jpg HTTP/1.1" 200
+2025-11-06 09:16:32 | INFO | uvicorn.access | 127.0.0.1:64804 - "GET /uploads/projects/2/20251105_153820_TBez8U_p_IMG_0066.jpg HTTP/1.1" 200
+2025-11-06 09:16:32 | INFO | uvicorn.access | 127.0.0.1:64808 - "GET /uploads/projects/2/20251105_153820_Z90jYWUY_IMG_0038.jpg HTTP/1.1" 200
+2025-11-06 09:16:32 | INFO | uvicorn.access | 127.0.0.1:64807 - "GET /uploads/projects/2/20251105_153826_RqGfuW4m_IMG_0078.jpg HTTP/1.1" 200
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50097 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:22:11 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:22:11 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:22:11 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:22:11 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50099 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:22:11 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:22:11 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:22:11 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:22:11 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50097 - "OPTIONS /api/projects HTTP/1.1" 200
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50101 - "GET /api/projects HTTP/1.1" 307
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50099 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50097 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:22:11 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:22:11 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:22:11 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:22:11 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:22:11 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-06 09:22:11 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50099 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50097 - "OPTIONS /v2/clients HTTP/1.1" 200
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50099 - "GET /v2/clients HTTP/1.1" 307
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50097 - "OPTIONS /v2/clients/ HTTP/1.1" 200
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:22:11 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:22:11 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:22:11 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:22:11 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50099 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50097 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50099 - "GET /v2/packages HTTP/1.1" 307
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50097 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:22:11 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:22:11 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:22:11 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:22:11 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50099 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50097 - "OPTIONS /v2/invoices HTTP/1.1" 200
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50099 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50097 - "OPTIONS /v2/invoices/ HTTP/1.1" 200
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:22:11 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:22:11 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:22:11 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:22:11 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:22:11 | INFO | uvicorn.access | 127.0.0.1:50099 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:22:11 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:22:18 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:22:18 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:22:18 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:22:18 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:22:18 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:22:18 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:22:18 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:22:18 | INFO | uvicorn.access | 127.0.0.1:50140 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:22:18 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:22:18 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:22:18 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:22:18 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:22:18 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:22:18 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:22:18 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:22:18 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:22:18 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:22:18 | INFO | uvicorn.access | 127.0.0.1:50140 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:22:18 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:22:18 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:23:32 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:23:32 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:23:32 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:23:32 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:23:32 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:23:32 | INFO | uvicorn.access | 127.0.0.1:50490 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:23:32 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:23:32 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:25:52 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:25:52 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:25:52 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:25:52 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:25:52 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:25:52 | INFO | uvicorn.access | 127.0.0.1:51187 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:25:52 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:25:52 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:26:09 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:26:09 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:26:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:26:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:26:09 | INFO | uvicorn.access | 127.0.0.1:51284 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:26:09 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:26:09 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:26:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:26:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:26:09 | INFO | uvicorn.access | 127.0.0.1:51284 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:26:09 | INFO | uvicorn.access | 127.0.0.1:51284 - "GET /api/projects HTTP/1.1" 307
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:26:09 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:26:09 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:26:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:26:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:26:09 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-06 09:26:09 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-06 09:26:09 | INFO | uvicorn.access | 127.0.0.1:51284 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:26:09 | INFO | uvicorn.access | 127.0.0.1:51284 - "GET /v2/clients HTTP/1.1" 307
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:26:09 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:26:09 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:26:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:26:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:26:09 | INFO | uvicorn.access | 127.0.0.1:51284 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:26:09 | INFO | uvicorn.access | 127.0.0.1:51284 - "GET /v2/packages HTTP/1.1" 307
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:26:09 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:26:09 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:26:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:26:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:26:09 | INFO | uvicorn.access | 127.0.0.1:51284 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:26:09 | INFO | uvicorn.access | 127.0.0.1:51284 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:26:09 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:26:09 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:26:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:26:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:26:09 | INFO | uvicorn.access | 127.0.0.1:51284 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:26:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:26:16 | INFO | uvicorn.access | 127.0.0.1:51325 - "OPTIONS /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:26:16 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:26:16 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:26:16 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:26:16 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:26:16 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:26:16 | INFO | uvicorn.access | 127.0.0.1:51327 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:26:16 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:26:16 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51666 - "GET /uploads/projects/4/20251105_154106_QV1sh7ho_IMG_0020.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51670 - "GET /uploads/projects/4/20251105_154059_531Qv2me_IMG_0066.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154106_oxZnQKsx_IMG_0040.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51669 - "GET /uploads/projects/4/20251105_154059_PR5v4iKZ_IMG_0010.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154106_a2r8fua8_IMG_0083.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51669 - "GET /uploads/projects/4/20251105_154059_tYB1oyqO_IMG_2986.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51670 - "GET /uploads/projects/4/20251105_154106_wCpTUstP_IMG_0022.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51666 - "GET /uploads/projects/4/20251105_154059_lPUEV40E_IMG_0067.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51673 - "GET /uploads/projects/4/20251105_154059_7G15xFEm_IMG_0038.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51666 - "GET /uploads/projects/4/20251105_154059_JMlyajDn_IMG_0029.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51670 - "GET /uploads/projects/4/20251105_154059_Zqr8ZCn0_IMG_0063.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51673 - "GET /uploads/projects/4/20251105_154059_5ttAA7o5_IMG_2410_%281%29.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154106_Tye-CFAO_IMG_0078.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51669 - "GET /uploads/projects/4/20251105_154106_taQ2R7_N_IMG_0044.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51675 - "GET /uploads/projects/4/20251105_154059_-uyk0ebS_IMG_0077.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51675 - "GET /uploads/projects/4/20251105_154106_Mhzavv-m_IMG_0036.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51669 - "GET /uploads/projects/4/20251105_154059_he6p64F-_IMG_0073.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154059_WW-VQoaE_IMG_0081.jpg HTTP/1.1" 304
+2025-11-06 09:27:28 | INFO | uvicorn.access | 127.0.0.1:51673 - "GET /uploads/projects/4/20251105_154106_E9w0WO4D_IMG_0001_%281%29.jpg HTTP/1.1" 304
+2025-11-06 09:27:29 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154059_3fJeuJw-_IMG_7057.jpg HTTP/1.1" 304
+2025-11-06 09:27:29 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154059_c4keb_aN_IMG_0042.jpg HTTP/1.1" 304
+2025-11-06 09:27:29 | INFO | uvicorn.access | 127.0.0.1:51669 - "GET /uploads/projects/4/20251105_154106_E4TBWMhx_IMG_0006_copy.jpg HTTP/1.1" 304
+2025-11-06 09:27:29 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154106_VpF34Mv6_IMG_7057_%281%29.jpg HTTP/1.1" 304
+2025-11-06 09:27:29 | INFO | uvicorn.access | 127.0.0.1:51673 - "GET /uploads/projects/4/20251105_154059_4aADKIl2_IMG_0001.jpg HTTP/1.1" 304
+2025-11-06 09:27:29 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154059_oyOu6oGS_IMG_0062.jpg HTTP/1.1" 304
+2025-11-06 09:27:29 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154059_OxSw2Cn6_IMG_0015.jpg HTTP/1.1" 304
+2025-11-06 09:27:29 | INFO | uvicorn.access | 127.0.0.1:51673 - "GET /uploads/projects/4/20251105_154106_ulCNpXRy_IMG_0050.jpg HTTP/1.1" 304
+2025-11-06 09:27:29 | INFO | uvicorn.access | 127.0.0.1:51669 - "GET /uploads/projects/4/20251105_154106__LKjBcRY_IMG_2986_%283%29.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51669 - "GET /uploads/projects/4/20251105_154106_HzA6LkQF_IMG_0037.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51669 - "GET /uploads/projects/4/20251105_154059_EN2jADJ7_IMG_0017.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51673 - "GET /uploads/projects/4/20251105_154059_rcubh392_IMG_3166_%281%29.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154059_SiGkuvXn_IMG_0003.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51675 - "GET /uploads/projects/4/20251105_154059_MRI7gDdd_IMG_0076.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51670 - "GET /uploads/projects/4/20251105_154059_b2Qvw3VZ_IMG_0056.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51666 - "GET /uploads/projects/4/20251105_154106_PkxsqA56_IMG_0051.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51666 - "GET /uploads/projects/4/20251105_154059_q9CtGIuC_IMG_0060.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51670 - "GET /uploads/projects/4/20251105_154106_qCI9TMgq_IMG_0045.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51675 - "GET /uploads/projects/4/20251105_154106_bGc3hfPa_IMG_0023.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51675 - "GET /uploads/projects/4/20251105_154059_yCuN4UPu_IMG_0006.jpg HTTP/1.1" 200
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51670 - "GET /uploads/projects/4/20251105_154059_CFXd3Db7_IMG_0048.jpg HTTP/1.1" 200
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51666 - "GET /uploads/projects/4/20251105_154059_fywi02lh_IMG_0075.jpg HTTP/1.1" 200
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154059_7IC5vmC-_IMG_2986_%281%29.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51669 - "GET /uploads/projects/4/20251105_154059_N-NW5hdt_IMG_0074.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51673 - "GET /uploads/projects/4/20251105_154059_mu7_PTJ3_IMG_0002.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51669 - "GET /uploads/projects/4/20251105_154106_MwMEHXJk_IMG_0057.jpg HTTP/1.1" 200
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51673 - "GET /uploads/projects/4/20251105_154059_Hw0n_VOV_IMG_3166.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154059_vzxpeUkR_IMG_0043.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154106_fmrV7n4Q_IMG_0079.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51671 - "GET /uploads/projects/4/20251105_154106_sL9orhd6_IMG_7827.jpg HTTP/1.1" 200
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51675 - "GET /uploads/projects/4/20251105_154106_JV2eS6gC_IMG_0084.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51673 - "GET /uploads/projects/4/20251105_154106_DZb_0H-y_IMG_0027.jpg HTTP/1.1" 304
+2025-11-06 09:27:30 | INFO | uvicorn.access | 127.0.0.1:51675 - "GET /uploads/projects/4/20251105_154106_zTDcZkdE_IMG_2986_%282%29.jpg HTTP/1.1" 304
+2025-11-06 09:28:58 | INFO | uvicorn.error | Shutting down
+2025-11-06 09:28:58 | INFO | uvicorn.error | Waiting for application shutdown.
+2025-11-06 09:28:58 | INFO | uvicorn.error | Application shutdown complete.
+2025-11-06 09:28:58 | INFO | uvicorn.error | Finished server process [22310]
+2025-11-06 09:29:07 | INFO | app.main | Application initialized
+2025-11-06 09:29:07 | INFO | uvicorn.error | Started server process [38856]
+2025-11-06 09:29:07 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-06 09:29:07 | INFO | uvicorn.error | Application startup complete.
+2025-11-06 09:36:32 | INFO | uvicorn.access | 127.0.0.1:54366 - "POST /api/auth/login HTTP/1.1" 404
+2025-11-06 09:36:56 | INFO | uvicorn.access | 127.0.0.1:54487 - "POST /api/v1/auth/login HTTP/1.1" 404
+2025-11-06 09:37:56 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:37:56 | ERROR | app.db.session | Database session rolled back due to exception
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/db/session.py", line 66, in get_db
+    yield db
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/concurrency.py", line 27, in contextmanager_in_threadpool
+    yield await run_in_threadpool(cm.__enter__)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 428, in app
+    raise validation_error
+fastapi.exceptions.RequestValidationError: [{'type': 'missing', 'loc': ('body', 'username'), 'msg': 'Field required', 'input': {'email': 'studio@photoproof.com', 'password': 'studio123'}}]
+2025-11-06 09:37:56 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:37:56 | INFO | uvicorn.access | 127.0.0.1:54781 - "POST /api/auth/studio/login HTTP/1.1" 422
+2025-11-06 09:38:12 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:38:12 | ERROR | app.db.session | Database session rolled back due to exception
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/db/session.py", line 66, in get_db
+    yield db
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/concurrency.py", line 27, in contextmanager_in_threadpool
+    yield await run_in_threadpool(cm.__enter__)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/routers/auth.py", line 33, in studio_login
+    raise HTTPException(
+    ...<2 lines>...
+    )
+fastapi.exceptions.HTTPException: 401: Invalid username or password
+2025-11-06 09:38:13 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:38:13 | INFO | uvicorn.access | 127.0.0.1:54868 - "POST /api/auth/studio/login HTTP/1.1" 401
+2025-11-06 09:38:38 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:38:38 | ERROR | app.db.session | Database session rolled back due to exception
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/db/session.py", line 66, in get_db
+    yield db
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/concurrency.py", line 27, in contextmanager_in_threadpool
+    yield await run_in_threadpool(cm.__enter__)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/routers/auth.py", line 33, in studio_login
+    raise HTTPException(
+    ...<2 lines>...
+    )
+fastapi.exceptions.HTTPException: 401: Invalid username or password
+2025-11-06 09:38:38 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:38:38 | INFO | uvicorn.access | 127.0.0.1:54992 - "POST /api/auth/studio/login HTTP/1.1" 401
+2025-11-06 09:39:02 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:39:02 | INFO | uvicorn.access | 127.0.0.1:55111 - "POST /api/auth/studio/login HTTP/1.1" 200
+2025-11-06 09:39:02 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:39:02 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:39:20 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:39:20 | INFO | uvicorn.access | 127.0.0.1:55198 - "POST /api/auth/studio/login HTTP/1.1" 200
+2025-11-06 09:39:20 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:39:20 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:39:20 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:39:20 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:39:20 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:39:20 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:39:20 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:39:20 | DEBUG | app.api.v1.projects | Creating folder
+2025-11-06 09:39:20 | INFO | app.api.v1.projects | Folder created
+2025-11-06 09:39:20 | INFO | uvicorn.access | 127.0.0.1:55204 - "POST /api/projects/1/folders?folder_name=Test%20Ceremony HTTP/1.1" 200
+2025-11-06 09:39:20 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:39:20 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:39:21 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:39:21 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:39:21 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:39:21 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:39:21 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:39:21 | DEBUG | app.api.v1.projects | Creating folder
+2025-11-06 09:39:21 | INFO | app.api.v1.projects | Folder already exists, returning existing
+2025-11-06 09:39:21 | INFO | uvicorn.access | 127.0.0.1:55207 - "POST /api/projects/1/folders?folder_name=Test%20Ceremony HTTP/1.1" 200
+2025-11-06 09:39:21 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:39:21 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55459 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55461 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-06 09:40:08 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:08 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:08 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:08 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:08 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55463 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 09:40:08 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:08 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:08 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:08 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:08 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:08 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:08 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55463 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 09:40:08 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:08 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55461 - "OPTIONS /api/projects HTTP/1.1" 200
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55463 - "GET /api/projects HTTP/1.1" 307
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55461 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-06 09:40:08 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:08 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:08 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:08 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:08 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:08 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-06 09:40:08 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55463 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-06 09:40:08 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:08 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55461 - "OPTIONS /v2/clients HTTP/1.1" 200
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55463 - "GET /v2/clients HTTP/1.1" 307
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55461 - "OPTIONS /v2/clients/ HTTP/1.1" 200
+2025-11-06 09:40:08 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:08 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:08 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:08 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:08 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55463 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-06 09:40:08 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:08 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55461 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55463 - "GET /v2/packages HTTP/1.1" 307
+2025-11-06 09:40:08 | INFO | uvicorn.access | 127.0.0.1:55461 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-06 09:40:08 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:08 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:08 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:09 | INFO | uvicorn.access | 127.0.0.1:55463 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-06 09:40:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:09 | INFO | uvicorn.access | 127.0.0.1:55461 - "OPTIONS /v2/invoices HTTP/1.1" 200
+2025-11-06 09:40:09 | INFO | uvicorn.access | 127.0.0.1:55463 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-06 09:40:09 | INFO | uvicorn.access | 127.0.0.1:55461 - "OPTIONS /v2/invoices/ HTTP/1.1" 200
+2025-11-06 09:40:09 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:09 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:09 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:09 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:09 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:09 | INFO | uvicorn.access | 127.0.0.1:55463 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-06 09:40:09 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:09 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:47 | INFO | uvicorn.access | 127.0.0.1:55647 - "POST /api/projects HTTP/1.1" 307
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:47 | DEBUG | app.api.v1.projects | Received project creation request
+2025-11-06 09:40:47 | ERROR | app.api.v1.projects | Error logging project creation: "Attempt to overwrite 'name' in LogRecord"
+2025-11-06 09:40:47 | DEBUG | app.api.v1.projects | Creating project - logging failed
+2025-11-06 09:40:47 | INFO | app.api.v1.projects | Project created
+2025-11-06 09:40:47 | INFO | uvicorn.access | 127.0.0.1:55647 - "POST /api/projects/ HTTP/1.1" 201
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:47 | INFO | uvicorn.access | 127.0.0.1:55655 - "OPTIONS /api/projects/5/folders?folder_name=few HTTP/1.1" 200
+2025-11-06 09:40:47 | INFO | uvicorn.access | 127.0.0.1:55655 - "OPTIONS /api/projects/5/folders?folder_name=few HTTP/1.1" 200
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:47 | DEBUG | app.api.v1.projects | Creating folder
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:47 | INFO | app.api.v1.projects | Folder created
+2025-11-06 09:40:47 | INFO | uvicorn.access | 127.0.0.1:55647 - "POST /api/projects/5/folders?folder_name=few HTTP/1.1" 200
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:47 | INFO | uvicorn.access | 127.0.0.1:55655 - "OPTIONS /v2/upload/batch/presigned HTTP/1.1" 200
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:47 | DEBUG | app.api.v1.projects | Creating folder
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:47 | DEBUG | app.api.v1.projects | Creating folder
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:47 | INFO | app.api.v1.projects | Folder already exists, returning existing
+2025-11-06 09:40:47 | DEBUG | app.api.v1.projects | Creating folder
+2025-11-06 09:40:47 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:47 | DEBUG | app.api.v1.projects | Creating folder
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:47 | INFO | uvicorn.access | 127.0.0.1:55659 - "POST /api/projects/5/folders?folder_name=few HTTP/1.1" 200
+2025-11-06 09:40:47 | INFO | app.api.v1.projects | Folder already exists, returning existing
+2025-11-06 09:40:47 | INFO | app.api.v1.projects | Folder already exists, returning existing
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:47 | INFO | uvicorn.access | 127.0.0.1:55649 - "POST /api/projects/5/folders?folder_name=few HTTP/1.1" 200
+2025-11-06 09:40:47 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:47 | INFO | app.api.v1.projects | Folder already exists, returning existing
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:47 | INFO | uvicorn.access | 127.0.0.1:55661 - "POST /api/projects/5/folders?folder_name=few HTTP/1.1" 200
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:47 | INFO | uvicorn.access | 127.0.0.1:55663 - "POST /api/projects/5/folders?folder_name=few HTTP/1.1" 200
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:47 | INFO | uvicorn.access | 127.0.0.1:55647 - "POST /v2/upload/batch/presigned HTTP/1.1" 200
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:47 | INFO | uvicorn.access | 127.0.0.1:55655 - "OPTIONS /v2/upload/_ntJFAx30IDcAWc2518qonHDU9SPBwEI790o7GimEgE HTTP/1.1" 200
+2025-11-06 09:40:47 | INFO | uvicorn.access | 127.0.0.1:55657 - "OPTIONS /v2/upload/tAyMErSzdFOjoKhVy3bs5GaBPRfjE7YvASRLVauLbSA HTTP/1.1" 200
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_part_begin with no data
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_header_field with data[42:61]
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_header_value with data[63:114]
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_header_end with no data
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_header_field with data[116:128]
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_header_value with data[130:140]
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_header_end with no data
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_headers_finished with no data
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_part_data with data[144:76449]
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_part_end with no data
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_end with no data
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_part_begin with no data
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_header_field with data[42:61]
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_header_value with data[63:118]
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_header_end with no data
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_header_field with data[120:132]
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_header_value with data[134:144]
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_header_end with no data
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_headers_finished with no data
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_part_data with data[148:112336]
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_part_end with no data
+2025-11-06 09:40:47 | DEBUG | python_multipart.multipart | Calling on_end with no data
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:47 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: Orientation (274) - type: short (3) - value: b'\x01\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: XResolution (282) - type: rational (5) Tag Location: 34 - Data Location: 86 - value: b'H\x00\x00\x00\x01\x00\x00\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: YResolution (283) - type: rational (5) Tag Location: 46 - Data Location: 94 - value: b'H\x00\x00\x00\x01\x00\x00\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: ResolutionUnit (296) - type: short (3) - value: b'\x02\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: YCbCrPositioning (531) - type: short (3) - value: b'\x01\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: ExifIFD (34665) - type: long (4) - value: b'f\x00\x00\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: Orientation (274) - type: short (3) - value: b'\x01\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: XResolution (282) - type: rational (5) Tag Location: 34 - Data Location: 86 - value: b'H\x00\x00\x00\x01\x00\x00\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: YResolution (283) - type: rational (5) Tag Location: 46 - Data Location: 94 - value: b'H\x00\x00\x00\x01\x00\x00\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: ResolutionUnit (296) - type: short (3) - value: b'\x02\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: YCbCrPositioning (531) - type: short (3) - value: b'\x01\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: ExifIFD (34665) - type: long (4) - value: b'f\x00\x00\x00'
+2025-11-06 09:40:48 | INFO | uvicorn.access | 127.0.0.1:55657 - "PUT /v2/upload/_ntJFAx30IDcAWc2518qonHDU9SPBwEI790o7GimEgE HTTP/1.1" 200
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: Orientation (274) - type: short (3) - value: b'\x01\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: XResolution (282) - type: rational (5) Tag Location: 34 - Data Location: 86 - value: b'H\x00\x00\x00\x01\x00\x00\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: YResolution (283) - type: rational (5) Tag Location: 46 - Data Location: 94 - value: b'H\x00\x00\x00\x01\x00\x00\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: ResolutionUnit (296) - type: short (3) - value: b'\x02\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: YCbCrPositioning (531) - type: short (3) - value: b'\x01\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: ExifIFD (34665) - type: long (4) - value: b'f\x00\x00\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: Orientation (274) - type: short (3) - value: b'\x01\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: XResolution (282) - type: rational (5) Tag Location: 34 - Data Location: 86 - value: b'H\x00\x00\x00\x01\x00\x00\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: YResolution (283) - type: rational (5) Tag Location: 46 - Data Location: 94 - value: b'H\x00\x00\x00\x01\x00\x00\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: ResolutionUnit (296) - type: short (3) - value: b'\x02\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: YCbCrPositioning (531) - type: short (3) - value: b'\x01\x00'
+2025-11-06 09:40:48 | DEBUG | PIL.TiffImagePlugin | tag: ExifIFD (34665) - type: long (4) - value: b'f\x00\x00\x00'
+2025-11-06 09:40:48 | INFO | uvicorn.access | 127.0.0.1:55655 - "PUT /v2/upload/tAyMErSzdFOjoKhVy3bs5GaBPRfjE7YvASRLVauLbSA HTTP/1.1" 200
+2025-11-06 09:40:48 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:48 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:48 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:48 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:40:58 | INFO | uvicorn.access | 127.0.0.1:55717 - "OPTIONS /api/projects/5 HTTP/1.1" 200
+2025-11-06 09:40:58 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:40:58 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:40:58 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:40:58 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:40:58 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:40:58 | DEBUG | app.api.v1.projects | Updating project
+2025-11-06 09:40:58 | INFO | app.api.v1.projects | Project updated
+2025-11-06 09:40:58 | WARNING | app.api.v1.projects | Failed to validate client: 1 validation error for ClientRead
+total_projects
+  Field required [type=missing, input_value=<Client(id=2, name=Sarah ...mail=sarah.t@email.com)>, input_type=Client]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+2025-11-06 09:40:58 | INFO | uvicorn.access | 127.0.0.1:55719 - "PATCH /api/projects/5 HTTP/1.1" 200
+2025-11-06 09:40:58 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:40:58 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:41:04 | INFO | uvicorn.access | 127.0.0.1:55750 - "OPTIONS /v2/photos/projects/5/photos HTTP/1.1" 200
+2025-11-06 09:41:04 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:41:04 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:41:04 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:41:04 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:41:04 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:41:04 | INFO | uvicorn.access | 127.0.0.1:55752 - "GET /v2/photos/projects/5/photos HTTP/1.1" 200
+2025-11-06 09:41:04 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:41:04 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:41:05 | INFO | uvicorn.access | 127.0.0.1:55752 - "GET /uploads/projects/5/20251106_041047__ntJFAx3_IMG_0070.jpg HTTP/1.1" 200
+2025-11-06 09:41:05 | INFO | uvicorn.access | 127.0.0.1:55752 - "GET /uploads/projects/5/20251106_041047_tAyMErSz_IMG_7057_%281%29.jpg HTTP/1.1" 200
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:21 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:21 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:21 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:21 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:21 | INFO | uvicorn.access | 127.0.0.1:57006 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:21 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:21 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:21 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:21 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:21 | INFO | uvicorn.access | 127.0.0.1:57006 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:21 | INFO | uvicorn.access | 127.0.0.1:57006 - "GET /api/projects HTTP/1.1" 307
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:21 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:21 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:21 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:21 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:21 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-06 09:45:21 | DEBUG | app.api.v1.projects | Projects retrieved
+2025-11-06 09:45:21 | INFO | uvicorn.access | 127.0.0.1:57006 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:21 | INFO | uvicorn.access | 127.0.0.1:57006 - "GET /v2/clients HTTP/1.1" 307
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:21 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:21 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:21 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:21 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:21 | INFO | uvicorn.access | 127.0.0.1:57006 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:21 | INFO | uvicorn.access | 127.0.0.1:57006 - "GET /v2/packages HTTP/1.1" 307
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:21 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:21 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:21 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:21 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:21 | INFO | uvicorn.access | 127.0.0.1:57006 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:21 | INFO | uvicorn.access | 127.0.0.1:57006 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:21 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:21 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:21 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:21 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:21 | INFO | uvicorn.access | 127.0.0.1:57006 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:21 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:28 | INFO | uvicorn.access | 127.0.0.1:57045 - "OPTIONS /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:45:28 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:28 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:28 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:28 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:28 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:28 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:45:28 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:45:28 | INFO | uvicorn.access | 127.0.0.1:57047 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:45:28 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:28 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:29 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:45:29 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:45:29 | INFO | uvicorn.access | 127.0.0.1:57047 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:45:29 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:29 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:29 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:29 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:29 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:29 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:29 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:29 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:45:29 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:45:29 | INFO | uvicorn.access | 127.0.0.1:57047 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:45:29 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:29 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:32 | INFO | uvicorn.access | 127.0.0.1:57045 - "OPTIONS /v2/photos/projects/5/photos?folder_id=e39f4666-5cb5-44dc-8142-8e37abb4bc26 HTTP/1.1" 200
+2025-11-06 09:45:32 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:32 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:32 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:32 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:32 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:32 | INFO | uvicorn.access | 127.0.0.1:57047 - "GET /v2/photos/projects/5/photos?folder_id=e39f4666-5cb5-44dc-8142-8e37abb4bc26 HTTP/1.1" 200
+2025-11-06 09:45:32 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:32 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:33 | INFO | uvicorn.access | 127.0.0.1:57047 - "GET /uploads/projects/5/20251106_041047_tAyMErSz_IMG_7057_%281%29.jpg HTTP/1.1" 304
+2025-11-06 09:45:33 | INFO | uvicorn.access | 127.0.0.1:57077 - "GET /uploads/projects/5/20251106_041047__ntJFAx3_IMG_0070.jpg HTTP/1.1" 304
+2025-11-06 09:45:37 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:37 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:37 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:37 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:37 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:37 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:45:37 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:45:37 | INFO | uvicorn.access | 127.0.0.1:57077 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:45:37 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:37 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:38 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:38 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:38 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:38 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:38 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:38 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:45:38 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:45:38 | INFO | uvicorn.access | 127.0.0.1:57077 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:45:38 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:38 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:38 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:38 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:38 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:38 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:38 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:38 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:45:38 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:45:38 | INFO | uvicorn.access | 127.0.0.1:57077 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:45:38 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:38 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:47 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:47 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:47 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:47 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:47 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:47 | INFO | uvicorn.access | 127.0.0.1:57149 - "GET /v2/photos/projects/5/photos?folder_id=e39f4666-5cb5-44dc-8142-8e37abb4bc26 HTTP/1.1" 200
+2025-11-06 09:45:47 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:47 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:56 | INFO | uvicorn.access | 127.0.0.1:57200 - "OPTIONS /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:45:56 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:56 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:56 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:56 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:56 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:56 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:45:56 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:45:56 | INFO | uvicorn.access | 127.0.0.1:57202 - "GET /api/projects/4/folders HTTP/1.1" 200
+2025-11-06 09:45:56 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:56 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:56 | INFO | uvicorn.access | 127.0.0.1:57200 - "OPTIONS /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:45:56 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:45:56 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:45:56 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:45:56 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:45:56 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:45:56 | INFO | uvicorn.access | 127.0.0.1:57202 - "GET /v2/photos/projects/4/photos HTTP/1.1" 200
+2025-11-06 09:45:56 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:45:56 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:45:56 | INFO | uvicorn.access | 127.0.0.1:57202 - "GET /uploads/projects/4/20251105_154059_DjJKNLNl_IMG_0028.jpg HTTP/1.1" 304
+2025-11-06 09:45:56 | INFO | uvicorn.access | 127.0.0.1:57204 - "GET /uploads/projects/4/20251105_154059_9JgETDeY_IMG_0014.jpg HTTP/1.1" 304
+2025-11-06 09:45:56 | INFO | uvicorn.access | 127.0.0.1:57210 - "GET /uploads/projects/4/20251105_154059_VP7DGBNN_IMG_0072.jpg HTTP/1.1" 304
+2025-11-06 09:45:56 | INFO | uvicorn.access | 127.0.0.1:57209 - "GET /uploads/projects/4/20251105_154059_fNlNEKbb_IMG_0004.jpg HTTP/1.1" 304
+2025-11-06 09:45:56 | INFO | uvicorn.access | 127.0.0.1:57212 - "GET /uploads/projects/4/20251105_154106_0jUWaCZ5_IMG_0034.jpg HTTP/1.1" 304
+2025-11-06 09:45:56 | INFO | uvicorn.access | 127.0.0.1:57211 - "GET /uploads/projects/4/20251105_154106_Dk8w9nYp_IMG_0054.jpg HTTP/1.1" 304
+2025-11-06 09:46:06 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:46:06 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:46:06 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:46:06 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:46:06 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:46:06 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:46:06 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:46:06 | INFO | uvicorn.access | 127.0.0.1:57261 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:46:06 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:46:06 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:46:06 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:46:06 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:46:06 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:46:06 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:46:06 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:46:06 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:46:06 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:46:06 | INFO | uvicorn.access | 127.0.0.1:57261 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:46:06 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:46:06 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:46:06 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:46:06 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:46:06 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:46:06 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:46:06 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:46:06 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:46:06 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:46:06 | INFO | uvicorn.access | 127.0.0.1:57261 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:46:06 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:46:06 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:46:12 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:46:12 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:46:12 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:46:12 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:46:12 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:46:12 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:46:12 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:46:12 | INFO | uvicorn.access | 127.0.0.1:57292 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:46:12 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:46:12 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:46:12 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:46:12 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:46:12 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:46:12 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:46:12 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:46:12 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:46:12 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:46:12 | INFO | uvicorn.access | 127.0.0.1:57292 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:46:12 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:46:12 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:46:12 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:46:12 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:46:12 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:46:12 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:46:12 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:46:12 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:46:12 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:46:12 | INFO | uvicorn.access | 127.0.0.1:57292 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:46:12 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:46:12 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:46:13 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:46:13 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:46:13 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:46:13 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:46:13 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:46:13 | INFO | uvicorn.access | 127.0.0.1:57292 - "GET /v2/photos/projects/5/photos?folder_id=e39f4666-5cb5-44dc-8142-8e37abb4bc26 HTTP/1.1" 200
+2025-11-06 09:46:13 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:46:13 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:46:14 | INFO | uvicorn.access | 127.0.0.1:57292 - "GET /uploads/projects/5/20251106_041047__ntJFAx3_IMG_0070.jpg HTTP/1.1" 304
+2025-11-06 09:46:14 | INFO | uvicorn.access | 127.0.0.1:57304 - "GET /uploads/projects/5/20251106_041047_tAyMErSz_IMG_7057_%281%29.jpg HTTP/1.1" 304
+2025-11-06 09:46:17 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:46:17 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:46:17 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:46:17 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:46:17 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:46:17 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:46:17 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:46:17 | INFO | uvicorn.access | 127.0.0.1:57304 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:46:17 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:46:17 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:46:18 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:46:18 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:46:18 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:46:18 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:46:18 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:46:18 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:46:18 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:46:18 | INFO | uvicorn.access | 127.0.0.1:57304 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:46:18 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:46:18 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:46:18 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:46:18 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:46:18 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:46:18 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:46:18 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:46:18 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-06 09:46:18 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-06 09:46:18 | INFO | uvicorn.access | 127.0.0.1:57304 - "GET /api/projects/5/folders HTTP/1.1" 200
+2025-11-06 09:46:18 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:46:18 | DEBUG | app.db.session | Database session closed
+2025-11-06 09:47:52 | DEBUG | app.db.session | Database session opened
+2025-11-06 09:47:52 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-06 09:47:52 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-06 09:47:52 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-06 09:47:52 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-06 09:47:52 | INFO | uvicorn.access | 127.0.0.1:57776 - "GET /v2/photos/projects/5/photos?folder_id=e39f4666-5cb5-44dc-8142-8e37abb4bc26 HTTP/1.1" 200
+2025-11-06 09:47:52 | DEBUG | app.db.session | Database session committed
+2025-11-06 09:47:52 | DEBUG | app.db.session | Database session closed

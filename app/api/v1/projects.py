@@ -555,16 +555,17 @@ def get_project_folders(
     for folder in folders:
         cover_photo_src = None
         if folder.cover_photo:
-            cover_photo_src = f"/uploads/{folder.cover_photo.storage_path}"
+            # Use the photo's src which is already properly formatted
+            cover_photo_src = folder.cover_photo.src
         
         folder_list.append({
             "id": folder.id,
             "name": folder.name,
             "project_id": folder.project_id,
-            "photo_count": folder.photo_count if hasattr(folder, 'photo_count') else 0,
-            "cover_photo_id": folder.cover_photo_id,
-            "cover_photo_src": cover_photo_src,
-            "order_index": folder.order_index if hasattr(folder, 'order_index') else 0,
+            "photoCount": folder.photo_count,
+            "coverPhotoId": folder.cover_photo_id,
+            "coverPhotoSrc": cover_photo_src,
+            "order_index": folder.order_index,
             "created_at": folder.created_at.isoformat() if folder.created_at else None,
             "updated_at": folder.updated_at.isoformat() if folder.updated_at else None,
         })
@@ -574,4 +575,120 @@ def get_project_folders(
     return {
         "folders": folder_list,
         "total": len(folder_list)
+    }
+
+
+@router.post("/{project_id}/folders")
+def create_project_folder(
+    project_id: str,
+    folder_name: str,
+    current_user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Create a new folder in a project.
+    
+    Returns the created folder with its ID.
+    """
+    logger.debug("Creating folder", extra={"project_id": project_id, "folder_name": folder_name, "user_id": current_user.id})
+    
+    # Convert project_id to integer
+    try:
+        project_id_int = int(project_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid project ID format. Expected numeric ID."
+        )
+    
+    # Get project and verify access
+    project = db.query(models.Project).filter(models.Project.id == project_id_int).first()
+    
+    if not project:
+        logger.warning("Project not found", extra={"project_id": project_id})
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found"
+        )
+    
+    # Authorization check - only studio users can create folders
+    if current_user.role == UserRole.CLIENT:
+        logger.warning(
+            "Unauthorized folder creation attempt",
+            extra={"project_id": project_id, "user_id": current_user.id}
+        )
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to create folders in this project"
+        )
+    else:  # Studio user
+        if project.studio_id != current_user.studio_id:
+            logger.warning(
+                "Unauthorized folder creation attempt",
+                extra={"project_id": project_id, "user_id": current_user.id}
+            )
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to create folders in this project"
+            )
+    
+    # Check if folder with same name already exists
+    existing_folder = (
+        db.query(models.Folder)
+        .filter(
+            models.Folder.project_id == project_id_int,
+            models.Folder.name == folder_name
+        )
+        .first()
+    )
+    
+    if existing_folder:
+        # Return existing folder instead of error
+        logger.info("Folder already exists, returning existing", extra={"folder_id": existing_folder.id, "folder_name": folder_name})
+        return {
+            "id": existing_folder.id,
+            "name": existing_folder.name,
+            "project_id": existing_folder.project_id,
+            "photoCount": existing_folder.photo_count,
+            "coverPhotoId": existing_folder.cover_photo_id,
+            "coverPhotoSrc": None,
+            "order_index": existing_folder.order_index,
+            "created_at": existing_folder.created_at.isoformat() if existing_folder.created_at else None,
+            "updated_at": existing_folder.updated_at.isoformat() if existing_folder.updated_at else None,
+        }
+    
+    # Get the next order index
+    max_order = db.query(func.max(models.Folder.order_index)).filter(
+        models.Folder.project_id == project_id_int
+    ).scalar() or 0
+    
+    # Create new folder
+    new_folder = models.Folder(
+        project_id=project_id_int,
+        name=folder_name,
+        photo_count=0,
+        order_index=max_order + 1,
+    )
+    
+    db.add(new_folder)
+    
+    # Update project's has_folders flag
+    if not project.has_folders:
+        project.has_folders = True
+    
+    db.commit()
+    db.refresh(new_folder)
+    
+    logger.info("Folder created", extra={"folder_id": new_folder.id, "folder_name": folder_name, "project_id": project_id})
+    
+    return {
+        "id": new_folder.id,
+        "name": new_folder.name,
+        "project_id": new_folder.project_id,
+        "photoCount": new_folder.photo_count,
+        "coverPhotoId": new_folder.cover_photo_id,
+        "coverPhotoSrc": None,
+        "order_index": new_folder.order_index,
+        "created_at": new_folder.created_at.isoformat() if new_folder.created_at else None,
+        "updated_at": new_folder.updated_at.isoformat() if new_folder.updated_at else None,
     }
