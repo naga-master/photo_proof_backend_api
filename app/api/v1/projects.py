@@ -116,14 +116,28 @@ def list_projects(
             "studio_id": studio_id,
             "status": status.value if status else None,
             "user_id": current_user.id,
+            "user_role": current_user.role,
         },
     )
     query = db.query(models.Project).order_by(models.Project.created_at.desc())
 
-    if studio_id:
-        query = query.filter(models.Project.studio_id == studio_id)
-    elif current_user.studio_id:
-        query = query.filter(models.Project.studio_id == current_user.studio_id)
+    # Client users should only see their own projects
+    if current_user.role == UserRole.CLIENT:
+        # Get client record for this user
+        client = db.query(models.Client).filter(models.Client.user_id == current_user.id).first()
+        if client:
+            query = query.filter(models.Project.client_id == client.id)
+            logger.debug("Filtering projects for client", extra={"client_id": client.id})
+        else:
+            # User is a client but has no client record, return empty
+            logger.warning("Client user has no client record", extra={"user_id": current_user.id})
+            return {"projects": [], "total": 0}
+    else:
+        # Studio users see all projects in their studio
+        if studio_id:
+            query = query.filter(models.Project.studio_id == studio_id)
+        elif current_user.studio_id:
+            query = query.filter(models.Project.studio_id == current_user.studio_id)
 
     if status:
         query = query.filter(models.Project.status == status.value)

@@ -15,3 +15,5 @@ uvicorn.out
 *.log
 logs/*.log
 /logs/photo_proof_api.log
+*.db
+photo_proof.db

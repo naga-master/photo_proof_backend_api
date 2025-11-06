@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import secrets
 import uuid
 from datetime import datetime
 from typing import List, Optional
@@ -15,6 +16,7 @@ from app.core.dependencies import get_current_user
 from app.db import models
 from app.db.session import get_db
 from app.schemas import ClientRead, CreateClientRequest, UserRead, UserRole
+from app.services.auth_service import AuthService
 
 
 logger = logging.getLogger(__name__)
@@ -85,6 +87,7 @@ def create_client(
 
     normalized_email = request.email.lower()
 
+    # Check for duplicate client
     duplicate_filters = [func.lower(models.Client.email) == normalized_email]
     if request.phone:
         duplicate_filters.append(models.Client.phone == request.phone)
@@ -100,13 +103,46 @@ def create_client(
             status_code=status.HTTP_409_CONFLICT,
             detail="A client with this email or phone already exists. Choose an existing client or use different details.",
         )
+    
+    # Check for duplicate user email
+    existing_user = db.query(models.User).filter(func.lower(models.User.email) == normalized_email).first()
+    if existing_user:
+        logger.warning(
+            "User account with email already exists",
+            extra={"email": normalized_email, "existing_user_id": existing_user.id},
+        )
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="A user account with this email already exists.",
+        )
 
     timestamp = datetime.utcnow()
 
+    # Generate random password for new client user account
+    random_password = secrets.token_urlsafe(12)  # Generates a secure random password
+    
+    # Create user account first
+    user_id = str(uuid.uuid4())
+    user = models.User(
+        id=user_id,
+        studio_id=current_user.studio_id,
+        name=request.name,
+        email=normalized_email,
+        username=normalized_email,  # Use email as username
+        password_hash=AuthService.hash_password(random_password),
+        role="client",
+        is_active=True,
+        email_verified=False,
+        created_at=timestamp,
+        updated_at=timestamp,
+    )
+    db.add(user)
+    
+    # Create client record linked to user
     client = models.Client(
         id=str(uuid.uuid4()),
         studio_id=current_user.studio_id,
-        user_id=None,
+        user_id=user_id,  # Link to user account
         name=request.name,
         email=normalized_email,
         phone=request.phone,
@@ -120,7 +156,20 @@ def create_client(
     db.commit()
     db.refresh(client)
 
-    logger.info("Client created", extra={"client_id": client.id, "studio_id": current_user.studio_id})
+    logger.info(
+        "Client created with user account", 
+        extra={
+            "client_id": client.id, 
+            "user_id": user_id,
+            "studio_id": current_user.studio_id,
+            "email": normalized_email,
+            "password": random_password  # Log password for studio to share with client
+        }
+    )
+    
+    # TODO: Send email to client with their credentials
+    # TODO: Or display password in response for studio to share
+    
     return ClientRead.model_validate(client)
 
 
