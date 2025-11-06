@@ -1,5 +1,6 @@
 """Upload service with presigned URL token management."""
 
+import logging
 import secrets
 from datetime import datetime, timedelta
 from typing import Optional, Tuple, List, Dict
@@ -9,6 +10,8 @@ import io
 
 from app.db.models import UploadSession, UploadToken, Photo, Project
 from app.services.storage_service import StorageService
+
+logger = logging.getLogger(__name__)
 
 
 class UploadService:
@@ -175,6 +178,25 @@ class UploadService:
             Photo.project_id == project.id,
             Photo.status == "completed"
         ).count()
+        
+        # Update folder photo count and set cover photo if this photo belongs to a folder
+        if upload_token.folder_id:
+            from app.db.models.project import Folder
+            folder = db.query(Folder).filter(Folder.id == upload_token.folder_id).first()
+            if folder:
+                # Update folder photo count
+                folder.photo_count = db.query(Photo).filter(
+                    Photo.folder_id == folder.id,
+                    Photo.status == "completed"
+                ).count()
+                
+                # Set cover photo if folder doesn't have one yet
+                if not folder.cover_photo_id:
+                    folder.cover_photo_id = photo.id
+                    logger.info(f"Set folder cover photo", extra={
+                        "folder_id": folder.id,
+                        "photo_id": photo.id
+                    })
         
         db.commit()
         db.refresh(photo)
