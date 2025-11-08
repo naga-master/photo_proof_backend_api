@@ -5,6 +5,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.api import api_router
@@ -32,6 +33,14 @@ def create_app() -> FastAPI:
         allow_credentials=settings.allow_credentials,
         allow_methods=settings.allow_methods,
         allow_headers=settings.allow_headers,
+    )
+
+    # Compression middleware - reduces response size by 15-20%
+    # Automatically compresses responses >1KB
+    application.add_middleware(
+        GZipMiddleware,
+        minimum_size=1000,  # Only compress responses >1KB
+        compresslevel=6     # Balance between speed and compression (1-9)
     )
 
     uploads_dir = Path(settings.uploads_directory)

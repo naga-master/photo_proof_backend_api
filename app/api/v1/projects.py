@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import uuid
 from datetime import datetime
-from typing import Iterable, List, Optional
+from typing import Iterable, List, Optional, Union
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, or_
@@ -29,6 +29,8 @@ from app.schemas import (
     ClientRead,
     ImageRead,
     ImageVersionRead,
+    ProjectMetadata,
+    ProjectMetadataListResponse,
 )
 
 
@@ -103,13 +105,14 @@ def _project_detail(project: models.Project, include_images: bool = True, db: Op
     return detail_payload
 
 
-@router.get("/")
+@router.get("/", response_model=Union[dict, ProjectMetadataListResponse])
 def list_projects(
     studio_id: Optional[str] = Query(None, description="Filter by studio ID"),
     status: Optional[ProjectStatus] = Query(None, description="Filter by status"),
+    mode: str = Query("full", regex="^(list|full)$", description="Response mode: 'list' (metadata only, ~1KB/project) or 'full' (complete data, ~50KB/project)"),
     current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict:
+) -> Union[dict, ProjectMetadataListResponse]:
     print("\n" + "="*80)
     print("[COVER DEBUG] list_projects endpoint called!")
     print(f"[COVER DEBUG] User: {current_user.email}, Role: {current_user.role}")
@@ -120,6 +123,7 @@ def list_projects(
         extra={
             "studio_id": studio_id,
             "status": status.value if status else None,
+            "mode": mode,
             "user_id": current_user.id,
             "user_role": current_user.role,
         },
@@ -150,6 +154,48 @@ def list_projects(
     if status:
         query = query.filter(models.Project.status == status.value)
 
+    # Mode: list - Return lightweight metadata only (1KB per project)
+    if mode == "list":
+        logger.info(f"Fetching projects in LIST mode (metadata only)")
+        
+        # Select only essential columns - no joins, minimal data
+        projects_data = query.with_entities(
+            models.Project.id,
+            models.Project.title,
+            models.Project.client_id,
+            models.Project.cover_photo_src,
+            models.Project.photo_count,
+            models.Project.status,
+            models.Project.created_at,
+            models.Project.updated_at
+        ).all()
+        
+        # Convert to ProjectMetadata objects
+        metadata = []
+        for p in projects_data:
+            metadata.append(ProjectMetadata(
+                id=str(p.id),
+                title=p.title,
+                client_id=str(p.client_id),
+                cover_photo_src=p.cover_photo_src,
+                photo_count=p.photo_count,
+                status=p.status,
+                created_at=p.created_at,
+                updated_at=p.updated_at
+            ))
+        
+        logger.info(f"Returned {len(metadata)} project metadata entries", extra={
+            "mode": "list",
+            "count": len(metadata),
+            "approx_size_kb": len(metadata)  # ~1KB per project
+        })
+        
+        return ProjectMetadataListResponse(
+            metadata=metadata,
+            total=len(metadata)
+        )
+
+    # Mode: full - Return complete data (existing behavior)
     projects = query.all()
     
     # Note: Image count syncing removed - Project model uses photo_count, not total_images
@@ -192,7 +238,11 @@ def list_projects(
     print(f"[COVER DEBUG] Sample response: {summaries[0] if summaries else 'No projects'}")
     print("="*80 + "\n")
     
-    logger.debug("Projects retrieved", extra={"count": len(summaries)})
+    logger.info(f"Returned {len(summaries)} complete projects", extra={
+        "mode": "full",
+        "count": len(summaries),
+        "approx_size_kb": len(summaries) * 50  # ~50KB per project
+    })
     return {"projects": summaries, "total": len(summaries)}
 
 

@@ -44,7 +44,14 @@ from .notifications import (
     BulkNotificationAction,
     NotificationSummary,
 )
-from .projects import ProjectCategoryRead, ProjectDetail, ProjectSettingsRead, ProjectSummary
+from .projects import (
+    ProjectCategoryRead,
+    ProjectDetail,
+    ProjectSettingsRead,
+    ProjectSummary,
+    ProjectMetadata,
+    ProjectMetadataListResponse,
+)
 from .requests import (
     CreateCategoryRequest,
     CreateClientRequest,
@@ -143,6 +150,8 @@ __all__ = [
     "ProjectDetail",
     "ProjectSettingsRead",
     "ProjectStatus",
+    "ProjectMetadata",
+    "ProjectMetadataListResponse",
     "RecordPaymentRequest",
     "StudioOnboardingRequest",
     "StudioRead",

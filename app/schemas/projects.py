@@ -76,3 +76,29 @@ class ProjectDetail(ProjectSummary):
     settings: Optional[ProjectSettingsRead] = None
     categories: List[ProjectCategoryRead] = Field(default_factory=list)
     images: List[ImageRead] = Field(default_factory=list)
+
+
+class ProjectMetadata(BaseModel):
+    """
+    Lightweight project metadata for dashboard listings.
+    Contains only essential fields needed for rendering project cards.
+    
+    Size: ~1KB per project (vs ~50KB for full Project)
+    Use Case: Dashboard listings for studio users with 100+ projects
+    """
+    id: str
+    title: str
+    client_id: str
+    cover_photo_src: Optional[str] = None
+    photo_count: int
+    status: str
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ProjectMetadataListResponse(BaseModel):
+    """Response for mode=list requests"""
+    metadata: List[ProjectMetadata]
+    total: int
