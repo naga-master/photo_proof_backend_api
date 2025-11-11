@@ -1,12 +1,12 @@
 """Comments router with nested reply support."""
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from typing import List
 
 from app.db.session import get_db
-from app.services.auth_service import AuthService
+from app.core.dependencies import get_current_user
+from app.schemas import UserRead
 from app.services.comment_service import CommentService
 from app.schemas.photo import (
     CommentCreate,
@@ -17,30 +17,12 @@ from app.schemas.photo import (
 
 
 router = APIRouter(prefix="/api/comments", tags=["Comments"])
-security = HTTPBearer()
-
-
-def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_db)
-):
-    """Dependency to get current authenticated user."""
-    token = credentials.credentials
-    user_data = AuthService.get_current_user(db, token)
-    
-    if not user_data:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token"
-        )
-    
-    return user_data
 
 
 @router.get("/photos/{photo_id}", response_model=CommentListResponse)
 def get_photo_comments(
     photo_id: int,
-    user = Depends(get_current_user),
+    current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -70,7 +52,7 @@ def get_photo_comments(
 @router.post("/", response_model=CommentResponse)
 def create_comment(
     comment_data: CommentCreate,
-    user = Depends(get_current_user),
+    current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -92,7 +74,7 @@ def create_comment(
         comment = CommentService.create_comment(
             db=db,
             photo_id=comment_data.photo_id,
-            user_id=user["id"],
+            user_id=current_user.id,
             text=comment_data.text,
             parent_comment_id=comment_data.parent_comment_id,
             reply_to_id=comment_data.reply_to_id,
@@ -142,7 +124,7 @@ def create_comment(
 def update_comment(
     comment_id: int,
     comment_data: CommentUpdate,
-    user = Depends(get_current_user),
+    current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Update a comment (only by original author)."""
@@ -150,7 +132,7 @@ def update_comment(
         comment = CommentService.update_comment(
             db=db,
             comment_id=comment_id,
-            user_id=user["id"],
+            user_id=current_user.id,
             text=comment_data.text,
         )
         
@@ -183,7 +165,7 @@ def update_comment(
 @router.delete("/{comment_id}")
 def delete_comment(
     comment_id: int,
-    user = Depends(get_current_user),
+    current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Soft delete a comment (only by original author)."""
@@ -191,7 +173,7 @@ def delete_comment(
         success = CommentService.delete_comment(
             db=db,
             comment_id=comment_id,
-            user_id=user["id"],
+            user_id=current_user.id,
         )
         
         return {"success": success, "message": "Comment deleted successfully"}

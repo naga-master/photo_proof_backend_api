@@ -38,6 +38,7 @@ class RegisterRequest(BaseModel):
 class TokenResponse(BaseModel):
     """JWT token response."""
     access_token: str
+    token: Optional[str] = None  # Backwards compatibility - same as access_token
     token_type: str = "bearer"
 
 

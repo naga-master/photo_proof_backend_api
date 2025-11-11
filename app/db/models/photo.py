@@ -4,7 +4,7 @@ from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, Text, DateT
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
-from .base import Base, TimestampMixin
+from .base import Base, TimestampMixin, SoftDeleteMixin
 
 
 class Photo(Base, TimestampMixin):
@@ -59,7 +59,7 @@ class Photo(Base, TimestampMixin):
         return f"<Photo(id={self.id}, filename={self.original_filename})>"
 
 
-class Comment(Base, TimestampMixin):
+class Comment(Base, TimestampMixin, SoftDeleteMixin):
     """Comment on a photo with support for nested replies.
     
     Structure:

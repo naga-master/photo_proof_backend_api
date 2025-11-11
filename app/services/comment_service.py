@@ -47,7 +47,7 @@ class CommentService:
         if photo:
             photo.comment_count = db.query(Comment).filter(
                 Comment.photo_id == photo_id,
-                Comment.is_deleted == False
+                Comment.is_deleted == None  # is_deleted is DATETIME, NULL means not deleted
             ).count()
             db.commit()
         
@@ -163,7 +163,7 @@ class CommentService:
         """Get all comments for a photo as nested tree."""
         comments = db.query(Comment).filter(
             Comment.photo_id == photo_id,
-            Comment.is_deleted == False,
+            Comment.is_deleted == None,  # is_deleted is DATETIME, NULL means not deleted
         ).all()
         
         return CommentService.build_comment_tree(db, comments)
@@ -179,7 +179,7 @@ class CommentService:
         comment = db.query(Comment).filter(
             Comment.id == comment_id,
             Comment.user_id == user_id,
-            Comment.is_deleted == False,
+            Comment.is_deleted == None,  # is_deleted is DATETIME, NULL means not deleted
         ).first()
         
         if not comment:
@@ -204,13 +204,13 @@ class CommentService:
         comment = db.query(Comment).filter(
             Comment.id == comment_id,
             Comment.user_id == user_id,
-            Comment.is_deleted == False,
+            Comment.is_deleted == None,  # is_deleted is DATETIME, NULL means not deleted
         ).first()
         
         if not comment:
             raise ValueError("Comment not found or unauthorized")
         
-        comment.is_deleted = True
+        comment.soft_delete()  # Use the soft_delete method from SoftDeleteMixin
         comment.updated_at = datetime.utcnow()
         
         # Update photo comment count
@@ -218,7 +218,7 @@ class CommentService:
         if photo:
             photo.comment_count = db.query(Comment).filter(
                 Comment.photo_id == comment.photo_id,
-                Comment.is_deleted == False
+                Comment.is_deleted == None  # is_deleted is DATETIME, NULL means not deleted
             ).count()
         
         db.commit()

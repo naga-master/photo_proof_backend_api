@@ -254,6 +254,7 @@ def refresh_token(
     
     return TokenResponse(
         access_token=new_access_token,
+        token=new_access_token,  # Backwards compatibility
         token_type="bearer"
     )
 
