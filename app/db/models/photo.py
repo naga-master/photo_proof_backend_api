@@ -45,6 +45,11 @@ class Photo(Base, TimestampMixin):
     uploaded_by = Column(String(36), ForeignKey("users.id"), nullable=False)
     status = Column(String(50), nullable=False, default='completed')
     # Statuses: 'pending', 'uploading', 'completed', 'failed'
+    
+    # Version tracking (added for photo versioning feature)
+    current_version_id = Column(Integer, ForeignKey("photo_versions.id"), nullable=True)
+    version_count = Column(Integer, nullable=False, default=1)
+    last_version_updated_at = Column(DateTime, nullable=True)
 
     # Relationships
     project = relationship("Project", back_populates="photos", foreign_keys=[project_id])
@@ -54,6 +59,10 @@ class Photo(Base, TimestampMixin):
     favorites = relationship("UserPhotoFavorite", back_populates="photo", cascade="all, delete-orphan")
     selections = relationship("UserPhotoSelection", back_populates="photo", cascade="all, delete-orphan")
     cart_items = relationship("CartItem", back_populates="photo")
+    
+    # Version relationships
+    versions = relationship("PhotoVersion", back_populates="photo", cascade="all, delete-orphan", foreign_keys="PhotoVersion.photo_id", order_by="PhotoVersion.version_number.desc()")
+    current_version = relationship("PhotoVersion", foreign_keys=[current_version_id], post_update=True)
 
     def __repr__(self):
         return f"<Photo(id={self.id}, filename={self.original_filename})>"
@@ -159,3 +168,39 @@ class UserPhotoSelection(Base, TimestampMixin):
 
     def __repr__(self):
         return f"<UserPhotoSelection(user_id={self.user_id}, photo_id={self.photo_id})>"
+
+
+class PhotoVersion(Base, TimestampMixin):
+    """Photo version entity for edited photos."""
+
+    __tablename__ = "photo_versions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    photo_id = Column(Integer, ForeignKey("photos.id", ondelete="CASCADE"), nullable=False, index=True)
+    version_number = Column(Integer, nullable=False)
+    
+    # File info (same structure as Photo)
+    src = Column(String(1000), nullable=False)
+    storage_path = Column(String(1000), nullable=False)
+    thumbnail_path = Column(String(1000), nullable=True)
+    preview_path = Column(String(1000), nullable=True)
+    original_filename = Column(String(500), nullable=False)
+    file_size = Column(Integer, nullable=False)
+    mime_type = Column(String(100), nullable=False)
+    width = Column(Integer, nullable=False)
+    height = Column(Integer, nullable=False)
+    
+    # Version metadata
+    is_original = Column(Boolean, nullable=False, default=False)
+    version_label = Column(String(200), nullable=True)
+    replaced_version_id = Column(Integer, ForeignKey("photo_versions.id", ondelete="SET NULL"), nullable=True)
+    uploaded_by = Column(String(36), ForeignKey("users.id"), nullable=False)
+    upload_note = Column(Text, nullable=True)
+    
+    # Relationships
+    photo = relationship("Photo", back_populates="versions", foreign_keys=[photo_id])
+    uploaded_by_user = relationship("User", foreign_keys=[uploaded_by])
+    replaced_version = relationship("PhotoVersion", remote_side=[id], foreign_keys=[replaced_version_id])
+
+    def __repr__(self):
+        return f"<PhotoVersion(id={self.id}, photo_id={self.photo_id}, version_number={self.version_number})>"

@@ -39,6 +39,24 @@ class Settings(BaseModel):
     )
     log_max_bytes: int = Field(default_factory=lambda: int(os.getenv("LOG_MAX_BYTES", 10 * 1024 * 1024)))
     log_backup_count: int = Field(default_factory=lambda: int(os.getenv("LOG_BACKUP_COUNT", 10)))
+    
+    # Photo Version Settings
+    max_photo_versions: int = Field(
+        default_factory=lambda: int(os.getenv("MAX_PHOTO_VERSIONS", 100)),
+        description="Maximum versions per photo"
+    )
+    max_upload_file_size_mb: int = Field(
+        default_factory=lambda: int(os.getenv("MAX_UPLOAD_FILE_SIZE_MB", 100)),
+        description="Max file size in MB"
+    )
+    min_match_confidence: float = Field(
+        default_factory=lambda: float(os.getenv("MIN_MATCH_CONFIDENCE", 0.7)),
+        description="Min confidence for auto-match"
+    )
+    version_storage_prefix: str = Field(
+        default="versions",
+        description="Storage prefix for versions"
+    )
 
     model_config = {
         "frozen": True,
