@@ -46,11 +46,13 @@ def create_app() -> FastAPI:
     uploads_dir = Path(settings.uploads_directory)
     uploads_dir.mkdir(parents=True, exist_ok=True)
 
-    application.mount("/uploads", StaticFiles(directory=uploads_dir, check_dir=True), name="uploads")
-
     init_db()
-
+    
+    # Include API router (which now handles /uploads via files router with proper CORS)
     application.include_router(api_router)
+    
+    # Note: We DON'T mount StaticFiles here anymore - using API endpoint instead
+    # This ensures CORS headers are properly applied to all file requests
     logger.info("Application initialized", extra={"environment": settings.environment})
     return application
 

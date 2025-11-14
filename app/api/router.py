@@ -19,6 +19,7 @@ from app.routers import cart as cart_v2
 from app.routers import orders as orders_v2
 from app.routers import invoices as invoices_v2
 from app.routers import service_packages as service_packages_v2
+from app.routers import files as files_v2
 
 
 api_router = APIRouter()
@@ -42,6 +43,7 @@ api_router.include_router(projects.router)    # TODO: Migrate to V2
 api_router.include_router(auth_v2.router, tags=["v2-auth"])
 
 # File Management
+api_router.include_router(files_v2.router, tags=["files"])  # Serves /uploads/* with CORS
 api_router.include_router(upload_v2.router, prefix="/v2/upload", tags=["v2-upload"])
 api_router.include_router(photos_v2.router, prefix="/v2/photos", tags=["v2-photos"])
 api_router.include_router(comments_v2.router, prefix="/v2/comments", tags=["v2-comments"])
