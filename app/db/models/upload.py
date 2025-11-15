@@ -1,6 +1,6 @@
 """Upload session and token models for presigned URL system."""
 
-from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, JSON
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, JSON, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime, timedelta
 from sqlalchemy.dialects.postgresql import UUID
@@ -63,6 +63,12 @@ class UploadToken(Base, TimestampMixin):
     photo_id = Column(Integer, ForeignKey("photos.id", ondelete="SET NULL"), nullable=True)
     storage_path = Column(String(1000), nullable=True)
     
+    # Version upload fields
+    is_version_upload = Column(Boolean, default=False, nullable=False, index=True)
+    target_photo_id = Column(Integer, ForeignKey("photos.id", ondelete="CASCADE"), nullable=True, index=True)
+    version_label = Column(String(255), nullable=True)
+    mapping_type = Column(String(50), nullable=True)  # 'auto' or 'manual'
+    
     # Token status
     status = Column(String(50), nullable=False, default='pending')
     # Statuses: 'pending', 'uploading', 'completed', 'failed'
@@ -73,7 +79,8 @@ class UploadToken(Base, TimestampMixin):
     # Relationships
     upload_session = relationship("UploadSession", back_populates="upload_tokens")
     folder = relationship("Folder")
-    photo = relationship("Photo")
+    photo = relationship("Photo", foreign_keys=[photo_id])
+    target_photo = relationship("Photo", foreign_keys=[target_photo_id])
 
     def is_expired(self):
         """Check if token has expired."""

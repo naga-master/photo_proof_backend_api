@@ -202,8 +202,10 @@ class VersionService:
         confidence_threshold: float = None
     ) -> Dict[str, Any]:
         """
-        Smart filename matching algorithm.
+        Smart filename matching algorithm with three-tier priority.
         Matches edited filenames to original photos using multiple strategies.
+        
+        Industry best practice: Match against current version first, then original.
         
         Args:
             edited_filenames: List of edited photo filenames to match
@@ -238,11 +240,38 @@ class VersionService:
         matched = []
         unmatched = []
         
-        # Create lookup for faster searching
-        photos_by_filename = {
-            self._normalize_filename(photo.original_filename): photo
-            for photo in original_photos
-        }
+        # OPTIMIZATION: Batch load current versions for all photos
+        photo_ids_with_versions = [p.id for p in original_photos if p.current_version_id]
+        current_version_ids = [p.current_version_id for p in original_photos if p.current_version_id]
+        
+        current_versions_map = {}
+        if current_version_ids:
+            versions = self.db.query(PhotoVersion).filter(
+                PhotoVersion.id.in_(current_version_ids)
+            ).all()
+            current_versions_map = {v.id: v for v in versions}
+            logger.info(f"Loaded {len(versions)} current versions for matching")
+        
+        # Build THREE lookup maps for three-tier matching
+        # Map 1: Current version filenames (Priority 1 - 100% confidence)
+        current_version_to_photo = {}
+        # Map 2: Original filenames (Priority 2 - 95% confidence)
+        original_filename_to_photo = {}
+        
+        for photo in original_photos:
+            # Add to original filename map
+            original_normalized = self._normalize_filename(photo.original_filename)
+            original_filename_to_photo[original_normalized] = photo
+            
+            # Add to current version map if version exists
+            if photo.current_version_id and photo.current_version_id in current_versions_map:
+                current_version = current_versions_map[photo.current_version_id]
+                current_normalized = self._normalize_filename(current_version.original_filename)
+                current_version_to_photo[current_normalized] = photo
+                
+                logger.debug(f"Photo {photo.id}: original={photo.original_filename}, current_version={current_version.original_filename}")
+        
+        logger.info(f"Built lookup maps: {len(current_version_to_photo)} current versions, {len(original_filename_to_photo)} originals")
         
         for edited_filename in edited_filenames:
             edited_normalized = self._normalize_filename(edited_filename)
@@ -252,13 +281,24 @@ class VersionService:
             confidence = 0.0
             match_reason = ""
             
-            # Priority 1: Exact match (100%)
-            if edited_normalized in photos_by_filename:
-                best_match = photos_by_filename[edited_normalized]
+            # TIER 1: Exact match against CURRENT VERSION (100% confidence)
+            # Industry best practice: Match what user sees in gallery
+            if edited_normalized in current_version_to_photo:
+                best_match = current_version_to_photo[edited_normalized]
                 confidence = 1.0
-                match_reason = "exact"
+                match_reason = "exact_current_version"
+                logger.debug(f"Tier 1 match: {edited_filename} → Photo {best_match.id} (current version)")
             
-            # Priority 2: Suffix patterns (95%)
+            # TIER 2: Exact match against ORIGINAL (95% confidence)
+            # Allows reverting to original filename
+            elif edited_normalized in original_filename_to_photo:
+                best_match = original_filename_to_photo[edited_normalized]
+                confidence = 0.95
+                match_reason = "exact_original"
+                logger.debug(f"Tier 2 match: {edited_filename} → Photo {best_match.id} (original)")
+            
+            # TIER 3: Suffix patterns (85% confidence)
+            # Handle common edit suffixes: _edited, _final, _v2, etc.
             if not best_match:
                 suffix_patterns = [
                     r'_edited$', r'_edit$', r'-edited$', r'-edit$',
@@ -271,21 +311,47 @@ class VersionService:
                     clean_base = re.sub(pattern, '', edited_base, flags=re.IGNORECASE)
                     clean_normalized = self._normalize_filename(clean_base + self._get_extension(edited_filename))
                     
-                    if clean_normalized in photos_by_filename:
-                        best_match = photos_by_filename[clean_normalized]
-                        confidence = 0.95
-                        match_reason = "suffix_pattern"
+                    # Try matching cleaned filename against current version first
+                    if clean_normalized in current_version_to_photo:
+                        best_match = current_version_to_photo[clean_normalized]
+                        confidence = 0.90
+                        match_reason = "suffix_pattern_current"
+                        logger.debug(f"Tier 3 match: {edited_filename} → Photo {best_match.id} (pattern + current)")
+                        break
+                    
+                    # Then try against original
+                    if clean_normalized in original_filename_to_photo:
+                        best_match = original_filename_to_photo[clean_normalized]
+                        confidence = 0.85
+                        match_reason = "suffix_pattern_original"
+                        logger.debug(f"Tier 3 match: {edited_filename} → Photo {best_match.id} (pattern + original)")
                         break
             
-            # Priority 3: Extension-agnostic match (85%)
+            # TIER 4: Extension-agnostic match (80%)
+            # Match if base filename same but extension different (jpg vs png)
             if not best_match:
-                for orig_filename, photo in photos_by_filename.items():
-                    orig_base = self._get_basename(photo.original_filename)
-                    if self._normalize_filename(orig_base) == self._normalize_filename(edited_base):
-                        best_match = photo
-                        confidence = 0.85
-                        match_reason = "extension_difference"
-                        break
+                # Check current versions
+                for photo in original_photos:
+                    if photo.current_version_id and photo.current_version_id in current_versions_map:
+                        current_version = current_versions_map[photo.current_version_id]
+                        current_base = self._get_basename(current_version.original_filename)
+                        if self._normalize_filename(current_base) == self._normalize_filename(edited_base):
+                            best_match = photo
+                            confidence = 0.82
+                            match_reason = "extension_difference_current"
+                            logger.debug(f"Tier 4 match: {edited_filename} → Photo {photo.id} (ext diff + current)")
+                            break
+                
+                # Check originals if no current version match
+                if not best_match:
+                    for photo in original_photos:
+                        orig_base = self._get_basename(photo.original_filename)
+                        if self._normalize_filename(orig_base) == self._normalize_filename(edited_base):
+                            best_match = photo
+                            confidence = 0.80
+                            match_reason = "extension_difference_original"
+                            logger.debug(f"Tier 4 match: {edited_filename} → Photo {photo.id} (ext diff + original)")
+                            break
             
             # If we found a high-confidence match
             if best_match and confidence >= confidence_threshold:

@@ -87,7 +87,8 @@ class UploadService:
         file_data: bytes,
     ) -> Photo:
         """
-        Complete upload using token and create Photo record.
+        Complete upload using token and create Photo record or PhotoVersion.
+        Routes to version creation if is_version_upload flag is set.
         """
         # Validate token
         upload_token = db.query(UploadToken).filter(
@@ -98,6 +99,80 @@ class UploadService:
         
         if not upload_token:
             raise ValueError("Invalid or expired upload token")
+        
+        # Check if this is a version upload
+        if upload_token.is_version_upload:
+            return await self._complete_version_upload(db, upload_token, file_data)
+        else:
+            return await self._complete_new_photo_upload(db, upload_token, file_data)
+    
+    async def _complete_version_upload(
+        self,
+        db: Session,
+        upload_token: UploadToken,
+        file_data: bytes,
+    ) -> Photo:
+        """
+        Complete version upload - creates new version for existing photo.
+        """
+        from app.services.version_service import VersionService
+        
+        # Get target photo
+        photo = db.query(Photo).filter(
+            Photo.id == upload_token.target_photo_id
+        ).first()
+        
+        if not photo:
+            raise ValueError(f"Target photo {upload_token.target_photo_id} not found")
+        
+        # Get upload session for user_id
+        upload_session = db.query(UploadSession).filter(
+            UploadSession.id == upload_token.upload_session_id
+        ).first()
+        
+        if not upload_session:
+            raise ValueError("Upload session not found")
+        
+        # Create version using version service
+        version_service = VersionService(db, self.storage)
+        
+        logger.info(f"Creating version for photo {photo.id}", extra={
+            "photo_id": photo.id,
+            "upload_filename": upload_token.filename,
+            "version_label": upload_token.version_label,
+            "mapping_type": upload_token.mapping_type
+        })
+        
+        photo_version = await version_service.create_version(
+            photo_id=photo.id,
+            file_data=file_data,
+            filename=upload_token.filename,
+            uploaded_by=upload_session.user_id,
+            version_label=upload_token.version_label,
+            upload_note=f"Uploaded via {upload_token.mapping_type or 'manual'} mapping"
+        )
+        
+        # Mark token as completed
+        upload_token.status = 'completed'
+        upload_token.photo_id = photo.id  # Reference original photo
+        
+        db.commit()
+        db.refresh(photo)
+        
+        logger.info(f"Version {photo_version.version_number} created for photo {photo.id}")
+        
+        # Return photo (not photo_version) for consistent API response
+        return photo
+    
+    async def _complete_new_photo_upload(
+        self,
+        db: Session,
+        upload_token: UploadToken,
+        file_data: bytes,
+    ) -> Photo:
+        """
+        Complete new photo upload - creates new Photo record.
+        """
         
         # Get upload session to find project_id
         upload_session = db.query(UploadSession).filter(

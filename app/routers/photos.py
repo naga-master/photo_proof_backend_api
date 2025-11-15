@@ -590,8 +590,7 @@ async def create_photo_versions_batch(
         file_metadata = mapping.get("file_metadata", {})
         version_label = mapping.get("version_label")
         
-        # Store version metadata in upload token for later processing
-        # We'll modify upload completion to handle version creation
+        # Generate upload token for version upload
         upload_token, upload_url = upload_service.generate_upload_token(
             db=db,
             project_id=project.id,
@@ -602,14 +601,12 @@ async def create_photo_versions_batch(
             folder_id=None,  # Versions don't change folder
         )
         
-        # Store version metadata in a custom field (we'll need to add this to UploadToken model)
-        # For now, store in session metadata
-        upload_token.version_metadata = {
-            "is_version": True,
-            "target_photo_id": photo_id,
-            "version_label": version_label,
-            "mapping_type": mapping.get("mapping_type", "auto")
-        }
+        # Set version upload fields on token
+        upload_token.is_version_upload = True
+        upload_token.target_photo_id = photo_id
+        upload_token.version_label = version_label
+        upload_token.mapping_type = mapping.get("mapping_type", "auto")
+        
         db.add(upload_token)
         
         tokens_and_urls.append({
