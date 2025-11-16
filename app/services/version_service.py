@@ -76,10 +76,10 @@ class VersionService:
             width, height = 1920, 1080
             mime_type = 'image/jpeg'
         
-        # Create storage path
+        # Create storage path (versions/ subdirectory for nested structure)
         timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
         safe_filename = filename.replace(" ", "_")
-        storage_path = f"projects/{photo.project_id}/photos/{photo_id}/v{next_version_number}_{timestamp}_{safe_filename}"
+        storage_path = f"projects/{photo.project_id}/versions/{photo_id}/v{next_version_number}_{timestamp}_{safe_filename}"
         
         # Save file to storage
         file_obj = io.BytesIO(file_data)

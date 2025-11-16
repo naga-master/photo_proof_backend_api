@@ -27,8 +27,14 @@ class ImageProcessingService:
     }
     
     def __init__(self):
-        self.variants_dir = Path("uploads/variants")
-        self.variants_dir.mkdir(parents=True, exist_ok=True)
+        self.uploads_base = Path("uploads")
+        self.uploads_base.mkdir(parents=True, exist_ok=True)
+    
+    def get_project_variants_dir(self, project_id: int, photo_id: int) -> Path:
+        """Get variants directory for a specific photo in a project"""
+        variants_dir = self.uploads_base / "projects" / str(project_id) / "variants" / str(photo_id)
+        variants_dir.mkdir(parents=True, exist_ok=True)
+        return variants_dir
     
     async def generate_quality_variants(
         self,
@@ -61,7 +67,7 @@ class ImageProcessingService:
                 for variant_name, settings in self.VARIANTS.items():
                     variant_path = await self.create_variant(
                         img,
-                        photo.id,
+                        photo,
                         variant_name,
                         settings['width'],
                         settings['quality']
@@ -83,7 +89,7 @@ class ImageProcessingService:
     async def create_variant(
         self,
         img: Image.Image,
-        photo_id: int,
+        photo: Photo,
         variant_name: str,
         target_width: Optional[int],
         quality: int
@@ -102,9 +108,12 @@ class ImageProcessingService:
         # Auto-orient based on EXIF
         resized = ImageOps.exif_transpose(resized)
         
-        # Create output path
-        variant_filename = f"{photo_id}_{variant_name}.webp"
-        variant_path = self.variants_dir / variant_filename
+        # Get project-scoped variants directory
+        variants_dir = self.get_project_variants_dir(photo.project_id, photo.id)
+        
+        # Simple filename (no photo ID prefix needed - already in directory structure)
+        variant_filename = f"{variant_name}.webp"
+        variant_path = variants_dir / variant_filename
         
         # Save as WebP
         resized.save(
@@ -114,8 +123,8 @@ class ImageProcessingService:
             method=6  # Slowest but best compression
         )
         
-        # Return relative path for URL construction
-        return f"uploads/variants/{variant_filename}"
+        # Return relative path from uploads/
+        return f"projects/{photo.project_id}/variants/{photo.id}/{variant_filename}"
     
     async def generate_thumbhash(
         self,

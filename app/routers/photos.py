@@ -674,13 +674,20 @@ def get_photo_variant(
     if not variant_path:
         variant_path = photo.storage_path
     
-    # Check if file exists
-    file_path = Path(variant_path)
+    # Check if file exists (handle both old and new path formats)
+    file_path = Path("uploads") / variant_path
+    
+    # Fallback for old flat structure
     if not file_path.exists():
-        # Try with uploads prefix
-        file_path = Path("uploads") / photo.storage_path
-        if not file_path.exists():
-            raise HTTPException(status_code=404, detail="Image file not found")
+        # Try old flat variants/ structure
+        old_path = Path("uploads/variants") / f"{photo.id}_{quality}.webp"
+        if old_path.exists():
+            file_path = old_path
+        else:
+            # Try original
+            file_path = Path("uploads") / photo.storage_path
+            if not file_path.exists():
+                raise HTTPException(status_code=404, detail="Image file not found")
     
     # Serve file with caching headers
     return FileResponse(

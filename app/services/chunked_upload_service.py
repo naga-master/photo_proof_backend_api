@@ -214,10 +214,10 @@ class ChunkedUploadService:
             print(f"[ChunkedUpload] Warning: Could not extract dimensions: {e}")
             width, height = 1920, 1080  # Default
         
-        # Save to permanent storage
+        # Save to permanent storage (originals/ subdirectory for nested structure)
         timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
         safe_filename = session.filename.replace(" ", "_")
-        storage_path = f"projects/{session.project_id}/{timestamp}_{session_id[:8]}_{safe_filename}"
+        storage_path = f"projects/{session.project_id}/originals/{timestamp}_{session_id[:8]}_{safe_filename}"
         
         # Upload to storage
         with open(final_path, 'rb') as f:

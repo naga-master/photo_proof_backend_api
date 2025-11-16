@@ -54,10 +54,10 @@ class UploadService:
         # Generate secure token
         token = secrets.token_urlsafe(32)
         
-        # Create storage path
+        # Create storage path (originals/ subdirectory for nested structure)
         timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
         safe_filename = filename.replace(" ", "_")
-        storage_path = f"projects/{project_id}/{timestamp}_{token[:8]}_{safe_filename}"
+        storage_path = f"projects/{project_id}/originals/{timestamp}_{token[:8]}_{safe_filename}"
         
         # Create upload token record with correct fields
         upload_token = UploadToken(
@@ -436,10 +436,10 @@ class UploadService:
             # Generate secure token
             token = secrets.token_urlsafe(32)
             
-            # Create storage path
+            # Create storage path (originals/ subdirectory for nested structure)
             filename = file_info.get('filename', f'file_{idx}')
             safe_filename = filename.replace(" ", "_")
-            storage_path = f"projects/{project_id}/{timestamp}_{token[:8]}_{safe_filename}"
+            storage_path = f"projects/{project_id}/originals/{timestamp}_{token[:8]}_{safe_filename}"
             
             # Create upload token record
             upload_token = UploadToken(
