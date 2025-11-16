@@ -16,8 +16,14 @@ from app.schemas.photo import (
     PhotoResponse,
 )
 
+# Import chunked upload router
+from app.routers.chunked_upload import router as chunked_upload_router
+
 
 router = APIRouter(tags=["Upload"])
+
+# Include chunked upload routes
+router.include_router(chunked_upload_router)
 
 
 @router.post("/presigned", response_model=PresignedUploadResponse)

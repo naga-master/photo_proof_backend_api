@@ -50,6 +50,10 @@ class Photo(Base, TimestampMixin):
     current_version_id = Column(Integer, ForeignKey("photo_versions.id"), nullable=True)
     version_count = Column(Integer, nullable=False, default=1)
     last_version_updated_at = Column(DateTime, nullable=True)
+    
+    # Image Optimization (5-layer rural network optimization)
+    variants_json = Column(Text, nullable=True)  # JSON: {"thumbnail": "path", "low": "path", ...}
+    thumbhash = Column(String(100), nullable=True)  # Base64-encoded ThumbHash for placeholders
 
     # Relationships
     project = relationship("Project", back_populates="photos", foreign_keys=[project_id])

@@ -624,6 +624,75 @@ async def create_photo_versions_batch(
     }
 
 
+@router.get("/{photo_id}/variant/{quality}")
+def get_photo_variant(
+    photo_id: int,
+    quality: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Get specific quality variant of a photo.
+    
+    Quality levels: thumbnail, low, medium, high, print
+    """
+    from fastapi.responses import FileResponse
+    from pathlib import Path
+    
+    # Get photo
+    photo = db.query(Photo).filter(Photo.id == photo_id).first()
+    if not photo:
+        raise HTTPException(status_code=404, detail="Photo not found")
+    
+    # Check access permissions
+    project = db.query(Project).filter(Project.id == photo.project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Studio users can access all photos in their studio's projects
+    has_access = False
+    if current_user.studio_id == project.studio_id:
+        has_access = True
+    # Clients can access photos from their projects
+    elif current_user.client_profile and project.client_id == current_user.client_profile.id:
+        has_access = True
+    
+    if not has_access:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    # Get variant path
+    variant_path = None
+    if photo.variants_json:
+        import json
+        try:
+            variants = json.loads(photo.variants_json)
+            variant_path = variants.get(quality)
+        except (json.JSONDecodeError, AttributeError):
+            pass
+    
+    # Fallback to original if variant not found
+    if not variant_path:
+        variant_path = photo.storage_path
+    
+    # Check if file exists
+    file_path = Path(variant_path)
+    if not file_path.exists():
+        # Try with uploads prefix
+        file_path = Path("uploads") / photo.storage_path
+        if not file_path.exists():
+            raise HTTPException(status_code=404, detail="Image file not found")
+    
+    # Serve file with caching headers
+    return FileResponse(
+        file_path,
+        media_type=photo.mime_type or "image/jpeg",
+        headers={
+            "Cache-Control": "public, max-age=31536000, immutable",
+            "ETag": f'"{photo.id}-{quality}"',
+        }
+    )
+
+
 @router.get("/photos/{photo_id}/versions")
 def get_photo_versions(
     photo_id: int,
