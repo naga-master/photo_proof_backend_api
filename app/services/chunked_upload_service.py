@@ -19,6 +19,11 @@ from app.db.models import Photo, Project
 from app.services.storage_service import StorageService
 
 
+# Global session store (shared across all service instances)
+# TODO: In production, migrate to Redis or database for persistence
+_SESSIONS: Dict[str, 'ChunkUploadSession'] = {}
+
+
 class ChunkUploadSession:
     """Represents an active chunk upload session"""
     
@@ -55,9 +60,6 @@ class ChunkedUploadService:
         self.storage = storage_service
         self.temp_dir = Path("data/uploads/chunks")
         self.temp_dir.mkdir(parents=True, exist_ok=True)
-        
-        # In-memory session store (in production, use Redis or database)
-        self.sessions: Dict[str, ChunkUploadSession] = {}
     
     def initialize_session(
         self,
@@ -93,7 +95,7 @@ class ChunkedUploadService:
         )
         
         # Store session
-        self.sessions[session_id] = session
+        _SESSIONS[session_id] = session
         
         # Create temp directory for this session
         session_dir = self.temp_dir / session_id
@@ -116,7 +118,7 @@ class ChunkedUploadService:
         """Receive and store a chunk"""
         
         # Get session
-        session = self.sessions.get(session_id)
+        session = _SESSIONS.get(session_id)
         if not session:
             raise ValueError(f"Session {session_id} not found")
         
@@ -172,7 +174,7 @@ class ChunkedUploadService:
         """Finalize upload by assembling chunks and creating Photo record"""
         
         # Get session
-        session = self.sessions.get(session_id)
+        session = _SESSIONS.get(session_id)
         if not session:
             raise ValueError(f"Session {session_id} not found")
         
@@ -261,7 +263,7 @@ class ChunkedUploadService:
         self.cleanup_session(session_id)
         
         # Remove from sessions
-        del self.sessions[session_id]
+        del _SESSIONS[session_id]
         
         print(f"[ChunkedUpload] Upload finalized, photo ID: {photo.id}")
         
@@ -269,7 +271,7 @@ class ChunkedUploadService:
     
     def get_session(self, session_id: str) -> Optional[ChunkUploadSession]:
         """Get session details"""
-        return self.sessions.get(session_id)
+        return _SESSIONS.get(session_id)
     
     def cleanup_session(self, session_id: str) -> None:
         """Cleanup temporary files for a session"""
@@ -283,13 +285,13 @@ class ChunkedUploadService:
         now = datetime.utcnow()
         expired = [
             session_id
-            for session_id, session in self.sessions.items()
+            for session_id, session in _SESSIONS.items()
             if now > session.expires_at
         ]
         
         for session_id in expired:
             self.cleanup_session(session_id)
-            del self.sessions[session_id]
+            del _SESSIONS[session_id]
             print(f"[ChunkedUpload] Expired session cleaned up: {session_id}")
         
         if expired:
