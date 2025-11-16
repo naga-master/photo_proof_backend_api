@@ -9,6 +9,7 @@ from .store import Product, ProductOption, CartItem, Order
 from .notification import Notification
 from .upload import UploadSession, UploadToken
 from .settings import LayoutTemplate, CommunicationSettings
+from .ai_tool import AITool
 
 # Backwards compatibility aliases
 Image = Photo  # Old code uses 'Image', we use 'Photo'
@@ -38,4 +39,5 @@ __all__ = [
     "UploadToken",
     "LayoutTemplate",
     "CommunicationSettings",
+    "AITool",
 ]

@@ -44,9 +44,7 @@ products_data = [
             {'name': 'Deep Matte'},
         ],
         'mockup_images': [
-            'https://images.unsplash.com/photo-1516592673884-4a382d112b01?q=80&w=1470&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1517094399396-a3c3f982865c?q=80&w=1470&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1519995522343-c63d5088a28f?q=80&w=1470&auto=format&fit=crop',
+            'data/images/lustre_print.jpg',
         ],
     },
     {
@@ -68,8 +66,7 @@ products_data = [
         ],
         'types': None,
         'mockup_images': [
-            'https://images.unsplash.com/photo-1593011033158-95244185e353?q=80&w=1470&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?q=80&w=1470&auto=format&fit=crop',
+            'data/images/fine_art.jpg',
         ],
     },
     {
@@ -90,7 +87,7 @@ products_data = [
         ],
         'types': None,
         'mockup_images': [
-            'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1470&auto=format&fit=crop',
+            'data/images/digital_file.jpg',
         ],
     },
     {
@@ -111,8 +108,7 @@ products_data = [
         ],
         'types': None,
         'mockup_images': [
-            'https://images.unsplash.com/photo-1596464716127-10e2a3915152?q=80&w=1470&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1618221195724-c94624445f32?q=80&w=1364&auto=format&fit=crop',
+            'data/images/gellery_wrapped_canvas.webp',
         ],
     },
     {
@@ -133,7 +129,7 @@ products_data = [
         ],
         'types': None,
         'mockup_images': [
-            'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1470&auto=format&fit=crop',
+            'data/images/metal_print.webp',
         ],
     },
     {
@@ -153,7 +149,7 @@ products_data = [
         ],
         'types': None,
         'mockup_images': [
-            'https://images.unsplash.com/photo-1544226120-de4c36979a49?q=80&w=1470&auto=format&fit=crop',
+            'data/images/photo_album.webp',
         ],
     },
 ]

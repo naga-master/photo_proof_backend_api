@@ -35,9 +35,7 @@ def seed_products():
                     'Archival Quality': '100+ years',
                 },
                 'mockup_images': [
-                    'https://images.unsplash.com/photo-1516592673884-4a382d112b01?q=80&w=1470&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1517094399396-a3c3f982865c?q=80&w=1470&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1519995522343-c63d5088a28f?q=80&w=1470&auto=format&fit=crop',
+                    'data/images/lustre_print.jpg',
                 ],
                 'sizes': [
                     ('4x6', 10),
@@ -64,8 +62,7 @@ def seed_products():
                     'Weight': '310 gsm',
                 },
                 'mockup_images': [
-                    'https://images.unsplash.com/photo-1593011033158-95244185e353?q=80&w=1470&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?q=80&w=1470&auto=format&fit=crop',
+                    'data/images/fine_art.jpg',
                 ],
                 'sizes': [
                     ('11x14', 90),
@@ -85,7 +82,7 @@ def seed_products():
                     'License': 'Personal Use',
                 },
                 'mockup_images': [
-                    'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1470&auto=format&fit=crop',
+                    'data/images/digital_file.jpg',
                 ],
                 'sizes': [
                     ('Single Photo', 25),
@@ -104,8 +101,7 @@ def seed_products():
                     'Finish': 'Protective UV-resistant coating',
                 },
                 'mockup_images': [
-                    'https://images.unsplash.com/photo-1596464716127-10e2a3915152?q=80&w=1470&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1618221195724-c94624445f32?q=80&w=1364&auto=format&fit=crop',
+                    'data/images/gellery_wrapped_canvas.webp',
                 ],
                 'sizes': [
                     ('16x20', 150),
@@ -124,7 +120,7 @@ def seed_products():
                     'Features': 'Waterproof, scratch-resistant',
                 },
                 'mockup_images': [
-                    'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1470&auto=format&fit=crop',
+                    'data/images/metal_print.webp',
                 ],
                 'sizes': [
                     ('16x20', 220),
@@ -143,7 +139,7 @@ def seed_products():
                     'Design': 'Custom layout included',
                 },
                 'mockup_images': [
-                    'https://images.unsplash.com/photo-1544226120-de4c36979a49?q=80&w=1470&auto=format&fit=crop',
+                    'data/images/photo_album.webp',
                 ],
                 'sizes': [
                     ('10x10 Album', 800),

@@ -378,3 +378,17 @@ class ProjectLayout(Base):
 
     project: Mapped[Project] = relationship("Project", back_populates="layout")
     cover_image: Mapped[Image | None] = relationship("Image")
+
+
+class AITool(Base):
+    __tablename__ = "ai_tools"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    thumbnail_path: Mapped[str] = mapped_column(String(255), nullable=False)
+    tool_id: Mapped[str] = mapped_column(String(50), nullable=False, unique=True, index=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    order_index: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
