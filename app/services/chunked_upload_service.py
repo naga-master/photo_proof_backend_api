@@ -256,6 +256,33 @@ class ChunkedUploadService:
             if not project.cover_photo_id:
                 project.cover_photo_id = photo.id
         
+        # Generate quality variants (Phase 2: Backend Image Optimization)
+        from app.services.image_processing_service import ImageProcessingService
+        
+        image_service = ImageProcessingService()
+        storage_full_path = self.storage.get_full_path(storage_path)
+        
+        try:
+            print(f"[ChunkedUpload] Generating quality variants for photo {photo.id}")
+            variants = await image_service.generate_quality_variants(
+                db=db,
+                photo=photo,
+                original_file_path=storage_full_path
+            )
+            print(f"[ChunkedUpload] Generated {len(variants)} variants for photo {photo.id}")
+            
+            # Generate ThumbHash for instant placeholders
+            print(f"[ChunkedUpload] Generating ThumbHash for photo {photo.id}")
+            thumbhash = await image_service.generate_thumbhash(storage_full_path)
+            if thumbhash:
+                photo.thumbhash = thumbhash
+                print(f"[ChunkedUpload] ThumbHash generated for photo {photo.id}")
+            
+        except Exception as e:
+            # Don't fail upload if variant generation fails
+            print(f"[ChunkedUpload] Failed to generate variants for photo {photo.id}: {e}")
+            # Variants can be regenerated later via admin task
+        
         db.commit()
         db.refresh(photo)
         

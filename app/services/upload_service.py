@@ -156,6 +156,37 @@ class UploadService:
         upload_token.status = 'completed'
         upload_token.photo_id = photo.id  # Reference original photo
         
+        # Generate quality variants for the new version (Phase 2: Backend Image Optimization)
+        from app.services.image_processing_service import ImageProcessingService
+        from pathlib import Path
+        
+        image_service = ImageProcessingService()
+        version_storage_path = photo_version.storage_path
+        storage_full_path = self.storage.get_full_path(version_storage_path)
+        
+        try:
+            logger.info(f"Generating quality variants for version {photo_version.version_number} of photo {photo.id}")
+            # Note: For photo versions, variants are stored in photo_version record
+            # But we use the same service to generate them
+            variants = await image_service.generate_quality_variants(
+                db=db,
+                photo=photo,  # Reference to base photo
+                original_file_path=storage_full_path
+            )
+            logger.info(f"Generated {len(variants)} variants for version {photo_version.version_number}")
+            
+            # Generate ThumbHash
+            logger.info(f"Generating ThumbHash for version {photo_version.version_number}")
+            thumbhash = await image_service.generate_thumbhash(storage_full_path)
+            if thumbhash:
+                # Store thumbhash in the photo version or photo record
+                photo.thumbhash = thumbhash
+                logger.info(f"ThumbHash generated for version {photo_version.version_number}")
+            
+        except Exception as e:
+            logger.error(f"Failed to generate variants for version: {e}")
+            # Continue - variants can be regenerated later
+        
         db.commit()
         db.refresh(photo)
         
@@ -280,6 +311,34 @@ class UploadService:
                         "folder_id": folder.id,
                         "photo_id": photo.id
                     })
+        
+        # Generate quality variants (Phase 2: Backend Image Optimization)
+        from app.services.image_processing_service import ImageProcessingService
+        from pathlib import Path
+        
+        image_service = ImageProcessingService()
+        storage_full_path = self.storage.get_full_path(upload_token.storage_path)
+        
+        try:
+            logger.info(f"Generating quality variants for photo {photo.id}")
+            variants = await image_service.generate_quality_variants(
+                db=db,
+                photo=photo,
+                original_file_path=storage_full_path
+            )
+            logger.info(f"Generated {len(variants)} variants for photo {photo.id}")
+            
+            # Generate ThumbHash for instant placeholders
+            logger.info(f"Generating ThumbHash for photo {photo.id}")
+            thumbhash = await image_service.generate_thumbhash(storage_full_path)
+            if thumbhash:
+                photo.thumbhash = thumbhash
+                logger.info(f"ThumbHash generated for photo {photo.id}")
+            
+        except Exception as e:
+            # Don't fail upload if variant generation fails
+            logger.error(f"Failed to generate variants for photo {photo.id}: {e}")
+            # Variants can be regenerated later via admin task
         
         db.commit()
         db.refresh(photo)

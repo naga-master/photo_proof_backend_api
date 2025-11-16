@@ -53,7 +53,9 @@ class LocalStorageService(StorageService):
     
     async def delete_file(self, file_path: str) -> bool:
         """Delete file from local filesystem."""
-        full_path = self.base_path / file_path.lstrip("/uploads/")
+        # Remove /uploads/ prefix if present
+        clean_path = file_path.removeprefix("/uploads/").removeprefix("uploads/")
+        full_path = self.base_path / clean_path
         
         if full_path.exists():
             full_path.unlink()
@@ -71,12 +73,16 @@ class LocalStorageService(StorageService):
     
     async def file_exists(self, file_path: str) -> bool:
         """Check if file exists locally."""
-        full_path = self.base_path / file_path.lstrip("/uploads/")
+        # Remove /uploads/ prefix if present
+        clean_path = file_path.removeprefix("/uploads/").removeprefix("uploads/")
+        full_path = self.base_path / clean_path
         return full_path.exists()
     
     def get_full_path(self, relative_path: str) -> Path:
         """Get full filesystem path."""
-        return self.base_path / relative_path.lstrip("/uploads/")
+        # Remove /uploads/ prefix if present (don't use lstrip - it removes characters, not strings!)
+        clean_path = relative_path.removeprefix("/uploads/").removeprefix("uploads/")
+        return self.base_path / clean_path
 
 
 class S3StorageService(StorageService):
