@@ -16,7 +16,7 @@ from app.schemas.photo import (
 )
 
 
-router = APIRouter(prefix="/api/comments", tags=["Comments"])
+router = APIRouter(tags=["Comments"])
 
 
 @router.get("/photos/{photo_id}", response_model=CommentListResponse)

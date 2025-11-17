@@ -48,6 +48,8 @@ api_router.include_router(files_v2.router, tags=["files"])  # Serves /uploads/* 
 api_router.include_router(upload_v2.router, prefix="/v2/upload", tags=["v2-upload"])
 api_router.include_router(photos_v2.router, prefix="/v2/photos", tags=["v2-photos"])
 api_router.include_router(comments_v2.router, prefix="/v2/comments", tags=["v2-comments"])
+# Compatibility route for frontend still using /api/comments
+api_router.include_router(comments_v2.router, prefix="/api/comments", tags=["comments-compat"])
 
 # Client Management
 api_router.include_router(clients_v2.router, prefix="/v2/clients", tags=["v2-clients"])

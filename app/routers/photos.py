@@ -1,7 +1,7 @@
 """Photos router with CRUD operations."""
 
 from typing import List, Optional, Dict, Any
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
 from sqlalchemy.orm import Session, joinedload
 
 from app.db.session import get_db
@@ -628,6 +628,7 @@ async def create_photo_versions_batch(
 def get_photo_variant(
     photo_id: int,
     quality: str,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -638,6 +639,9 @@ def get_photo_variant(
     """
     from fastapi.responses import FileResponse
     from pathlib import Path
+    from app.core.config import get_settings
+    
+    settings = get_settings()
     
     # Get photo
     photo = db.query(Photo).filter(Photo.id == photo_id).first()
@@ -660,42 +664,60 @@ def get_photo_variant(
     if not has_access:
         raise HTTPException(status_code=403, detail="Access denied")
     
-    # Get variant path
-    variant_path = None
-    if photo.variants_json:
+    # Try multiple path strategies to find the variant file
+    file_path = None
+    
+    # Strategy 1: New nested structure - projects/{project_id}/variants/{photo_id}/{quality}.webp
+    nested_path = Path("uploads") / f"projects/{project.id}/variants/{photo_id}/{quality}.webp"
+    if nested_path.exists():
+        file_path = nested_path
+    
+    # Strategy 2: Check variants_json from database
+    if not file_path and photo.variants_json:
         import json
         try:
             variants = json.loads(photo.variants_json)
             variant_path = variants.get(quality)
+            if variant_path:
+                db_path = Path("uploads") / variant_path
+                if db_path.exists():
+                    file_path = db_path
         except (json.JSONDecodeError, AttributeError):
             pass
     
-    # Fallback to original if variant not found
-    if not variant_path:
-        variant_path = photo.storage_path
+    # Strategy 3: Old flat structure - uploads/variants/{photo_id}_{quality}.webp
+    if not file_path:
+        flat_path = Path("uploads/variants") / f"{photo_id}_{quality}.webp"
+        if flat_path.exists():
+            file_path = flat_path
     
-    # Check if file exists (handle both old and new path formats)
-    file_path = Path("uploads") / variant_path
-    
-    # Fallback for old flat structure
-    if not file_path.exists():
-        # Try old flat variants/ structure
-        old_path = Path("uploads/variants") / f"{photo.id}_{quality}.webp"
-        if old_path.exists():
-            file_path = old_path
+    # Strategy 4: Fallback to original photo
+    if not file_path:
+        original_path = Path("uploads") / photo.storage_path
+        if original_path.exists():
+            file_path = original_path
         else:
-            # Try original
-            file_path = Path("uploads") / photo.storage_path
-            if not file_path.exists():
-                raise HTTPException(status_code=404, detail="Image file not found")
+            raise HTTPException(status_code=404, detail="Image file not found")
     
-    # Serve file with caching headers
+    # Get origin from request for CORS
+    origin = request.headers.get("origin", "")
+    
+    # Prepare CORS headers
+    cors_headers = {}
+    if origin and origin in settings.cors_origins:
+        cors_headers["Access-Control-Allow-Origin"] = origin
+        cors_headers["Access-Control-Allow-Credentials"] = "true"
+        cors_headers["Access-Control-Allow-Methods"] = "*"
+        cors_headers["Access-Control-Allow-Headers"] = "*"
+    
+    # Serve file with caching and CORS headers
     return FileResponse(
         file_path,
         media_type=photo.mime_type or "image/jpeg",
         headers={
             "Cache-Control": "public, max-age=31536000, immutable",
             "ETag": f'"{photo.id}-{quality}"',
+            **cors_headers,  # Add CORS headers
         }
     )
 

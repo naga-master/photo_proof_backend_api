@@ -129,7 +129,7 @@ products_data = [
         ],
         'types': None,
         'mockup_images': [
-            'data/images/metal_print.webp',
+            'data/images/metal_print.jpeg',
         ],
     },
     {

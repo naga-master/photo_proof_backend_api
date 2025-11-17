@@ -3,9 +3,11 @@
 import logging
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
+from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api import api_router
@@ -26,6 +28,25 @@ def create_app() -> FastAPI:
         description=settings.description,
         version=settings.version,
     )
+
+    # Add exception handler for HTTPException to ensure CORS headers
+    @application.exception_handler(HTTPException)
+    async def http_exception_handler(request: Request, exc: HTTPException):
+        """Custom exception handler that adds CORS headers to error responses."""
+        origin = request.headers.get("origin", "")
+        
+        headers = {}
+        if origin and origin in settings.cors_origins:
+            headers["Access-Control-Allow-Origin"] = origin
+            headers["Access-Control-Allow-Credentials"] = "true"
+            headers["Access-Control-Allow-Methods"] = "*"
+            headers["Access-Control-Allow-Headers"] = "*"
+        
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.detail},
+            headers=headers
+        )
 
     application.add_middleware(
         CORSMiddleware,

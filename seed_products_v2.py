@@ -62,7 +62,7 @@ def seed_products():
                     'Weight': '310 gsm',
                 },
                 'mockup_images': [
-                    'data/images/fine_art.jpg',
+                    'data/images/fine_art.jpeg',
                 ],
                 'sizes': [
                     ('11x14', 90),
@@ -101,7 +101,7 @@ def seed_products():
                     'Finish': 'Protective UV-resistant coating',
                 },
                 'mockup_images': [
-                    'data/images/gellery_wrapped_canvas.webp',
+                    'data/images/gellery_wrapped_canvas.jpeg',
                 ],
                 'sizes': [
                     ('16x20', 150),
@@ -120,7 +120,7 @@ def seed_products():
                     'Features': 'Waterproof, scratch-resistant',
                 },
                 'mockup_images': [
-                    'data/images/metal_print.webp',
+                    'data/images/metal_print.jpeg',
                 ],
                 'sizes': [
                     ('16x20', 220),
@@ -139,7 +139,7 @@ def seed_products():
                     'Design': 'Custom layout included',
                 },
                 'mockup_images': [
-                    'data/images/photo_album.webp',
+                    'data/images/photo_album.jpeg',
                 ],
                 'sizes': [
                     ('10x10 Album', 800),
