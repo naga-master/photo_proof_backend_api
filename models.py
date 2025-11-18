@@ -22,6 +22,26 @@ class ProjectStatus(str, Enum):
     ARCHIVED = "archived"
 
 
+class LayoutHeaderStyle(str, Enum):
+    COVER = "cover"
+    TITLE_ONLY = "title-only"
+    MINIMAL = "minimal"
+
+
+class LayoutGridPattern(str, Enum):
+    MASONRY_PORTRAIT = "masonry-portrait"
+    MASONRY_LANDSCAPE = "masonry-landscape"
+    GRID = "grid"
+    STACKED = "stacked"
+
+
+class LayoutColorTheme(str, Enum):
+    WHITE = "white"
+    GREY = "grey"
+    CREAM = "cream"
+    BLACK = "black"
+
+
 class User(BaseModel):
     id: str
     name: str
@@ -93,6 +113,14 @@ class ProjectSettings(BaseModel):
     allow_downloads: bool = True
     allow_comments: bool = True
     expires_at: Optional[datetime] = None
+    
+    # Gallery Layout Settings
+    gallery_layout_id: str = "layout-001"  # Default to Classic Portrait
+    layout_header_style: LayoutHeaderStyle = LayoutHeaderStyle.COVER
+    layout_grid_pattern: LayoutGridPattern = LayoutGridPattern.MASONRY_PORTRAIT
+    layout_color_theme: LayoutColorTheme = LayoutColorTheme.WHITE
+    layout_cover_image_id: Optional[str] = None  # ID of image to use as cover
+    layout_custom_config: Optional[Dict[str, Any]] = None  # Custom styling overrides
 
 
 class Project(BaseModel):
@@ -199,3 +227,57 @@ class CommentListResponse(BaseModel):
     comments: List[Comment]
     total: int
     image_id: str
+
+
+# Gallery Layout Models
+class LayoutCustomConfig(BaseModel):
+    backgroundColor: Optional[str] = None
+    textColor: Optional[str] = None
+    accentColor: Optional[str] = None
+    fontFamily: Optional[str] = None
+    imageSpacing: Optional[int] = None
+    borderRadius: Optional[int] = None
+    columns: Optional[Dict[str, int]] = None  # {"mobile": 1, "tablet": 2, "desktop": 3}
+    imageAspectRatio: Optional[str] = None
+    showImageCaptions: Optional[bool] = None
+    showImageNumbers: Optional[bool] = None
+    enableHoverEffects: Optional[bool] = None
+
+
+class PresetLayout(BaseModel):
+    id: str
+    name: str
+    description: str
+    header_style: LayoutHeaderStyle
+    grid_pattern: LayoutGridPattern
+    color_theme: LayoutColorTheme
+    preview_url: Optional[str] = None  # URL to preview image
+    reference_url: Optional[str] = None  # Reference inspiration URL
+
+
+class LayoutConfigResponse(BaseModel):
+    layout_id: str
+    header_style: LayoutHeaderStyle
+    grid_pattern: LayoutGridPattern
+    color_theme: LayoutColorTheme
+    cover_image_url: Optional[str] = None
+    custom_config: Optional[LayoutCustomConfig] = None
+
+
+class UpdateLayoutRequest(BaseModel):
+    layout_id: str
+    header_style: Optional[LayoutHeaderStyle] = None
+    grid_pattern: Optional[LayoutGridPattern] = None
+    color_theme: Optional[LayoutColorTheme] = None
+    cover_image_id: Optional[str] = None
+    custom_config: Optional[LayoutCustomConfig] = None
+
+
+class PresetLayoutsResponse(BaseModel):
+    presets: List[PresetLayout]
+
+
+class LayoutListResponse(BaseModel):
+    layouts: List[LayoutConfigResponse]
+    templates: List[PresetLayout]
+    total_count: int

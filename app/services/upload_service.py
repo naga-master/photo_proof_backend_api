@@ -1,0 +1,523 @@
+"""Upload service with presigned URL token management."""
+
+import logging
+import secrets
+from datetime import datetime, timedelta
+from typing import Optional, Tuple, List, Dict
+from sqlalchemy.orm import Session
+from PIL import Image
+import io
+
+from app.db.models import UploadSession, UploadToken, Photo, Project
+from app.services.storage_service import StorageService
+
+logger = logging.getLogger(__name__)
+
+
+class UploadService:
+    """Photo upload service with presigned URLs."""
+    
+    def __init__(self, storage_service: StorageService):
+        self.storage = storage_service
+    
+    def generate_upload_token(
+        self,
+        db: Session,
+        project_id: int,
+        filename: str,
+        content_type: str,
+        file_size: int,
+        user_id: str,
+        folder_id: Optional[str] = None,
+    ) -> Tuple[UploadToken, str]:
+        """
+        Generate presigned upload token.
+        Returns (token_record, upload_url)
+        """
+        # First, create or get upload session for this project
+        upload_session = db.query(UploadSession).filter(
+            UploadSession.user_id == user_id,
+            UploadSession.project_id == project_id,
+            UploadSession.status == 'in_progress'
+        ).first()
+        
+        if not upload_session:
+            upload_session = UploadSession(
+                user_id=user_id,
+                mode='existing',
+                project_id=project_id,
+                status='in_progress',
+            )
+            db.add(upload_session)
+            db.flush()
+        
+        # Generate secure token
+        token = secrets.token_urlsafe(32)
+        
+        # Create storage path (originals/ subdirectory for nested structure)
+        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        safe_filename = filename.replace(" ", "_")
+        storage_path = f"projects/{project_id}/originals/{timestamp}_{token[:8]}_{safe_filename}"
+        
+        # Create upload token record with correct fields
+        upload_token = UploadToken(
+            token=token,
+            upload_session_id=upload_session.id,
+            filename=filename,
+            storage_path=storage_path,
+            content_type=content_type,
+            file_size=file_size,
+            status='pending',
+            expires_at=datetime.utcnow() + timedelta(hours=1),
+        )
+        
+        db.add(upload_token)
+        db.commit()
+        db.refresh(upload_token)
+        
+        # Generate presigned URL
+        upload_url = f"/v2/upload/{token}"
+        
+        return upload_token, upload_url
+    
+    async def complete_upload(
+        self,
+        db: Session,
+        token: str,
+        file_data: bytes,
+    ) -> Photo:
+        """
+        Complete upload using token and create Photo record or PhotoVersion.
+        Routes to version creation if is_version_upload flag is set.
+        """
+        # Validate token
+        upload_token = db.query(UploadToken).filter(
+            UploadToken.token == token,
+            UploadToken.status == 'pending',
+            UploadToken.expires_at > datetime.utcnow(),
+        ).first()
+        
+        if not upload_token:
+            raise ValueError("Invalid or expired upload token")
+        
+        # Check if this is a version upload
+        if upload_token.is_version_upload:
+            return await self._complete_version_upload(db, upload_token, file_data)
+        else:
+            return await self._complete_new_photo_upload(db, upload_token, file_data)
+    
+    async def _complete_version_upload(
+        self,
+        db: Session,
+        upload_token: UploadToken,
+        file_data: bytes,
+    ) -> Photo:
+        """
+        Complete version upload - creates new version for existing photo.
+        """
+        from app.services.version_service import VersionService
+        
+        # Get target photo
+        photo = db.query(Photo).filter(
+            Photo.id == upload_token.target_photo_id
+        ).first()
+        
+        if not photo:
+            raise ValueError(f"Target photo {upload_token.target_photo_id} not found")
+        
+        # Get upload session for user_id
+        upload_session = db.query(UploadSession).filter(
+            UploadSession.id == upload_token.upload_session_id
+        ).first()
+        
+        if not upload_session:
+            raise ValueError("Upload session not found")
+        
+        # Create version using version service
+        version_service = VersionService(db, self.storage)
+        
+        logger.info(f"Creating version for photo {photo.id}", extra={
+            "photo_id": photo.id,
+            "upload_filename": upload_token.filename,
+            "version_label": upload_token.version_label,
+            "mapping_type": upload_token.mapping_type
+        })
+        
+        photo_version = await version_service.create_version(
+            photo_id=photo.id,
+            file_data=file_data,
+            filename=upload_token.filename,
+            uploaded_by=upload_session.user_id,
+            version_label=upload_token.version_label,
+            upload_note=f"Uploaded via {upload_token.mapping_type or 'manual'} mapping"
+        )
+        
+        # Mark token as completed
+        upload_token.status = 'completed'
+        upload_token.photo_id = photo.id  # Reference original photo
+        
+        # Generate quality variants for the new version (Phase 2: Backend Image Optimization)
+        from app.services.image_processing_service import ImageProcessingService
+        from pathlib import Path
+        
+        image_service = ImageProcessingService()
+        version_storage_path = photo_version.storage_path
+        storage_full_path = self.storage.get_full_path(version_storage_path)
+        
+        try:
+            logger.info(f"Generating quality variants for version {photo_version.version_number} of photo {photo.id}")
+            # Note: For photo versions, variants are stored in photo_version record
+            # But we use the same service to generate them
+            variants = await image_service.generate_quality_variants(
+                db=db,
+                photo=photo,  # Reference to base photo
+                original_file_path=storage_full_path
+            )
+            logger.info(f"Generated {len(variants)} variants for version {photo_version.version_number}")
+            
+            # Generate ThumbHash
+            logger.info(f"Generating ThumbHash for version {photo_version.version_number}")
+            thumbhash = await image_service.generate_thumbhash(storage_full_path)
+            if thumbhash:
+                # Store thumbhash in the photo version or photo record
+                photo.thumbhash = thumbhash
+                logger.info(f"ThumbHash generated for version {photo_version.version_number}")
+            
+        except Exception as e:
+            logger.error(f"Failed to generate variants for version: {e}")
+            # Continue - variants can be regenerated later
+        
+        db.commit()
+        db.refresh(photo)
+        
+        logger.info(f"Version {photo_version.version_number} created for photo {photo.id}")
+        
+        # Return photo (not photo_version) for consistent API response
+        return photo
+    
+    async def _complete_new_photo_upload(
+        self,
+        db: Session,
+        upload_token: UploadToken,
+        file_data: bytes,
+    ) -> Photo:
+        """
+        Complete new photo upload - creates new Photo record.
+        """
+        
+        # Get upload session to find project_id
+        upload_session = db.query(UploadSession).filter(
+            UploadSession.id == upload_token.upload_session_id
+        ).first()
+        
+        if not upload_session or not upload_session.project_id:
+            raise ValueError("Upload session or project not found")
+        
+        # Validate project exists
+        project = db.query(Project).filter(Project.id == upload_session.project_id).first()
+        if not project:
+            raise ValueError("Project not found")
+        
+        # Extract image dimensions with robust error handling
+        width = 0
+        height = 0
+        try:
+            # Try to open and validate the image
+            image_buffer = io.BytesIO(file_data)
+            image = Image.open(image_buffer)
+            image.verify()  # Verify it's a valid image
+            
+            # Re-open after verify (verify closes the file)
+            image_buffer.seek(0)
+            image = Image.open(image_buffer)
+            width, height = image.size
+            
+        except Exception as e:
+            # Log warning but don't fail - set default dimensions
+            print(f"[UploadService] Warning: Could not extract dimensions for {upload_token.filename}: {str(e)}")
+            print(f"[UploadService] File size: {len(file_data)} bytes, Content-Type: {upload_token.content_type}")
+            
+            # Set default dimensions for images that can't be parsed
+            # Backend will accept them but they'll need manual verification
+            width = 1920
+            height = 1080
+            
+            # Only fail if it's supposed to be an image but is completely invalid
+            if upload_token.content_type.startswith('image/'):
+                # Check if file data is actually valid (not empty or corrupted)
+                if len(file_data) == 0:
+                    raise ValueError(f"Empty file data for {upload_token.filename}")
+                # Otherwise allow it through with default dimensions
+        
+        # Save file to storage
+        file_obj = io.BytesIO(file_data)
+        url = await self.storage.save_file(file_obj, upload_token.storage_path)
+        
+        # Create Photo record
+        photo = Photo(
+            project_id=upload_session.project_id,
+            folder_id=upload_token.folder_id,
+            original_filename=upload_token.filename,
+            storage_path=upload_token.storage_path,
+            src=url,
+            alt=upload_token.filename,
+            width=width,
+            height=height,
+            file_size=upload_token.file_size,
+            mime_type=upload_token.content_type,
+            uploaded_by=upload_session.user_id,
+            status='completed',
+        )
+        
+        db.add(photo)
+        
+        # Mark token as completed
+        upload_token.status = 'completed'
+        upload_token.photo_id = photo.id
+        
+        # Flush to make the photo visible to subsequent queries
+        db.flush()
+        
+        # Update project photo count
+        # Count all photos with status='completed' (the default status for successfully uploaded photos)
+        project.photo_count = db.query(Photo).filter(
+            Photo.project_id == project.id,
+            Photo.status == "completed"
+        ).count()
+        
+        # Set project cover photo if not already set
+        if not project.cover_photo_id:
+            project.cover_photo_id = photo.id
+            logger.info(f"Set project cover photo", extra={
+                "project_id": project.id,
+                "photo_id": photo.id
+            })
+        
+        # Update folder photo count and set cover photo if this photo belongs to a folder
+        if upload_token.folder_id:
+            from app.db.models.project import Folder
+            folder = db.query(Folder).filter(Folder.id == upload_token.folder_id).first()
+            if folder:
+                # Update folder photo count
+                folder.photo_count = db.query(Photo).filter(
+                    Photo.folder_id == folder.id,
+                    Photo.status == "completed"
+                ).count()
+                
+                # Set cover photo if folder doesn't have one yet
+                if not folder.cover_photo_id:
+                    folder.cover_photo_id = photo.id
+                    logger.info(f"Set folder cover photo", extra={
+                        "folder_id": folder.id,
+                        "photo_id": photo.id
+                    })
+        
+        # Generate quality variants (Phase 2: Backend Image Optimization)
+        from app.services.image_processing_service import ImageProcessingService
+        from pathlib import Path
+        
+        image_service = ImageProcessingService()
+        storage_full_path = self.storage.get_full_path(upload_token.storage_path)
+        
+        try:
+            logger.info(f"Generating quality variants for photo {photo.id}")
+            variants = await image_service.generate_quality_variants(
+                db=db,
+                photo=photo,
+                original_file_path=storage_full_path
+            )
+            logger.info(f"Generated {len(variants)} variants for photo {photo.id}")
+            
+            # Generate ThumbHash for instant placeholders
+            logger.info(f"Generating ThumbHash for photo {photo.id}")
+            thumbhash = await image_service.generate_thumbhash(storage_full_path)
+            if thumbhash:
+                photo.thumbhash = thumbhash
+                logger.info(f"ThumbHash generated for photo {photo.id}")
+            
+        except Exception as e:
+            # Don't fail upload if variant generation fails
+            logger.error(f"Failed to generate variants for photo {photo.id}: {e}")
+            # Variants can be regenerated later via admin task
+        
+        db.commit()
+        db.refresh(photo)
+        
+        return photo
+    
+    def create_upload_session(
+        self,
+        db: Session,
+        project_id: int,
+        user_id: str,
+        total_files: int,
+    ) -> UploadSession:
+        """Create batch upload session."""
+        session = UploadSession(
+            user_id=user_id,
+            mode='existing',
+            project_id=project_id,
+            status="in_progress",
+            upload_rules={
+                'total_files': total_files,
+                'uploaded_files': 0,
+                'batch_upload': True
+            }
+        )
+        
+        db.add(session)
+        db.commit()
+        db.refresh(session)
+        
+        return session
+    
+    def update_upload_progress(
+        self,
+        db: Session,
+        session_id: int,
+        uploaded_count: int,
+    ) -> UploadSession:
+        """Update upload session progress."""
+        session = db.query(UploadSession).filter(UploadSession.id == session_id).first()
+        
+        if not session:
+            raise ValueError("Upload session not found")
+        
+        # Update upload_rules JSON field
+        if not session.upload_rules:
+            session.upload_rules = {}
+        
+        session.upload_rules['uploaded_files'] = uploaded_count
+        
+        # Get total from upload_rules
+        total_files = session.upload_rules.get('total_files', 0)
+        
+        if uploaded_count >= total_files:
+            session.status = "completed"
+        
+        db.commit()
+        db.refresh(session)
+        
+        return session
+
+    def generate_batch_upload_tokens(
+        self,
+        db: Session,
+        project_id: int,
+        files: List[Dict[str, any]],
+        user_id: str,
+        folder_id: Optional[str] = None,
+    ) -> Tuple[UploadSession, List[Tuple[UploadToken, str]]]:
+        """
+        Generate batch presigned upload tokens for multiple files.
+        Returns (upload_session, [(token_record, upload_url), ...])
+        """
+        # Create upload session for this batch
+        # Store batch info in upload_rules JSON field
+        upload_session = UploadSession(
+            user_id=user_id,
+            mode='existing',
+            project_id=project_id,
+            status='in_progress',
+            upload_rules={
+                'total_files': len(files),
+                'uploaded_files': 0,
+                'batch_upload': True
+            }
+        )
+        db.add(upload_session)
+        db.flush()
+        
+        # Generate tokens for all files
+        tokens_and_urls = []
+        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        
+        for idx, file_info in enumerate(files):
+            # Generate secure token
+            token = secrets.token_urlsafe(32)
+            
+            # Create storage path (originals/ subdirectory for nested structure)
+            filename = file_info.get('filename', f'file_{idx}')
+            safe_filename = filename.replace(" ", "_")
+            storage_path = f"projects/{project_id}/originals/{timestamp}_{token[:8]}_{safe_filename}"
+            
+            # Create upload token record
+            upload_token = UploadToken(
+                token=token,
+                upload_session_id=upload_session.id,
+                filename=filename,
+                storage_path=storage_path,
+                content_type=file_info.get('content_type', 'image/jpeg'),
+                file_size=file_info.get('file_size', 0),
+                folder_id=folder_id,
+                status='pending',
+                expires_at=datetime.utcnow() + timedelta(hours=1),
+            )
+            
+            db.add(upload_token)
+            
+            # Generate presigned URL
+            upload_url = f"/v2/upload/{token}"
+            
+            tokens_and_urls.append((upload_token, upload_url))
+        
+        db.commit()
+        db.refresh(upload_session)
+        
+        return upload_session, tokens_and_urls
+    
+    async def complete_batch_upload_verification(
+        self,
+        db: Session,
+        session_id: int,
+    ) -> Dict[str, any]:
+        """
+        Verify batch upload completion and update session.
+        Returns summary of upload status.
+        """
+        upload_session = db.query(UploadSession).filter(
+            UploadSession.id == session_id
+        ).first()
+        
+        if not upload_session:
+            raise ValueError("Upload session not found")
+        
+        # Get all tokens for this session
+        tokens = db.query(UploadToken).filter(
+            UploadToken.upload_session_id == session_id
+        ).all()
+        
+        # Count completed uploads
+        completed_count = sum(1 for t in tokens if t.status == 'completed')
+        failed_count = sum(1 for t in tokens if t.status == 'failed')
+        pending_count = sum(1 for t in tokens if t.status == 'pending')
+        
+        # Get total from upload_rules if it exists
+        total_files = len(tokens)
+        if upload_session.upload_rules and 'total_files' in upload_session.upload_rules:
+            total_files = upload_session.upload_rules['total_files']
+        
+        # Update session status
+        if completed_count + failed_count >= total_files:
+            upload_session.status = 'completed'
+        
+        # Update upload_rules with progress
+        if upload_session.upload_rules:
+            upload_session.upload_rules['uploaded_files'] = completed_count
+        else:
+            upload_session.upload_rules = {
+                'total_files': total_files,
+                'uploaded_files': completed_count,
+                'batch_upload': True
+            }
+        
+        db.commit()
+        
+        return {
+            "session_id": session_id,
+            "total_files": total_files,
+            "completed": completed_count,
+            "failed": failed_count,
+            "pending": pending_count,
+            "status": upload_session.status,
+        }

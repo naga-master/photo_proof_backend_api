@@ -14,11 +14,14 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     Numeric,
+    JSON,
     String,
     Text,
     UniqueConstraint,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from typing import Optional
 
 from .base import Base
 
@@ -97,6 +100,7 @@ class User(Base):
     studio_id: Mapped[str | None] = mapped_column(ForeignKey("studios.id", ondelete="SET NULL"), nullable=True, index=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
+    username: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
     password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)
     role: Mapped[str] = mapped_column(UserRole, nullable=False, index=True)
     avatar_url: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -179,6 +183,12 @@ class Project(Base):
     )
     categories: Mapped[list["Category"]] = relationship("Category", back_populates="project", cascade="all, delete-orphan")
     images: Mapped[list["Image"]] = relationship("Image", back_populates="project", cascade="all, delete-orphan")
+    layout: Mapped[Optional["ProjectLayout"]] = relationship(
+        "ProjectLayout",
+        back_populates="project",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )
 
 
 class ProjectSettings(Base):
@@ -263,7 +273,12 @@ class Image(Base):
     project: Mapped[Project] = relationship("Project", back_populates="images")
     category: Mapped[Category] = relationship("Category", back_populates="images", foreign_keys=[category_id])
     uploader: Mapped[User] = relationship("User", back_populates="uploaded_images")
-    versions: Mapped[list["ImageVersion"]] = relationship("ImageVersion", back_populates="image", cascade="all, delete-orphan")
+    versions: Mapped[list["ImageVersion"]] = relationship(
+        "ImageVersion",
+        back_populates="image",
+        cascade="all, delete-orphan",
+        order_by="desc(ImageVersion.created_at)",
+    )
     selections: Mapped[list["ImageSelection"]] = relationship("ImageSelection", back_populates="image", cascade="all, delete-orphan")
     comments: Mapped[list["Comment"]] = relationship("Comment", back_populates="image", cascade="all, delete-orphan")
     tags: Mapped[list["Tag"]] = relationship("Tag", secondary="image_tags", back_populates="images")
@@ -276,9 +291,14 @@ class ImageVersion(Base):
     image_id: Mapped[str] = mapped_column(ForeignKey("images.id", ondelete="CASCADE"), nullable=False, index=True)
     version_name: Mapped[str] = mapped_column(String(100), nullable=False)
     s3_key: Mapped[str] = mapped_column(Text, nullable=False)
+    original_filename: Mapped[str] = mapped_column(String(255), nullable=False)
+    mime_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
     file_size_bytes: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
     width: Mapped[int | None] = mapped_column(Integer, nullable=True)
     height: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    checksum: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    is_current: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     created_by: Mapped[str | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
@@ -341,3 +361,34 @@ class Comment(Base):
     user: Mapped[User] = relationship("User", back_populates="comments")
     parent: Mapped[Comment | None] = relationship("Comment", remote_side="Comment.id", back_populates="replies")
     replies: Mapped[list["Comment"]] = relationship("Comment", back_populates="parent", cascade="all, delete-orphan")
+
+
+class ProjectLayout(Base):
+    __tablename__ = "project_layouts"
+
+    project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE"), primary_key=True)
+    layout_id: Mapped[str] = mapped_column(String(50), nullable=False, default="layout-001")
+    header_style: Mapped[str] = mapped_column(String(20), nullable=False, default="cover")
+    grid_pattern: Mapped[str] = mapped_column(String(30), nullable=False, default="masonry-portrait")
+    color_theme: Mapped[str] = mapped_column(String(20), nullable=False, default="white")
+    cover_image_id: Mapped[str | None] = mapped_column(ForeignKey("images.id", ondelete="SET NULL"), nullable=True)
+    custom_config: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    project: Mapped[Project] = relationship("Project", back_populates="layout")
+    cover_image: Mapped[Image | None] = relationship("Image")
+
+
+class AITool(Base):
+    __tablename__ = "ai_tools"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
+    name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    thumbnail_path: Mapped[str] = mapped_column(String(255), nullable=False)
+    tool_id: Mapped[str] = mapped_column(String(50), nullable=False, unique=True, index=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    order_index: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

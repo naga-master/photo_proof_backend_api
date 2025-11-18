@@ -32,6 +32,41 @@ class CreateClientRequest(BaseModel):
     phone: Optional[str] = None
 
 
+class CreateStudioRequest(BaseModel):
+    name: str
+    email: str
+    business_name: Optional[str] = None
+    phone: Optional[str] = None
+    website: Optional[str] = None
+    address_line1: Optional[str] = None
+    address_line2: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    postal_code: Optional[str] = None
+    country: Optional[str] = None
+    logo_url: Optional[str] = None
+    brand_color: Optional[str] = None
+    password: Optional[str] = None
+    password_encoding: Optional[str] = Field(default="plain", alias="passwordEncoding")
+
+    model_config = {
+        "populate_by_name": True,
+        "str_strip_whitespace": True,
+    }
+
+
+class StudioOnboardingRequest(CreateStudioRequest):
+    owner_name: str = Field(alias="ownerName")
+    password: str
+    password_confirm: str = Field(alias="passwordConfirm")
+    password_encoding: Optional[str] = Field(default="plain", alias="passwordEncoding")
+
+    model_config = {
+        "populate_by_name": True,
+        "str_strip_whitespace": True,
+    }
+
+
 class UpdateImageRequest(BaseModel):
     category_id: Optional[str] = Field(default=None, alias="categoryId")
     is_selected: Optional[bool] = Field(default=None, alias="isSelected")
@@ -55,6 +90,8 @@ class UploadFileDescriptor(BaseModel):
     file_size: int = Field(alias="fileSize")
     content_type: Optional[str] = Field(default=None, alias="contentType")
     category_id: Optional[str] = Field(default=None, alias="categoryId")
+    replace_image_id: Optional[str] = Field(default=None, alias="replaceImageId")
+    version_name: Optional[str] = Field(default=None, alias="versionName")
 
     model_config = {
         "populate_by_name": True,
@@ -80,6 +117,10 @@ class CompleteUploadRequest(BaseModel):
     file_size: int = Field(alias="fileSize")
     content_type: Optional[str] = Field(default=None, alias="contentType")
     upload_url: Optional[str] = Field(default=None, alias="uploadUrl")
+    replace_image_id: Optional[str] = Field(default=None, alias="replaceImageId")
+    version_name: Optional[str] = Field(default=None, alias="versionName")
+    checksum: Optional[str] = None
+    force_replace: bool = Field(default=False, alias="forceReplace")
 
     model_config = {
         "populate_by_name": True,

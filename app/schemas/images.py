@@ -13,9 +13,20 @@ class ImageVersionRead(BaseModel):
     image_id: str
     version_name: str
     s3_key: str
+    url: str = ""  # Will be populated in serializer
+    thumbnail: str = ""  # Will be populated in serializer  
+    file_name: str = ""  # Will be populated in serializer
+    original_filename: str
+    mime_type: Optional[str] = None
+    file_size: Optional[int] = None  # Will be populated in serializer
     file_size_bytes: Optional[int] = None
     width: Optional[int] = None
     height: Optional[int] = None
+    checksum: Optional[str] = None
+    notes: Optional[str] = None
+    is_current: bool
+    is_latest: bool = False  # Will be populated in serializer
+    uploaded_at: Optional[datetime] = None  # Will be populated in serializer
     created_by: Optional[str] = None
     created_at: datetime
 
@@ -35,6 +46,7 @@ class ImageRead(BaseModel):
     mime_type: str
     width: Optional[int] = None
     height: Optional[int] = None
+    metadata: dict = Field(default_factory=lambda: {})  # Frontend expects metadata object
     captured_at: Optional[datetime] = None
     camera_make: Optional[str] = None
     camera_model: Optional[str] = None
