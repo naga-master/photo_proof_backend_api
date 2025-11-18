@@ -711,12 +711,13 @@ def get_photo_variant(
         cors_headers["Access-Control-Allow-Headers"] = "*"
     
     # Serve file with caching and CORS headers
+    # Include version in ETag to force cache invalidation when CORS changes
     return FileResponse(
         file_path,
         media_type=photo.mime_type or "image/jpeg",
         headers={
             "Cache-Control": "public, max-age=31536000, immutable",
-            "ETag": f'"{photo.id}-{quality}"',
+            "ETag": f'"{photo.id}-{quality}-v2"',  # v2 to invalidate old cache
             **cors_headers,  # Add CORS headers
         }
     )

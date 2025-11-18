@@ -35,7 +35,11 @@ def create_app() -> FastAPI:
         """Custom exception handler that adds CORS headers to error responses."""
         origin = request.headers.get("origin", "")
         
-        headers = {}
+        headers = {
+            "Cache-Control": "no-cache, no-store, must-revalidate",  # Prevent caching errors
+            "Pragma": "no-cache",
+            "Expires": "0"
+        }
         if origin and origin in settings.cors_origins:
             headers["Access-Control-Allow-Origin"] = origin
             headers["Access-Control-Allow-Credentials"] = "true"
