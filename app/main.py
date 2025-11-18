@@ -1,6 +1,7 @@
 """FastAPI application factory."""
 
 import logging
+import re
 from pathlib import Path
 
 from fastapi import FastAPI, Request, status
@@ -17,6 +18,19 @@ from app.db.init_db import init_db
 
 
 logger = logging.getLogger(__name__)
+
+
+def origin_matches_pattern(origin: str, patterns: list[str]) -> bool:
+    """Check if origin matches any of the allowed patterns (supports wildcards)."""
+    for pattern in patterns:
+        if pattern == origin:
+            return True
+        # Convert wildcard pattern to regex
+        if '*' in pattern:
+            regex_pattern = pattern.replace('.', r'\.').replace('*', r'[^:/]+')
+            if re.match(f'^{regex_pattern}$', origin):
+                return True
+    return False
 
 
 def create_app() -> FastAPI:
@@ -40,7 +54,7 @@ def create_app() -> FastAPI:
             "Pragma": "no-cache",
             "Expires": "0"
         }
-        if origin and origin in settings.cors_origins:
+        if origin and origin_matches_pattern(origin, settings.cors_origins):
             headers["Access-Control-Allow-Origin"] = origin
             headers["Access-Control-Allow-Credentials"] = "true"
             headers["Access-Control-Allow-Methods"] = "*"
@@ -52,13 +66,36 @@ def create_app() -> FastAPI:
             headers=headers
         )
 
-    application.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.cors_origins,
-        allow_credentials=settings.allow_credentials,
-        allow_methods=settings.allow_methods,
-        allow_headers=settings.allow_headers,
-    )
+    # Convert CORS origins to regex pattern for wildcard support
+    # Separate exact origins from wildcard patterns
+    exact_origins = [o for o in settings.cors_origins if '*' not in o]
+    wildcard_patterns = [o for o in settings.cors_origins if '*' in o]
+    
+    # Build regex pattern from wildcards
+    regex_parts = []
+    for pattern in wildcard_patterns:
+        regex_pattern = pattern.replace('.', r'\.').replace('*', r'[^:/]+')
+        regex_parts.append(regex_pattern)
+    
+    # Combine exact origins with regex
+    if regex_parts:
+        combined_regex = '|'.join([f'({r})' for r in regex_parts])
+        application.add_middleware(
+            CORSMiddleware,
+            allow_origins=exact_origins,
+            allow_origin_regex=combined_regex,
+            allow_credentials=settings.allow_credentials,
+            allow_methods=settings.allow_methods,
+            allow_headers=settings.allow_headers,
+        )
+    else:
+        application.add_middleware(
+            CORSMiddleware,
+            allow_origins=settings.cors_origins,
+            allow_credentials=settings.allow_credentials,
+            allow_methods=settings.allow_methods,
+            allow_headers=settings.allow_headers,
+        )
 
     # Compression middleware - reduces response size by 15-20%
     # Automatically compresses responses >1KB
