@@ -1,5 +1,6 @@
 """Photos router with CRUD operations."""
 
+import re
 from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
 from sqlalchemy.orm import Session, joinedload
@@ -15,6 +16,19 @@ from app.services.version_service import VersionService
 
 
 router = APIRouter()
+
+
+def origin_matches_pattern(origin: str, patterns: list[str]) -> bool:
+    """Check if origin matches any of the allowed patterns (supports wildcards)."""
+    for pattern in patterns:
+        if pattern == origin:
+            return True
+        # Convert wildcard pattern to regex
+        if '*' in pattern:
+            regex_pattern = pattern.replace('.', r'\.').replace('*', r'[^:/]+')
+            if re.match(f'^{regex_pattern}$', origin):
+                return True
+    return False
 
 
 @router.get("/{photo_id}", response_model=PhotoResponse)
@@ -702,9 +716,9 @@ def get_photo_variant(
     # Get origin from request for CORS
     origin = request.headers.get("origin", "")
     
-    # Prepare CORS headers
+    # Prepare CORS headers with wildcard pattern matching
     cors_headers = {}
-    if origin and origin in settings.cors_origins:
+    if origin and origin_matches_pattern(origin, settings.cors_origins):
         cors_headers["Access-Control-Allow-Origin"] = origin
         cors_headers["Access-Control-Allow-Credentials"] = "true"
         cors_headers["Access-Control-Allow-Methods"] = "*"

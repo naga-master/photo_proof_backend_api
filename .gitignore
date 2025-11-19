@@ -9,7 +9,12 @@ venv/*
 .venv
 .venv/*
 # photo_proof.db
-uploads/
+uploads/projects
+uploads/variants
+uploads/chunks
+uploads/chunks/*
+uploads/projects/*
+uploads/variants/*
 tmpchunk.bin
 uvicorn.out
 *.log

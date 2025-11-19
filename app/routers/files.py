@@ -1,5 +1,6 @@
 """File serving router with proper CORS headers."""
 
+import re
 from pathlib import Path
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse
@@ -7,6 +8,19 @@ from app.core.config import get_settings
 
 router = APIRouter()
 settings = get_settings()
+
+
+def origin_matches_pattern(origin: str, patterns: list[str]) -> bool:
+    """Check if origin matches any of the allowed patterns (supports wildcards)."""
+    for pattern in patterns:
+        if pattern == origin:
+            return True
+        # Convert wildcard pattern to regex
+        if '*' in pattern:
+            regex_pattern = pattern.replace('.', r'\.').replace('*', r'[^:/]+')
+            if re.match(f'^{regex_pattern}$', origin):
+                return True
+    return False
 
 
 @router.get("/uploads/{path:path}")
@@ -41,9 +55,9 @@ async def serve_upload_file(path: str, request: Request):
     # Get origin from request
     origin = request.headers.get("origin", "")
     
-    # Prepare CORS headers
+    # Prepare CORS headers with wildcard pattern matching
     cors_headers = {}
-    if origin and origin in settings.cors_origins:
+    if origin and origin_matches_pattern(origin, settings.cors_origins):
         cors_headers["Access-Control-Allow-Origin"] = origin
         cors_headers["Access-Control-Allow-Credentials"] = "true"
         cors_headers["Access-Control-Allow-Methods"] = "*"
