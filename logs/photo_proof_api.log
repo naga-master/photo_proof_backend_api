@@ -1707,3 +1707,331 @@ fastapi.exceptions.HTTPException: 401: Authentication required
 2025-11-21 15:14:28 | INFO | uvicorn.access | 127.0.0.1:49177 - "GET /v2/photos/807/variant/medium HTTP/1.1" 200
 2025-11-21 15:14:28 | DEBUG | app.db.session | Database session committed
 2025-11-21 15:14:28 | DEBUG | app.db.session | Database session closed
+2025-11-21 17:31:05 | INFO | uvicorn.error | Shutting down
+2025-11-21 17:31:05 | INFO | uvicorn.error | Waiting for application shutdown.
+2025-11-21 17:31:05 | INFO | uvicorn.error | Application shutdown complete.
+2025-11-21 17:31:05 | INFO | uvicorn.error | Finished server process [95643]
+2025-11-21 17:32:16 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 17:32:18 | INFO | app.main | Application initialized
+2025-11-21 17:32:18 | INFO | uvicorn.error | Started server process [38547]
+2025-11-21 17:32:18 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-21 17:32:18 | INFO | uvicorn.error | Application startup complete.
+2025-11-21 17:32:21 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 17:32:23 | INFO | app.main | Application initialized
+2025-11-21 17:32:23 | DEBUG | app.db.session | Session scope opened
+2025-11-21 17:32:26 | WARNING | py.warnings | /Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/utils_scripts/create_test_studio_user.py:60: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  created_at=datetime.utcnow(),
+
+2025-11-21 17:32:26 | WARNING | py.warnings | /Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/utils_scripts/create_test_studio_user.py:61: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  updated_at=datetime.utcnow()
+
+2025-11-21 17:32:26 | ERROR | app.db.session | Session scope rolled back due to exception
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.IntegrityError: FOREIGN KEY constraint failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/db/session.py", line 103, in session_scope
+    yield session
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/utils_scripts/create_test_studio_user.py", line 65, in create_test_studio_user
+    session.commit()
+    ~~~~~~~~~~~~~~^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "<string>", line 2, in commit
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 1311, in commit
+    self._prepare_impl()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 2, in _prepare_impl
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 1286, in _prepare_impl
+    self.session.flush()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4331, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4466, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/util/langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/session.py", line 4427, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/orm/persistence.py", line 1048, in _emit_insert_statements
+    result = connection.execute(
+        statement, multiparams, execution_options=execution_options
+    )
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/sql/elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/sqlalchemy/engine/default.py", line 951, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) FOREIGN KEY constraint failed
+[SQL: INSERT INTO users (id, studio_id, name, email, username, password_hash, role, avatar_url, phone, is_active, email_verified, last_login_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('c75b30dd-6aeb-4c1a-a0f4-615ea63c9f91', 'test-studio-001', 'Test Studio', 'studio@example.com', 'studio@example.com', '$2b$12$ifwe4NdEMQJxyu1dov0ScegABi7hmzGIKvid.bvlI319WXDOyZWfK', 'studio_owner', None, None, 1, 1, None, '2025-11-21 12:02:26.834665', '2025-11-21 12:02:26.835359')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-11-21 17:32:28 | DEBUG | app.db.session | Session scope closed
+2025-11-21 19:02:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:02:22 | INFO | uvicorn.access | 127.0.0.1:60528 - "OPTIONS /api/auth/client/login HTTP/1.1" 400
+2025-11-21 19:05:41 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:05:42 | INFO | app.main | Application initialized
+2025-11-21 19:05:42 | INFO | uvicorn.error | Started server process [59810]
+2025-11-21 19:05:42 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-21 19:05:42 | INFO | uvicorn.error | Application startup complete.
+2025-11-21 19:05:42 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:05:42 | INFO | uvicorn.access | 127.0.0.1:61615 - "OPTIONS /api/auth/client/login HTTP/1.1" 400
+2025-11-21 19:06:52 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:06:53 | INFO | app.main | Application initialized
+2025-11-21 19:06:53 | DEBUG | app.db.session | Session scope opened
+2025-11-21 19:06:53 | DEBUG | app.db.session | Session scope committed
+2025-11-21 19:06:53 | DEBUG | app.db.session | Session scope closed
+2025-11-21 19:07:12 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:07:13 | INFO | app.main | Application initialized
+2025-11-21 19:07:13 | DEBUG | app.db.session | Session scope opened
+2025-11-21 19:07:19 | DEBUG | app.db.session | Session scope committed
+2025-11-21 19:07:19 | DEBUG | app.db.session | Session scope closed
+2025-11-21 19:08:04 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:08:04 | INFO | uvicorn.access | 127.0.0.1:62264 - "OPTIONS /api/auth/client/login HTTP/1.1" 400
+2025-11-21 19:10:18 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:10:18 | INFO | uvicorn.access | 127.0.0.1:63037 - "OPTIONS /api/auth/client/login HTTP/1.1" 400
+2025-11-21 19:12:31 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:12:31 | INFO | uvicorn.access | 127.0.0.1:63652 - "OPTIONS /api/auth/studio/login HTTP/1.1" 400
+2025-11-21 19:14:19 | INFO | uvicorn.error | Shutting down
+2025-11-21 19:14:19 | INFO | uvicorn.error | Waiting for application shutdown.
+2025-11-21 19:14:19 | INFO | uvicorn.error | Application shutdown complete.
+2025-11-21 19:14:19 | INFO | uvicorn.error | Finished server process [59810]
+2025-11-21 19:14:30 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:14:30 | INFO | app.main | Application initialized
+2025-11-21 19:14:30 | INFO | uvicorn.error | Started server process [67885]
+2025-11-21 19:14:30 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-21 19:14:30 | INFO | uvicorn.error | Application startup complete.
+2025-11-21 19:16:03 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:16:03 | INFO | app.main | Application initialized
+2025-11-21 19:16:12 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:16:12 | INFO | uvicorn.access | 127.0.0.1:64762 - "OPTIONS /api/auth/studio/login HTTP/1.1" 400
+2025-11-21 19:16:18 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:16:18 | INFO | uvicorn.access | 127.0.0.1:64804 - "OPTIONS /api/auth/studio/login HTTP/1.1" 400
+2025-11-21 19:16:25 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:16:25 | INFO | uvicorn.access | 127.0.0.1:64844 - "OPTIONS /api/auth/studio/login HTTP/1.1" 400
+2025-11-21 19:16:34 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:16:34 | INFO | app.main | Application initialized
+2025-11-21 19:16:48 | INFO | uvicorn.error | Shutting down
+2025-11-21 19:16:48 | INFO | uvicorn.error | Waiting for application shutdown.
+2025-11-21 19:16:48 | INFO | uvicorn.error | Application shutdown complete.
+2025-11-21 19:16:48 | INFO | uvicorn.error | Finished server process [67885]
+2025-11-21 19:16:52 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:16:53 | INFO | app.main | Application initialized
+2025-11-21 19:16:53 | INFO | uvicorn.error | Started server process [71173]
+2025-11-21 19:16:53 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-21 19:16:53 | INFO | uvicorn.error | Application startup complete.
+2025-11-21 19:18:00 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:18:00 | INFO | app.main | Application initialized
+2025-11-21 19:18:03 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:18:03 | INFO | app.main | Application initialized
+2025-11-21 19:18:03 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/logs/photo_proof_api.log')}
+2025-11-21 19:18:12 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:18:12 | INFO | app.main | Application initialized
+2025-11-21 19:18:12 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/logs/photo_proof_api.log')}
+2025-11-21 19:18:36 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:18:36 | INFO | app.main | Application initialized
+2025-11-21 19:18:39 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:18:39 | INFO | app.main | Application initialized
+2025-11-21 19:18:39 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/logs/photo_proof_api.log')}
+2025-11-21 19:18:44 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:18:53 | DEBUG | watchfiles.main | 1 change detected: {(<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/start_with_cors.sh')}
+2025-11-21 19:18:59 | DEBUG | watchfiles.main | 1 change detected: {(<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/start_with_cors.sh')}
+2025-11-21 19:19:05 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:19:15 | DEBUG | watchfiles.main | 37 changes detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/licenses/LICENSE'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/_range.py'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/errorcodes.py'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/.dylibs/libgssapi_krb5.2.2.dylib'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/WHEEL'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/.dylibs/libssl.3.dylib'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/.dylibs/libcrypto.3.dylib'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__init__.py'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/_ipaddress.py'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/.dylibs/libkrb5support.1.1.dylib'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/.dylibs/libk5crypto.3.1.dylib'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/errors.py'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/_psycopg.cpython-313-darwin.so'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/licenses/LICENSE'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/__init__.cpython-313.pyc.4339825136'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/.dylibs/libkrb5.3.3.dylib'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/licenses'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/extensions.py'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/.dylibs'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/.dylibs/libsasl2.3.dylib'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/tz.py'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/.dylibs/liblber.2.dylib'), (<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/__init__.cpython-313.pyc.4339825136'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/METADATA'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/extras.py'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/_json.py'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/top_level.txt'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/pool.py'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/.dylibs/libldap.2.dylib'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/.dylibs/libcom_err.3.0.dylib'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/RECORD'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/sql.py'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/.dylibs/libpq.5.dylib'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/__init__.cpython-313.pyc')}
+2025-11-21 19:19:16 | DEBUG | watchfiles.main | 38 changes detected: {(<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/errors.cpython-313.pyc.4339826480'), (<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/extras.cpython-313.pyc.4339826096'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/errorcodes.cpython-313.pyc.4491244176'), (<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/_json.cpython-313.pyc.4339824944'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/REQUESTED'), (<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/pool.cpython-313.pyc.4339824752'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/_range.cpython-313.pyc.4339825520'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/_ipaddress.cpython-313.pyc'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/_range.cpython-313.pyc'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/_json.cpython-313.pyc'), (<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/errors.cpython-313.pyc.4339826480'), (<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/errorcodes.cpython-313.pyc.4491244176'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/extras.cpython-313.pyc'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/errors.cpython-313.pyc'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/extensions.cpython-313.pyc'), (<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/_range.cpython-313.pyc.4339825520'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/_ipaddress.cpython-313.pyc.4491243552'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/sql.cpython-313.pyc.4339826288'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/extensions.cpython-313.pyc.4491245840'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/INSTALLER80xm6v6v.tmp'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/RECORDrmy07xer.tmp'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/INSTALLER'), (<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/logs/photo_proof_api.log'), (<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/sql.cpython-313.pyc.4339826288'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/tz.cpython-313.pyc'), (<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/_ipaddress.cpython-313.pyc.4491243552'), (<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/extensions.cpython-313.pyc.4491245840'), (<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/INSTALLER80xm6v6v.tmp'), (<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/RECORDrmy07xer.tmp'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/tz.cpython-313.pyc.4341662704'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2_binary-2.9.11.dist-info/RECORD'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/extras.cpython-313.pyc.4339826096'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/errorcodes.cpython-313.pyc'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/_json.cpython-313.pyc.4339824944'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/sql.cpython-313.pyc'), (<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/tz.cpython-313.pyc.4341662704'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/pool.cpython-313.pyc.4339824752'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.venv/lib/python3.13/site-packages/psycopg2/__pycache__/pool.cpython-313.pyc')}
+2025-11-21 19:19:19 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:19:19 | INFO | app.main | Application initialized
+2025-11-21 19:19:19 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/logs/photo_proof_api.log')}
+2025-11-21 19:19:22 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.env')}
+2025-11-21 19:19:29 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/start_with_cors.sh')}
+2025-11-21 19:20:12 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:23:18 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:23:19 | INFO | app.main | Application initialized
+2025-11-21 19:23:22 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:23:22 | INFO | app.main | Application initialized
+2025-11-21 19:23:23 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/logs/photo_proof_api.log')}
+2025-11-21 19:23:36 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:24:41 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:25:15 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:26:50 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/core/config.py')}
+2025-11-21 19:26:51 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/logs/photo_proof_api.log')}
+2025-11-21 19:26:53 | DEBUG | watchfiles.main | 3 changes detected: {(<Change.deleted: 3>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/core/__pycache__/config.cpython-313.pyc.4564831888'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/core/__pycache__/config.cpython-313.pyc.4564831888'), (<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/core/__pycache__/config.cpython-313.pyc')}
+2025-11-21 19:26:56 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:26:56 | INFO | app.main | Application initialized
+2025-11-21 19:26:56 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/logs/photo_proof_api.log')}
+2025-11-21 19:27:11 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:27:12 | INFO | app.main | Application initialized
+2025-11-21 19:27:16 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:27:16 | INFO | app.main | Application initialized
+2025-11-21 19:27:17 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/logs/photo_proof_api.log')}
+2025-11-21 19:27:33 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:27:34 | INFO | app.main | Application initialized
+2025-11-21 19:27:34 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/logs/photo_proof_api.log')}
+2025-11-21 19:27:41 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:27:47 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:27:54 | DEBUG | app.middleware.tenant | Skipping tenant detection for path: /api/auth/studio/login
+2025-11-21 19:27:54 | DEBUG | app.db.session | Database session opened
+2025-11-21 19:27:55 | DEBUG | app.db.session | Database session committed
+2025-11-21 19:27:55 | DEBUG | app.db.session | Database session closed
+2025-11-21 19:28:31 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:28:31 | INFO | app.main | Application initialized
+2025-11-21 19:28:31 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/logs/photo_proof_api.log')}
+2025-11-21 19:28:54 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:28:54 | DEBUG | app.middleware.tenant | Skipping tenant detection for path: /api/auth/studio/login
+2025-11-21 19:28:54 | DEBUG | app.db.session | Database session opened
+2025-11-21 19:28:54 | DEBUG | app.db.session | Database session committed
+2025-11-21 19:28:54 | DEBUG | app.db.session | Database session closed
+2025-11-21 19:29:04 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:29:04 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 19:29:04 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 19:29:04 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 19:29:04 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 19:29:04 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:29:04 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 19:29:04 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 19:29:04 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 19:29:04 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 19:29:04 | DEBUG | app.db.session | Database session opened
+2025-11-21 19:29:04 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 19:29:04 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 19:29:04 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 19:29:04 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 19:29:04 | DEBUG | app.api.v1.projects | [COVER DEBUG] list_projects endpoint called!
+2025-11-21 19:29:04 | DEBUG | app.api.v1.projects | [COVER DEBUG] User: studio@admin.com, Role: UserRole.STUDIO_OWNER
+2025-11-21 19:29:04 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-21 19:29:04 | DEBUG | app.api.v1.projects | [COVER DEBUG] Executing query with joinedload for cover_photo relationship
+2025-11-21 19:29:04 | DEBUG | app.api.v1.projects | 
+[COVER DEBUG] Returning 0 projects
+2025-11-21 19:29:04 | DEBUG | app.api.v1.projects | [COVER DEBUG] Sample response: No projects
+2025-11-21 19:29:04 | INFO | app.api.v1.projects | Returned 0 complete projects
+2025-11-21 19:29:04 | DEBUG | app.db.session | Database session committed
+2025-11-21 19:29:04 | DEBUG | app.db.session | Database session closed
+2025-11-21 19:29:27 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:29:28 | INFO | app.main | Application initialized
+2025-11-21 19:29:28 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/logs/photo_proof_api.log')}
+2025-11-21 19:29:50 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:29:50 | INFO | app.main | Application initialized
+2025-11-21 19:30:24 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:30:24 | INFO | app.main | Application initialized
+2025-11-21 19:30:27 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 19:30:28 | INFO | app.main | Application initialized
+2025-11-21 19:30:28 | DEBUG | watchfiles.main | 1 change detected: {(<Change.modified: 2>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/logs/photo_proof_api.log')}
+2025-11-21 19:31:00 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:31:00 | DEBUG | app.middleware.tenant | Skipping tenant detection for path: /api/auth/me
+2025-11-21 19:31:00 | DEBUG | app.db.session | Database session opened
+2025-11-21 19:31:00 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 19:31:00 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 19:31:00 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 19:31:01 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 19:31:01 | DEBUG | app.db.session | Database session committed
+2025-11-21 19:31:01 | DEBUG | app.db.session | Database session closed
+2025-11-21 19:31:17 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:31:17 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 19:31:17 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 19:31:17 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 19:31:17 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 19:31:17 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 19:31:17 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 19:31:17 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 19:31:17 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 19:31:17 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 19:31:17 | DEBUG | app.db.session | Database session opened
+2025-11-21 19:31:17 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 19:31:17 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 19:31:17 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 19:31:17 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 19:31:17 | DEBUG | app.api.v1.projects | [COVER DEBUG] list_projects endpoint called!
+2025-11-21 19:31:17 | DEBUG | app.api.v1.projects | [COVER DEBUG] User: studio@admin.com, Role: UserRole.STUDIO_OWNER
+2025-11-21 19:31:17 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-21 19:31:17 | DEBUG | app.api.v1.projects | [COVER DEBUG] Executing query with joinedload for cover_photo relationship
+2025-11-21 19:31:17 | DEBUG | app.api.v1.projects | 
+[COVER DEBUG] Returning 0 projects
+2025-11-21 19:31:17 | DEBUG | app.api.v1.projects | [COVER DEBUG] Sample response: No projects
+2025-11-21 19:31:17 | INFO | app.api.v1.projects | Returned 0 complete projects
+2025-11-21 19:31:17 | DEBUG | app.db.session | Database session committed
+2025-11-21 19:31:17 | DEBUG | app.db.session | Database session closed
+2025-11-21 19:34:59 | DEBUG | watchfiles.main | 1 change detected: {(<Change.added: 1>, '/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/.git/index.lock')}

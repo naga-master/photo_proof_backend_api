@@ -8,6 +8,13 @@ from typing import List
 
 from pydantic import BaseModel, Field, field_validator
 
+# Load environment variables from .env file
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # python-dotenv not installed, will use environment variables directly
+
 
 class Settings(BaseModel):
     """Application runtime configuration."""
@@ -18,18 +25,23 @@ class Settings(BaseModel):
     environment: str = Field(default=os.getenv("APP_ENV", "development"), description="environment identifier")
     api_prefix: str = Field(default="/api")
     cors_origins: List[str] = Field(
-        default_factory=lambda: [
-            "http://localhost:3000",
-            "http://localhost:3001",
-            "http://localhost:3002",
-            "http://localhost:5173",
-            # Multi-tenant studio domains
-            "http://*.photoapp.local:3001",  # Wildcard for all studio subdomains
-            "http://demo.photoapp.local:3001",
-            "http://alpha.photoapp.local:3001",
-            "http://beta.photoapp.local:3001",
-            "http://gamma.photoapp.local:3001",
-        ]
+        default_factory=lambda: (
+            # Check environment variable first
+            [origin.strip() for origin in os.getenv("CORS_ORIGINS", "").split(",") if origin.strip()]
+            if os.getenv("CORS_ORIGINS")
+            else [
+                "http://localhost:3000",
+                "http://localhost:3001",
+                "http://localhost:3002",
+                "http://localhost:5173",
+                # Multi-tenant studio domains
+                "http://*.photoapp.local:3001",  # Wildcard for all studio subdomains
+                "http://demo.photoapp.local:3001",
+                "http://alpha.photoapp.local:3001",
+                "http://beta.photoapp.local:3001",
+                "http://gamma.photoapp.local:3001",
+            ]
+        )
     )
     allow_credentials: bool = Field(default=True)
     # Restrict to specific methods for security (not "*")

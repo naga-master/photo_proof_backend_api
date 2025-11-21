@@ -24,6 +24,18 @@ router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 security = HTTPBearer()
 
 
+@router.options("/studio/login")
+async def studio_login_options():
+    """Handle CORS preflight for studio login."""
+    return {"ok": True}
+
+
+@router.options("/client/login")
+async def client_login_options():
+    """Handle CORS preflight for client login."""
+    return {"ok": True}
+
+
 @router.post("/studio/login", response_model=LoginResponse)
 def studio_login(login_data: LoginRequest, response: Response, db: Session = Depends(get_db)):
     """Studio user login with httpOnly cookie support."""
