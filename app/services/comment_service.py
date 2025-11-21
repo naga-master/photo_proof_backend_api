@@ -56,30 +56,40 @@ class CommentService:
     @staticmethod
     def get_user_info(db: Session, user_id: str) -> dict:
         """Get user information for comment author."""
-        # Check if user is a Studio
-        studio = db.query(Studio).filter(Studio.id == user_id).first()
-        if studio:
+        # Get user from User table
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
             return {
-                "name": studio.studio_name,
-                "avatar": studio.logo,
-                "role": "studio",
+                "name": "Unknown User",
+                "avatar": None,
+                "role": "unknown",
             }
         
-        # Check if user is a Client (via User table)
-        user = db.query(User).filter(User.id == user_id).first()
-        if user:
+        # Check if user is a Studio user (studio_owner role)
+        if user.role == "studio_owner" and user.studio_id:
+            studio = db.query(Studio).filter(Studio.id == user.studio_id).first()
+            if studio:
+                return {
+                    "name": studio.name,
+                    "avatar": studio.logo_url,
+                    "role": "studio",
+                }
+        
+        # Check if user is a Client
+        if user.role == "client":
             client = db.query(Client).filter(Client.user_id == user.id).first()
             if client:
                 return {
                     "name": client.name,
-                    "avatar": client.avatar,
+                    "avatar": client.avatar_url or client.profile_picture,
                     "role": "client",
                 }
         
+        # Fallback for other user types
         return {
-            "name": "Unknown User",
-            "avatar": None,
-            "role": "unknown",
+            "name": user.name,
+            "avatar": user.avatar_url,
+            "role": user.role,
         }
     
     @staticmethod
