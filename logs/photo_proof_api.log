@@ -1,0 +1,1709 @@
+2025-11-21 15:00:26 | INFO | uvicorn.error | Shutting down
+2025-11-21 15:00:26 | INFO | uvicorn.error | Waiting for application shutdown.
+2025-11-21 15:00:26 | INFO | uvicorn.error | Application shutdown complete.
+2025-11-21 15:00:26 | INFO | uvicorn.error | Finished server process [64810]
+2025-11-21 15:03:07 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 15:03:07 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-21 15:03:07 | INFO | app.main | Application initialized
+2025-11-21 15:03:07 | INFO | app.main | Application initialized
+2025-11-21 15:03:07 | INFO | uvicorn.error | Started server process [95643]
+2025-11-21 15:03:07 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-21 15:03:07 | INFO | uvicorn.error | Application startup complete.
+2025-11-21 15:05:57 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:57 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:57 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:57 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:57 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:57 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:57 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:57 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:57 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:05:57 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:05:57 | DEBUG | app.api.deps | Optional studio resolved: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:57 | DEBUG | app.services.cache_service | Cache MISS: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b
+2025-11-21 15:05:57 | DEBUG | app.services.cache_service | Cache SET: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b (TTL: 1800s)
+2025-11-21 15:05:57 | DEBUG | app.api.deps | Optional studio resolved: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:57 | DEBUG | app.services.cache_service | Cache HIT: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b
+2025-11-21 15:05:57 | INFO | uvicorn.access | 127.0.0.1:62941 - "GET /api/studio/current HTTP/1.1" 200
+2025-11-21 15:05:57 | INFO | uvicorn.access | 127.0.0.1:62943 - "GET /api/studio/current HTTP/1.1" 200
+2025-11-21 15:05:57 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:05:57 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:05:57 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:05:57 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:05:58 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:05:58 | INFO | uvicorn.access | 127.0.0.1:62956 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-21 15:05:58 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:58 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:58 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:58 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:58 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:05:58 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:58 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:05:58 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:58 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:58 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:58 | INFO | uvicorn.access | 127.0.0.1:62960 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-21 15:05:58 | DEBUG | app.api.deps | Optional studio resolved: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:58 | DEBUG | app.services.cache_service | Cache HIT: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b
+2025-11-21 15:05:58 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:05:58 | INFO | uvicorn.access | 127.0.0.1:62958 - "GET /api/studio/current HTTP/1.1" 200
+2025-11-21 15:05:58 | DEBUG | app.api.deps | Optional studio resolved: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:58 | DEBUG | app.services.cache_service | Cache HIT: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b
+2025-11-21 15:05:58 | INFO | uvicorn.access | 127.0.0.1:62962 - "GET /api/studio/current HTTP/1.1" 200
+2025-11-21 15:05:58 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:05:58 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:05:58 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:05:58 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:05:58 | DEBUG | app.middleware.tenant | Skipping tenant detection for path: /api/auth/me
+2025-11-21 15:05:58 | DEBUG | app.middleware.tenant | Skipping tenant detection for path: /api/auth/me
+2025-11-21 15:05:58 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:05:58 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:05:58 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:05:58 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:05:58 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:05:58 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:05:58 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:05:58 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:05:58 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:05:58 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:05:58 | INFO | uvicorn.access | 127.0.0.1:62966 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-21 15:05:58 | INFO | uvicorn.access | 127.0.0.1:62965 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-21 15:05:58 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:05:58 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:05:58 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:05:58 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62960 - "OPTIONS /api/projects HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62965 - "GET /api/projects HTTP/1.1" 307
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62960 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:05:59 | DEBUG | app.api.v1.projects | [COVER DEBUG] list_projects endpoint called!
+2025-11-21 15:05:59 | DEBUG | app.api.v1.projects | [COVER DEBUG] User: test@studio.com, Role: UserRole.STUDIO_OWNER
+2025-11-21 15:05:59 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-21 15:05:59 | DEBUG | app.api.v1.projects | [COVER DEBUG] Executing query with joinedload for cover_photo relationship
+2025-11-21 15:05:59 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 17 (Don) - Has cover_photo, src: /uploads/projects/17/originals/20251121_081755_snvNjNve_IMG_7057_(1).jpg
+2025-11-21 15:05:59 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 17 response dict: cover_photo_src=/uploads/projects/17/originals/20251121_081755_snvNjNve_IMG_7057_(1).jpg
+2025-11-21 15:05:59 | DEBUG | app.api.v1.projects | 
+[COVER DEBUG] Returning 1 projects
+2025-11-21 15:05:59 | DEBUG | app.api.v1.projects | [COVER DEBUG] Sample response: {'id': '17', 'studio_id': '255ce81f-a9aa-48eb-a8ee-13cbc6bc0656', 'client_id': '12', 'title': 'Don', 'shoot_date': '2025-11-19', 'cover_photo_id': 949, 'cover_photo_src': '/uploads/projects/17/originals/20251121_081755_snvNjNve_IMG_7057_(1).jpg', 'photo_count': 2, 'is_locked': False, 'layout': 'layout1', 'payment_status': None, 'price': None, 'package_id': None, 'status': 'draft', 'has_folders': True, 'created_at': '2025-11-21T08:17:54.280606', 'updated_at': '2025-11-21T08:18:06.533345'}
+2025-11-21 15:05:59 | INFO | app.api.v1.projects | Returned 1 complete projects
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62965 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62960 - "OPTIONS /v2/photos/projects/17/photos HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62965 - "GET /v2/photos/projects/17/photos HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62960 - "OPTIONS /v2/clients HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62965 - "GET /v2/clients HTTP/1.1" 307
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62960 - "OPTIONS /v2/clients/ HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:05:59 | DEBUG | app.routers.clients | [CLIENTS DEBUG] list_clients endpoint called
+2025-11-21 15:05:59 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 12 (fts s): 1 projects
+2025-11-21 15:05:59 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Returning 1 clients with project counts
+
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62965 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62960 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62965 - "GET /v2/packages HTTP/1.1" 307
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62960 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62965 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62960 - "OPTIONS /v2/invoices HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62965 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62960 - "OPTIONS /v2/invoices/ HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62965 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62960 - "OPTIONS /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62956 - "OPTIONS /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:05:59 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:05:59 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:05:59 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:05:59 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62965 - "GET /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:05:59 | INFO | uvicorn.access | 127.0.0.1:62966 - "GET /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:05:59 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:01 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:01 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:01 | INFO | uvicorn.access | 127.0.0.1:62956 - "OPTIONS /v2/photos/949/variant/medium HTTP/1.1" 200
+2025-11-21 15:06:01 | INFO | uvicorn.access | 127.0.0.1:62960 - "OPTIONS /v2/photos/949/variant/medium HTTP/1.1" 200
+2025-11-21 15:06:01 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:01 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:01 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:01 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:01 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:01 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:01 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:01 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:01 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:01 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:01 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:01 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:01 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:01 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:01 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:01 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:01 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:01 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:01 | INFO | uvicorn.access | 127.0.0.1:62965 - "GET /v2/photos/949/variant/medium HTTP/1.1" 200
+2025-11-21 15:06:01 | INFO | uvicorn.access | 127.0.0.1:62966 - "GET /v2/photos/949/variant/medium HTTP/1.1" 200
+2025-11-21 15:06:01 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:01 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:01 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:01 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:07 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:07 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:07 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:07 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:07 | INFO | uvicorn.access | 127.0.0.1:63015 - "GET /uploads/data/preview/preview-01.jpg HTTP/1.1" 200
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:08 | INFO | uvicorn.access | 127.0.0.1:63022 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:08 | INFO | uvicorn.access | 127.0.0.1:63024 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:08 | INFO | uvicorn.access | 127.0.0.1:63027 - "GET /v2/packages HTTP/1.1" 307
+2025-11-21 15:06:08 | INFO | uvicorn.access | 127.0.0.1:63028 - "GET /v2/packages HTTP/1.1" 307
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:08 | INFO | uvicorn.access | 127.0.0.1:63024 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:06:08 | INFO | uvicorn.access | 127.0.0.1:63022 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:08 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:08 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:08 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:08 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:08 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:08 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:08 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:08 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:08 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:08 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:08 | INFO | uvicorn.access | 127.0.0.1:63028 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:06:08 | INFO | uvicorn.access | 127.0.0.1:63027 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:06:08 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:08 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:08 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:08 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:08 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:08 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:08 | INFO | uvicorn.access | 127.0.0.1:63024 - "GET /v2/ai-tools?active_only=true HTTP/1.1" 200
+2025-11-21 15:06:08 | INFO | uvicorn.access | 127.0.0.1:63022 - "GET /v2/ai-tools?active_only=true HTTP/1.1" 200
+2025-11-21 15:06:08 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:08 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:08 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:08 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:08 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:08 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:08 | INFO | uvicorn.access | 127.0.0.1:63028 - "GET /uploads/data/images/transform_portrait.png HTTP/1.1" 200
+2025-11-21 15:06:08 | INFO | uvicorn.access | 127.0.0.1:63027 - "GET /uploads/data/images/AI_image_generator.webp HTTP/1.1" 200
+2025-11-21 15:06:08 | INFO | uvicorn.access | 127.0.0.1:63034 - "GET /uploads/data/images/virtual_try_on.webp HTTP/1.1" 200
+2025-11-21 15:06:12 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:12 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:12 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:12 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:12 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:12 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: False
+2025-11-21 15:06:12 | WARNING | app.core.dependencies | No authentication token provided
+2025-11-21 15:06:12 | ERROR | app.db.session | Database session rolled back due to exception
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/db/session.py", line 84, in get_db
+    yield db
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/concurrency.py", line 27, in contextmanager_in_threadpool
+    yield await run_in_threadpool(cm.__enter__)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 377, in app
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/dependencies/utils.py", line 648, in solve_dependencies
+    solved = await run_in_threadpool(call, **solved_result.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/core/dependencies.py", line 52, in get_current_user
+    raise HTTPException(
+    ...<2 lines>...
+    )
+fastapi.exceptions.HTTPException: 401: Authentication required
+2025-11-21 15:06:12 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:12 | INFO | uvicorn.access | 127.0.0.1:63028 - "GET /v2/photos/949/variant/medium HTTP/1.1" 401
+2025-11-21 15:06:46 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:46 | INFO | uvicorn.access | 127.0.0.1:63207 - "OPTIONS /api/projects/17/folders HTTP/1.1" 200
+2025-11-21 15:06:46 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:46 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:46 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:46 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:46 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:46 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:46 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:46 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:46 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:46 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-21 15:06:46 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-21 15:06:46 | INFO | uvicorn.access | 127.0.0.1:63209 - "GET /api/projects/17/folders HTTP/1.1" 200
+2025-11-21 15:06:46 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:46 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:46 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:46 | INFO | uvicorn.access | 127.0.0.1:63207 - "OPTIONS /api/projects/17/folders HTTP/1.1" 200
+2025-11-21 15:06:46 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:46 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:46 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:46 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:46 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:46 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:46 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:46 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:46 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:46 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-21 15:06:46 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-21 15:06:46 | INFO | uvicorn.access | 127.0.0.1:63209 - "GET /api/projects/17/folders HTTP/1.1" 200
+2025-11-21 15:06:46 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:46 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:46 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:46 | INFO | uvicorn.access | 127.0.0.1:63207 - "OPTIONS /api/projects/17/folders HTTP/1.1" 200
+2025-11-21 15:06:46 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:46 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:46 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:46 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:46 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:47 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:47 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:47 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:47 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:47 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-21 15:06:47 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-21 15:06:47 | INFO | uvicorn.access | 127.0.0.1:63209 - "GET /api/projects/17/folders HTTP/1.1" 200
+2025-11-21 15:06:47 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:47 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:47 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:47 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:47 | INFO | uvicorn.access | 127.0.0.1:63207 - "OPTIONS /v2/photos/948/variant/medium HTTP/1.1" 200
+2025-11-21 15:06:47 | INFO | uvicorn.access | 127.0.0.1:63215 - "OPTIONS /v2/photos/948/variant/medium HTTP/1.1" 200
+2025-11-21 15:06:47 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:47 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:47 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:47 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:47 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:47 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:47 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:47 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:47 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:47 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:47 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:47 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:47 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:47 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:47 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:47 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:47 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:47 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:47 | INFO | uvicorn.access | 127.0.0.1:63209 - "GET /v2/photos/948/variant/medium HTTP/1.1" 200
+2025-11-21 15:06:47 | INFO | uvicorn.access | 127.0.0.1:63217 - "GET /v2/photos/948/variant/medium HTTP/1.1" 200
+2025-11-21 15:06:47 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:47 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:47 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:47 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:49 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:49 | INFO | uvicorn.access | 127.0.0.1:63215 - "OPTIONS /v2/photos/projects/17/photos?folder_id=54a0ae43-a907-4392-849f-380ad0068371 HTTP/1.1" 200
+2025-11-21 15:06:49 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:49 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:49 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:49 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:49 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:49 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:49 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:49 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:49 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:49 | INFO | uvicorn.access | 127.0.0.1:63217 - "GET /v2/photos/projects/17/photos?folder_id=54a0ae43-a907-4392-849f-380ad0068371 HTTP/1.1" 200
+2025-11-21 15:06:49 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:49 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:49 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:49 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:49 | INFO | uvicorn.access | 127.0.0.1:63215 - "OPTIONS /api/comments/photos/948 HTTP/1.1" 200
+2025-11-21 15:06:49 | INFO | uvicorn.access | 127.0.0.1:63207 - "OPTIONS /api/comments/photos/949 HTTP/1.1" 200
+2025-11-21 15:06:49 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:49 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:49 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:49 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:49 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:49 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:49 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:49 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:49 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:49 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:49 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:49 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:49 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:49 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:49 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:49 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:49 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:49 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:49 | INFO | uvicorn.access | 127.0.0.1:63217 - "GET /api/comments/photos/948 HTTP/1.1" 200
+2025-11-21 15:06:49 | INFO | uvicorn.access | 127.0.0.1:63209 - "GET /api/comments/photos/949 HTTP/1.1" 200
+2025-11-21 15:06:49 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:49 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:49 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:49 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:53 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:53 | INFO | uvicorn.access | 127.0.0.1:63207 - "OPTIONS /v2/photos/948/variant/high HTTP/1.1" 200
+2025-11-21 15:06:53 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:06:53 | INFO | uvicorn.access | 127.0.0.1:63215 - "OPTIONS /v2/photos/948/variant/high HTTP/1.1" 200
+2025-11-21 15:06:53 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:53 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:53 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:53 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:53 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:06:53 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:06:53 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:06:53 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:06:53 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:53 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:06:53 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:53 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:06:53 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:53 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:06:53 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:53 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:06:53 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:53 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:06:53 | INFO | uvicorn.access | 127.0.0.1:63217 - "GET /v2/photos/948/variant/high HTTP/1.1" 200
+2025-11-21 15:06:53 | INFO | uvicorn.access | 127.0.0.1:63209 - "GET /v2/photos/948/variant/high HTTP/1.1" 200
+2025-11-21 15:06:53 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:53 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:06:53 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:06:53 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:07:00 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:07:00 | INFO | uvicorn.access | 127.0.0.1:63286 - "OPTIONS /api/projects/17/folders HTTP/1.1" 200
+2025-11-21 15:07:00 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:07:00 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:07:00 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:07:00 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:07:00 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:07:00 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:07:00 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:07:00 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:07:00 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:07:00 | DEBUG | app.api.v1.projects | Fetching project folders
+2025-11-21 15:07:00 | INFO | app.api.v1.projects | Project folders retrieved
+2025-11-21 15:07:00 | INFO | uvicorn.access | 127.0.0.1:63288 - "GET /api/projects/17/folders HTTP/1.1" 200
+2025-11-21 15:07:00 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:07:00 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:07:12 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:07:12 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:07:12 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:07:12 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:07:12 | INFO | uvicorn.access | 127.0.0.1:63345 - "GET /uploads/data/preview/preview-01.jpg HTTP/1.1" 200
+2025-11-21 15:07:13 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:07:13 | INFO | uvicorn.access | 127.0.0.1:63353 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-21 15:07:13 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:07:13 | INFO | uvicorn.access | 127.0.0.1:63355 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-21 15:07:13 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:07:13 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:07:13 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:07:13 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:07:13 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:07:13 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:07:13 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:07:13 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:07:13 | INFO | uvicorn.access | 127.0.0.1:63357 - "GET /v2/packages HTTP/1.1" 307
+2025-11-21 15:07:13 | INFO | uvicorn.access | 127.0.0.1:63359 - "GET /v2/packages HTTP/1.1" 307
+2025-11-21 15:07:13 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:07:13 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:07:13 | INFO | uvicorn.access | 127.0.0.1:63355 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:07:13 | INFO | uvicorn.access | 127.0.0.1:63353 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:07:13 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:07:13 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:07:13 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:07:13 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:07:13 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:07:13 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:07:13 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:07:13 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:07:13 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:07:13 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:07:13 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:07:13 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:07:13 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:07:13 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:07:13 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:07:13 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:07:13 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:07:13 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:07:13 | INFO | uvicorn.access | 127.0.0.1:63357 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:07:13 | INFO | uvicorn.access | 127.0.0.1:63359 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:07:13 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:07:13 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:07:13 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:07:13 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:07:14 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:07:14 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:07:14 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:07:14 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:07:14 | INFO | uvicorn.access | 127.0.0.1:63365 - "GET /uploads/data/preview/preview-01.jpg HTTP/1.1" 200
+2025-11-21 15:07:14 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:07:14 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:07:14 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:07:14 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:07:14 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:07:14 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:07:14 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:07:14 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:07:14 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:07:14 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:07:14 | INFO | uvicorn.access | 127.0.0.1:63353 - "GET /v2/ai-tools?active_only=true HTTP/1.1" 200
+2025-11-21 15:07:14 | INFO | uvicorn.access | 127.0.0.1:63355 - "GET /v2/ai-tools?active_only=true HTTP/1.1" 200
+2025-11-21 15:07:14 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:07:14 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:07:14 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:07:14 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:07:14 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:07:14 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:07:14 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:07:14 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:07:14 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:07:14 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:07:14 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:07:14 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:07:14 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:07:14 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:07:14 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:07:14 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:07:14 | INFO | uvicorn.access | 127.0.0.1:63359 - "GET /uploads/data/images/transform_portrait.png HTTP/1.1" 200
+2025-11-21 15:07:14 | INFO | uvicorn.access | 127.0.0.1:63345 - "GET /uploads/data/images/AI_image_generator.webp HTTP/1.1" 200
+2025-11-21 15:07:14 | INFO | uvicorn.access | 127.0.0.1:63357 - "GET /uploads/data/images/virtual_try_on.webp HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64862 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64862 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Skipping tenant detection for path: /api/auth/me
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Skipping tenant detection for path: /api/auth/me
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64800 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:12:07 | DEBUG | app.api.deps | Optional studio resolved: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:12:07 | DEBUG | app.services.cache_service | Cache HIT: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64864 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:12:07 | DEBUG | app.api.deps | Optional studio resolved: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:12:07 | DEBUG | app.services.cache_service | Cache HIT: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64866 - "GET /api/studio/current HTTP/1.1" 200
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64868 - "GET /api/studio/current HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64862 - "OPTIONS /api/projects HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64864 - "GET /api/projects HTTP/1.1" 307
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64862 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:12:07 | DEBUG | app.api.v1.projects | [COVER DEBUG] list_projects endpoint called!
+2025-11-21 15:12:07 | DEBUG | app.api.v1.projects | [COVER DEBUG] User: test@studio.com, Role: UserRole.STUDIO_OWNER
+2025-11-21 15:12:07 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-21 15:12:07 | DEBUG | app.api.v1.projects | [COVER DEBUG] Executing query with joinedload for cover_photo relationship
+2025-11-21 15:12:07 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 17 (Don) - Has cover_photo, src: /uploads/projects/17/originals/20251121_081755_snvNjNve_IMG_7057_(1).jpg
+2025-11-21 15:12:07 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 17 response dict: cover_photo_src=/uploads/projects/17/originals/20251121_081755_snvNjNve_IMG_7057_(1).jpg
+2025-11-21 15:12:07 | DEBUG | app.api.v1.projects | 
+[COVER DEBUG] Returning 1 projects
+2025-11-21 15:12:07 | DEBUG | app.api.v1.projects | [COVER DEBUG] Sample response: {'id': '17', 'studio_id': '255ce81f-a9aa-48eb-a8ee-13cbc6bc0656', 'client_id': '12', 'title': 'Don', 'shoot_date': '2025-11-19', 'cover_photo_id': 949, 'cover_photo_src': '/uploads/projects/17/originals/20251121_081755_snvNjNve_IMG_7057_(1).jpg', 'photo_count': 2, 'is_locked': False, 'layout': 'layout1', 'payment_status': None, 'price': None, 'package_id': None, 'status': 'draft', 'has_folders': True, 'created_at': '2025-11-21T08:17:54.280606', 'updated_at': '2025-11-21T08:18:06.533345'}
+2025-11-21 15:12:07 | INFO | app.api.v1.projects | Returned 1 complete projects
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64864 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64862 - "OPTIONS /v2/photos/projects/17/photos HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64864 - "GET /v2/photos/projects/17/photos HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64862 - "OPTIONS /v2/clients HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64864 - "GET /v2/clients HTTP/1.1" 307
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64862 - "OPTIONS /v2/clients/ HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:12:07 | DEBUG | app.routers.clients | [CLIENTS DEBUG] list_clients endpoint called
+2025-11-21 15:12:07 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 12 (fts s): 1 projects
+2025-11-21 15:12:07 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Returning 1 clients with project counts
+
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64864 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64862 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64864 - "GET /v2/packages HTTP/1.1" 307
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64862 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64864 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64862 - "OPTIONS /v2/invoices HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64864 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64862 - "OPTIONS /v2/invoices/ HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:12:07 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:12:07 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:12:07 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:12:07 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:12:07 | INFO | uvicorn.access | 127.0.0.1:64864 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:12:07 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:38 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:38 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:38 | INFO | uvicorn.access | 127.0.0.1:65312 - "OPTIONS /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:13:38 | INFO | uvicorn.access | 127.0.0.1:65313 - "OPTIONS /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:13:38 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:38 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:38 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:38 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:38 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:38 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:38 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:38 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:38 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:38 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:38 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:38 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:38 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:38 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:38 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:38 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:38 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:38 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:39 | INFO | uvicorn.access | 127.0.0.1:65316 - "GET /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:13:39 | INFO | uvicorn.access | 127.0.0.1:65317 - "GET /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:13:39 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:39 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:39 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:39 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:40 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:40 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:40 | INFO | uvicorn.access | 127.0.0.1:65313 - "OPTIONS /v2/photos/949/variant/medium HTTP/1.1" 200
+2025-11-21 15:13:40 | INFO | uvicorn.access | 127.0.0.1:65312 - "OPTIONS /v2/photos/949/variant/medium HTTP/1.1" 200
+2025-11-21 15:13:40 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:40 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:40 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:40 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:40 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:40 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:40 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:40 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:40 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:40 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:40 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:40 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:40 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:40 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:40 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:40 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:40 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:40 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:40 | INFO | uvicorn.access | 127.0.0.1:65317 - "GET /v2/photos/949/variant/medium HTTP/1.1" 200
+2025-11-21 15:13:40 | INFO | uvicorn.access | 127.0.0.1:65316 - "GET /v2/photos/949/variant/medium HTTP/1.1" 200
+2025-11-21 15:13:41 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:41 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:41 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:41 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:41 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:41 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:41 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:41 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:41 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:41 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: False
+2025-11-21 15:13:41 | WARNING | app.core.dependencies | No authentication token provided
+2025-11-21 15:13:41 | ERROR | app.db.session | Database session rolled back due to exception
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/db/session.py", line 84, in get_db
+    yield db
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/concurrency.py", line 27, in contextmanager_in_threadpool
+    yield await run_in_threadpool(cm.__enter__)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 377, in app
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/dependencies/utils.py", line 648, in solve_dependencies
+    solved = await run_in_threadpool(call, **solved_result.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/core/dependencies.py", line 52, in get_current_user
+    raise HTTPException(
+    ...<2 lines>...
+    )
+fastapi.exceptions.HTTPException: 401: Authentication required
+2025-11-21 15:13:41 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:41 | INFO | uvicorn.access | 127.0.0.1:65316 - "GET /v2/photos/949/variant/medium HTTP/1.1" 401
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65410 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65410 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for path: /api/auth/me
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for path: /api/auth/me
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:56 | DEBUG | app.api.deps | Optional studio resolved: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | DEBUG | app.services.cache_service | Cache HIT: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b
+2025-11-21 15:13:56 | DEBUG | app.api.deps | Optional studio resolved: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | DEBUG | app.services.cache_service | Cache HIT: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65419 - "GET /api/studio/current HTTP/1.1" 200
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65420 - "GET /api/studio/current HTTP/1.1" 200
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65415 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65416 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65410 - "OPTIONS /api/projects HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65416 - "GET /api/projects HTTP/1.1" 307
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65410 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:56 | DEBUG | app.api.v1.projects | [COVER DEBUG] list_projects endpoint called!
+2025-11-21 15:13:56 | DEBUG | app.api.v1.projects | [COVER DEBUG] User: test@studio.com, Role: UserRole.STUDIO_OWNER
+2025-11-21 15:13:56 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-21 15:13:56 | DEBUG | app.api.v1.projects | [COVER DEBUG] Executing query with joinedload for cover_photo relationship
+2025-11-21 15:13:56 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 17 (Don) - Has cover_photo, src: /uploads/projects/17/originals/20251121_081755_snvNjNve_IMG_7057_(1).jpg
+2025-11-21 15:13:56 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 17 response dict: cover_photo_src=/uploads/projects/17/originals/20251121_081755_snvNjNve_IMG_7057_(1).jpg
+2025-11-21 15:13:56 | DEBUG | app.api.v1.projects | 
+[COVER DEBUG] Returning 1 projects
+2025-11-21 15:13:56 | DEBUG | app.api.v1.projects | [COVER DEBUG] Sample response: {'id': '17', 'studio_id': '255ce81f-a9aa-48eb-a8ee-13cbc6bc0656', 'client_id': '12', 'title': 'Don', 'shoot_date': '2025-11-19', 'cover_photo_id': 949, 'cover_photo_src': '/uploads/projects/17/originals/20251121_081755_snvNjNve_IMG_7057_(1).jpg', 'photo_count': 2, 'is_locked': False, 'layout': 'layout1', 'payment_status': None, 'price': None, 'package_id': None, 'status': 'draft', 'has_folders': True, 'created_at': '2025-11-21T08:17:54.280606', 'updated_at': '2025-11-21T08:18:06.533345'}
+2025-11-21 15:13:56 | INFO | app.api.v1.projects | Returned 1 complete projects
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65416 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65410 - "OPTIONS /v2/photos/projects/17/photos HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65416 - "GET /v2/photos/projects/17/photos HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65410 - "OPTIONS /v2/clients HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65416 - "GET /v2/clients HTTP/1.1" 307
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65410 - "OPTIONS /v2/clients/ HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65410 - "OPTIONS /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65412 - "OPTIONS /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:56 | DEBUG | app.routers.clients | [CLIENTS DEBUG] list_clients endpoint called
+2025-11-21 15:13:56 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 12 (fts s): 1 projects
+2025-11-21 15:13:56 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Returning 1 clients with project counts
+
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65416 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65412 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65422 - "GET /v2/packages HTTP/1.1" 307
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65415 - "GET /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65416 - "GET /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65412 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65416 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65412 - "OPTIONS /v2/invoices HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65416 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65412 - "OPTIONS /v2/invoices/ HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:56 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:56 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:56 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:56 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:56 | INFO | uvicorn.access | 127.0.0.1:65416 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:56 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:57 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:57 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:13:57 | INFO | uvicorn.access | 127.0.0.1:65412 - "OPTIONS /v2/photos/949/variant/medium HTTP/1.1" 200
+2025-11-21 15:13:57 | INFO | uvicorn.access | 127.0.0.1:65410 - "OPTIONS /v2/photos/949/variant/medium HTTP/1.1" 200
+2025-11-21 15:13:57 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:57 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:57 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:57 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:57 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:57 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:57 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:57 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:57 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:57 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:57 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:57 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:57 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:57 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:13:57 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:57 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:13:57 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:13:57 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:13:57 | INFO | uvicorn.access | 127.0.0.1:65416 - "GET /v2/photos/949/variant/medium HTTP/1.1" 200
+2025-11-21 15:13:57 | INFO | uvicorn.access | 127.0.0.1:65415 - "GET /v2/photos/949/variant/medium HTTP/1.1" 200
+2025-11-21 15:13:57 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:57 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:13:57 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:57 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:58 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:13:58 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:13:58 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:13:58 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:13:58 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:13:58 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: False
+2025-11-21 15:13:58 | WARNING | app.core.dependencies | No authentication token provided
+2025-11-21 15:13:58 | ERROR | app.db.session | Database session rolled back due to exception
+Traceback (most recent call last):
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/db/session.py", line 84, in get_db
+    yield db
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/concurrency.py", line 27, in contextmanager_in_threadpool
+    yield await run_in_threadpool(cm.__enter__)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/routing.py", line 377, in app
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/fastapi/dependencies/utils.py", line 648, in solve_dependencies
+    solved = await run_in_threadpool(call, **solved_result.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/starlette/concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2485, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 976, in run
+    result = context.run(func, *args)
+  File "/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api/app/core/dependencies.py", line 52, in get_current_user
+    raise HTTPException(
+    ...<2 lines>...
+    )
+fastapi.exceptions.HTTPException: 401: Authentication required
+2025-11-21 15:13:58 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:13:58 | INFO | uvicorn.access | 127.0.0.1:65416 - "GET /v2/photos/949/variant/medium HTTP/1.1" 401
+2025-11-21 15:14:10 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:10 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:10 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:10 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:10 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:10 | DEBUG | app.api.deps | Optional studio resolved: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:10 | DEBUG | app.services.cache_service | Cache HIT: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b
+2025-11-21 15:14:10 | INFO | uvicorn.access | 127.0.0.1:65511 - "GET /api/studio/current HTTP/1.1" 200
+2025-11-21 15:14:10 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:10 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:10 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:10 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:10 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:10 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:10 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:10 | DEBUG | app.api.deps | Optional studio resolved: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:10 | DEBUG | app.services.cache_service | Cache HIT: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b
+2025-11-21 15:14:10 | INFO | uvicorn.access | 127.0.0.1:65513 - "GET /api/studio/current HTTP/1.1" 200
+2025-11-21 15:14:10 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:10 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65519 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65519 - "OPTIONS /api/auth/me HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Skipping tenant detection for path: /api/auth/me
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Skipping tenant detection for path: /api/auth/me
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:11 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:14:11 | DEBUG | app.api.deps | Optional studio resolved: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:11 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:11 | DEBUG | app.services.cache_service | Cache HIT: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b
+2025-11-21 15:14:11 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:11 | DEBUG | app.api.deps | Optional studio resolved: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:11 | DEBUG | app.services.cache_service | Cache HIT: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b
+2025-11-21 15:14:11 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:11 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65528 - "GET /api/studio/current HTTP/1.1" 200
+2025-11-21 15:14:11 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65529 - "GET /api/studio/current HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:11 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65524 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65525 - "GET /api/auth/me HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65519 - "OPTIONS /api/projects HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65525 - "GET /api/projects HTTP/1.1" 307
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65519 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:11 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:14:11 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:11 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:11 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:11 | DEBUG | app.api.v1.projects | [COVER DEBUG] list_projects endpoint called!
+2025-11-21 15:14:11 | DEBUG | app.api.v1.projects | [COVER DEBUG] User: test@studio.com, Role: UserRole.STUDIO_OWNER
+2025-11-21 15:14:11 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-21 15:14:11 | DEBUG | app.api.v1.projects | [COVER DEBUG] Executing query with joinedload for cover_photo relationship
+2025-11-21 15:14:11 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 17 (Don) - Has cover_photo, src: /uploads/projects/17/originals/20251121_081755_snvNjNve_IMG_7057_(1).jpg
+2025-11-21 15:14:11 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 17 response dict: cover_photo_src=/uploads/projects/17/originals/20251121_081755_snvNjNve_IMG_7057_(1).jpg
+2025-11-21 15:14:11 | DEBUG | app.api.v1.projects | 
+[COVER DEBUG] Returning 1 projects
+2025-11-21 15:14:11 | DEBUG | app.api.v1.projects | [COVER DEBUG] Sample response: {'id': '17', 'studio_id': '255ce81f-a9aa-48eb-a8ee-13cbc6bc0656', 'client_id': '12', 'title': 'Don', 'shoot_date': '2025-11-19', 'cover_photo_id': 949, 'cover_photo_src': '/uploads/projects/17/originals/20251121_081755_snvNjNve_IMG_7057_(1).jpg', 'photo_count': 2, 'is_locked': False, 'layout': 'layout1', 'payment_status': None, 'price': None, 'package_id': None, 'status': 'draft', 'has_folders': True, 'created_at': '2025-11-21T08:17:54.280606', 'updated_at': '2025-11-21T08:18:06.533345'}
+2025-11-21 15:14:11 | INFO | app.api.v1.projects | Returned 1 complete projects
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65525 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65519 - "OPTIONS /v2/photos/projects/17/photos HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:11 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:14:11 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:11 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:11 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65525 - "GET /v2/photos/projects/17/photos HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65519 - "OPTIONS /v2/clients HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65525 - "GET /v2/clients HTTP/1.1" 307
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65519 - "OPTIONS /v2/clients/ HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:11 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:14:11 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:11 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:11 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:11 | DEBUG | app.routers.clients | [CLIENTS DEBUG] list_clients endpoint called
+2025-11-21 15:14:11 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 12 (fts s): 1 projects
+2025-11-21 15:14:11 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Returning 1 clients with project counts
+
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65525 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65519 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65525 - "GET /v2/packages HTTP/1.1" 307
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65519 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:11 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:11 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:14:11 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:11 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:11 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65525 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:11 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:11 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:11 | INFO | uvicorn.access | 127.0.0.1:65519 - "OPTIONS /v2/invoices HTTP/1.1" 200
+2025-11-21 15:14:12 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:12 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:12 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:12 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:12 | INFO | uvicorn.access | 127.0.0.1:65525 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-21 15:14:12 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:12 | INFO | uvicorn.access | 127.0.0.1:65519 - "OPTIONS /v2/invoices/ HTTP/1.1" 200
+2025-11-21 15:14:12 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:12 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:12 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:12 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:12 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:12 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:14:12 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:12 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:12 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:12 | INFO | uvicorn.access | 127.0.0.1:65525 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-21 15:14:12 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:12 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:12 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:12 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:12 | INFO | uvicorn.access | 127.0.0.1:65519 - "OPTIONS /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:14:12 | INFO | uvicorn.access | 127.0.0.1:65521 - "OPTIONS /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:14:12 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:12 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:12 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:12 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:12 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:12 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:12 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:12 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:12 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:12 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:12 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:14:12 | INFO | app.core.dependencies | Auth check - Cookie: False, Header: True
+2025-11-21 15:14:12 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:12 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:12 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:12 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:12 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:12 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:12 | INFO | uvicorn.access | 127.0.0.1:65525 - "GET /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:14:12 | INFO | uvicorn.access | 127.0.0.1:65524 - "GET /v2/photos/949/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:14:12 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:12 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:12 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:12 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:21 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:21 | INFO | uvicorn.access | 127.0.0.1:49171 - "OPTIONS /api/auth/studio/login HTTP/1.1" 200
+2025-11-21 15:14:21 | DEBUG | app.middleware.tenant | Skipping tenant detection for path: /api/auth/studio/login
+2025-11-21 15:14:21 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:21 | INFO | uvicorn.access | 127.0.0.1:49173 - "POST /api/auth/studio/login HTTP/1.1" 200
+2025-11-21 15:14:21 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:21 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:21 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:21 | INFO | uvicorn.access | 127.0.0.1:49171 - "OPTIONS /api/projects HTTP/1.1" 200
+2025-11-21 15:14:21 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:21 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:21 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:21 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:21 | INFO | uvicorn.access | 127.0.0.1:49173 - "GET /api/projects HTTP/1.1" 307
+2025-11-21 15:14:21 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:21 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:21 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:21 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:21 | INFO | uvicorn.access | 127.0.0.1:49173 - "GET /api/projects HTTP/1.1" 307
+2025-11-21 15:14:21 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:21 | INFO | uvicorn.access | 127.0.0.1:49171 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49171 - "OPTIONS /api/projects/ HTTP/1.1" 200
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] list_projects endpoint called!
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] User: studio@admin.com, Role: UserRole.STUDIO_OWNER
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Executing query with joinedload for cover_photo relationship
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 15 (Ram Usha wedding) - Has cover_photo, src: /uploads/projects/15/versions/946/v2_20251120_110405_IMG_7057_(1).jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 15 response dict: cover_photo_src=/uploads/projects/15/versions/946/v2_20251120_110405_IMG_7057_(1).jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 14 (Large_Image_Test) - Has cover_photo, src: /uploads/projects/14/20251116_154718_eBYZKpS4_heic2007a.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 14 response dict: cover_photo_src=/uploads/projects/14/20251116_154718_eBYZKpS4_heic2007a.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 13 (Test2) - Has cover_photo, src: /uploads/projects/13/20251116_153810_QrMRo3Cg_modern-luxury-yacht-aviva-sailing-around-portofino-picjumbo-com.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 13 response dict: cover_photo_src=/uploads/projects/13/20251116_153810_QrMRo3Cg_modern-luxury-yacht-aviva-sailing-around-portofino-picjumbo-com.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 12 (Lemon) - Has cover_photo, src: /uploads/projects/12/20251116_153055_rzY2JzEa_2160C_left.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 12 response dict: cover_photo_src=/uploads/projects/12/20251116_153055_rzY2JzEa_2160C_left.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 11 (Testing) - Has cover_photo, src: /uploads/projects/11/20251116_152504_071cf57b_our-yorkshire-terrier-jessie-sleeping-on-a-blanket-picjumbo-com.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 11 response dict: cover_photo_src=/uploads/projects/11/20251116_152504_071cf57b_our-yorkshire-terrier-jessie-sleeping-on-a-blanket-picjumbo-com.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 10 (New Wedding) - Has cover_photo, src: /uploads/projects/10/20251116_152207_p2etNqkD_2160C.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 10 response dict: cover_photo_src=/uploads/projects/10/20251116_152207_p2etNqkD_2160C.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | 
+[COVER DEBUG] Returning 6 projects
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Sample response: {'id': '15', 'studio_id': 'studio_demo', 'client_id': '10', 'title': 'Ram Usha wedding', 'shoot_date': '2025-11-06', 'cover_photo_id': 946, 'cover_photo_src': '/uploads/projects/15/versions/946/v2_20251120_110405_IMG_7057_(1).jpg', 'photo_count': 2, 'is_locked': False, 'layout': 'layout1', 'payment_status': None, 'price': None, 'package_id': None, 'status': 'draft', 'has_folders': True, 'created_at': '2025-11-20T11:03:09.010455', 'updated_at': '2025-11-20T11:03:24.786763'}
+2025-11-21 15:14:22 | INFO | app.api.v1.projects | Returned 6 complete projects
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49173 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49171 - "OPTIONS /v2/clients HTTP/1.1" 200
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49177 - "GET /v2/clients HTTP/1.1" 307
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] list_projects endpoint called!
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] User: studio@admin.com, Role: UserRole.STUDIO_OWNER
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | Listing projects
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Executing query with joinedload for cover_photo relationship
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49171 - "OPTIONS /v2/clients/ HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 15 (Ram Usha wedding) - Has cover_photo, src: /uploads/projects/15/versions/946/v2_20251120_110405_IMG_7057_(1).jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 15 response dict: cover_photo_src=/uploads/projects/15/versions/946/v2_20251120_110405_IMG_7057_(1).jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 14 (Large_Image_Test) - Has cover_photo, src: /uploads/projects/14/20251116_154718_eBYZKpS4_heic2007a.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 14 response dict: cover_photo_src=/uploads/projects/14/20251116_154718_eBYZKpS4_heic2007a.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 13 (Test2) - Has cover_photo, src: /uploads/projects/13/20251116_153810_QrMRo3Cg_modern-luxury-yacht-aviva-sailing-around-portofino-picjumbo-com.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 13 response dict: cover_photo_src=/uploads/projects/13/20251116_153810_QrMRo3Cg_modern-luxury-yacht-aviva-sailing-around-portofino-picjumbo-com.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 12 (Lemon) - Has cover_photo, src: /uploads/projects/12/20251116_153055_rzY2JzEa_2160C_left.jpg
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 12 response dict: cover_photo_src=/uploads/projects/12/20251116_153055_rzY2JzEa_2160C_left.jpg
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 11 (Testing) - Has cover_photo, src: /uploads/projects/11/20251116_152504_071cf57b_our-yorkshire-terrier-jessie-sleeping-on-a-blanket-picjumbo-com.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 11 response dict: cover_photo_src=/uploads/projects/11/20251116_152504_071cf57b_our-yorkshire-terrier-jessie-sleeping-on-a-blanket-picjumbo-com.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 10 (New Wedding) - Has cover_photo, src: /uploads/projects/10/20251116_152207_p2etNqkD_2160C.jpg
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Project 10 response dict: cover_photo_src=/uploads/projects/10/20251116_152207_p2etNqkD_2160C.jpg
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | 
+[COVER DEBUG] Returning 6 projects
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | DEBUG | app.api.v1.projects | [COVER DEBUG] Sample response: {'id': '15', 'studio_id': 'studio_demo', 'client_id': '10', 'title': 'Ram Usha wedding', 'shoot_date': '2025-11-06', 'cover_photo_id': 946, 'cover_photo_src': '/uploads/projects/15/versions/946/v2_20251120_110405_IMG_7057_(1).jpg', 'photo_count': 2, 'is_locked': False, 'layout': 'layout1', 'payment_status': None, 'price': None, 'package_id': None, 'status': 'draft', 'has_folders': True, 'created_at': '2025-11-20T11:03:09.010455', 'updated_at': '2025-11-20T11:03:24.786763'}
+2025-11-21 15:14:22 | INFO | app.api.v1.projects | Returned 6 complete projects
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49173 - "GET /api/projects/ HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] list_clients endpoint called
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49171 - "OPTIONS /v2/photos/projects/15/photos HTTP/1.1" 200
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49175 - "OPTIONS /v2/photos/projects/14/photos HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49180 - "OPTIONS /v2/photos/projects/13/photos HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49182 - "OPTIONS /v2/photos/projects/12/photos HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49184 - "OPTIONS /v2/photos/projects/11/photos HTTP/1.1" 200
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49185 - "OPTIONS /v2/photos/projects/10/photos HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 10 (Ram Sundar): 1 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 9 (John Cynthia): 0 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 8 (asdfsdafa asdadcad): 0 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 6 (Dharani Nagaraj): 1 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 5 (NAGA RAJ SEENIVASAN): 2 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 4 (Vignesh Nagaram): 1 projects
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 2 (Sarah Thompson): 0 projects
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 3 (Mike & Jessica): 1 projects
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 1 (Emily & James): 0 projects
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Returning 9 clients with project counts
+
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49177 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49185 - "OPTIONS /v2/packages HTTP/1.1" 200
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49173 - "GET /v2/photos/projects/15/photos HTTP/1.1" 200
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49173 - "GET /v2/packages HTTP/1.1" 307
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49185 - "OPTIONS /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49187 - "GET /v2/photos/projects/14/photos HTTP/1.1" 200
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49191 - "GET /v2/photos/projects/12/photos HTTP/1.1" 200
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49189 - "GET /v2/photos/projects/13/photos HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49177 - "GET /v2/photos/projects/10/photos HTTP/1.1" 200
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49173 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49185 - "OPTIONS /v2/invoices HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49173 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49185 - "OPTIONS /v2/invoices/ HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49173 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49193 - "GET /v2/photos/projects/11/photos HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49193 - "GET /v2/clients HTTP/1.1" 307
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] list_clients endpoint called
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 10 (Ram Sundar): 1 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 9 (John Cynthia): 0 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 8 (asdfsdafa asdadcad): 0 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 6 (Dharani Nagaraj): 1 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 5 (NAGA RAJ SEENIVASAN): 2 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 4 (Vignesh Nagaram): 1 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 2 (Sarah Thompson): 0 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 3 (Mike & Jessica): 1 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Client 1 (Emily & James): 0 projects
+2025-11-21 15:14:22 | DEBUG | app.routers.clients | [CLIENTS DEBUG] Returning 9 clients with project counts
+
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49193 - "GET /v2/clients/ HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49185 - "OPTIONS /v2/photos/946/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49184 - "OPTIONS /v2/photos/819/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49182 - "OPTIONS /v2/photos/814/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49193 - "GET /v2/packages HTTP/1.1" 307
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49193 - "GET /v2/packages/ HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49193 - "GET /v2/invoices HTTP/1.1" 307
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:22 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:22 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:22 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:22 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:22 | INFO | uvicorn.access | 127.0.0.1:49193 - "GET /v2/invoices/ HTTP/1.1" 200
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:22 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:24 | INFO | uvicorn.access | 127.0.0.1:49182 - "OPTIONS /v2/photos/811/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:14:24 | INFO | uvicorn.access | 127.0.0.1:49184 - "OPTIONS /v2/photos/799/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:14:24 | INFO | uvicorn.access | 127.0.0.1:49185 - "OPTIONS /v2/photos/807/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:24 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:24 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:24 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:24 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:24 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:24 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:24 | INFO | uvicorn.access | 127.0.0.1:49185 - "OPTIONS /v2/photos/811/variant/medium HTTP/1.1" 200
+2025-11-21 15:14:24 | INFO | uvicorn.access | 127.0.0.1:49184 - "OPTIONS /v2/photos/814/variant/medium HTTP/1.1" 200
+2025-11-21 15:14:24 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:24 | INFO | uvicorn.access | 127.0.0.1:49184 - "OPTIONS /v2/photos/946/variant/medium HTTP/1.1" 200
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:24 | INFO | uvicorn.access | 127.0.0.1:49185 - "OPTIONS /v2/photos/799/variant/medium HTTP/1.1" 200
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:24 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:24 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:24 | INFO | uvicorn.access | 127.0.0.1:49193 - "GET /v2/photos/799/variant/thumbnail HTTP/1.1" 200
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:24 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:24 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:24 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:24 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:24 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:24 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:24 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:24 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:24 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: True
+2025-11-21 15:14:24 | INFO | app.core.dependencies | Using token from Authorization header
+2025-11-21 15:14:24 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:24 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:24 | INFO | uvicorn.access | 127.0.0.1:49177 - "GET /v2/photos/799/variant/medium HTTP/1.1" 200
+2025-11-21 15:14:24 | INFO | uvicorn.access | 127.0.0.1:49173 - "GET /v2/photos/946/variant/medium HTTP/1.1" 200
+2025-11-21 15:14:24 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:24 | INFO | uvicorn.access | 127.0.0.1:49185 - "OPTIONS /v2/photos/819/variant/medium HTTP/1.1" 200
+2025-11-21 15:14:24 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:24 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:25 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:25 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:25 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:25 | DEBUG | app.db.session | Database session closed
+2025-11-21 15:14:25 | DEBUG | app.middleware.tenant | Skipping tenant detection for OPTIONS request
+2025-11-21 15:14:25 | INFO | uvicorn.access | 127.0.0.1:49185 - "OPTIONS /v2/photos/807/variant/medium HTTP/1.1" 200
+2025-11-21 15:14:28 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-21 15:14:28 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-21 15:14:28 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-21 15:14:28 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-21 15:14:28 | DEBUG | app.db.session | Database session opened
+2025-11-21 15:14:28 | INFO | app.core.dependencies | Auth check - Cookie: True, Header: False
+2025-11-21 15:14:28 | INFO | app.core.dependencies | Using token from cookie
+2025-11-21 15:14:28 | DEBUG | app.core.dependencies | Resolving current user for request
+2025-11-21 15:14:28 | DEBUG | app.core.dependencies | Current user resolved
+2025-11-21 15:14:28 | INFO | uvicorn.access | 127.0.0.1:49177 - "GET /v2/photos/807/variant/medium HTTP/1.1" 200
+2025-11-21 15:14:28 | DEBUG | app.db.session | Database session committed
+2025-11-21 15:14:28 | DEBUG | app.db.session | Database session closed
