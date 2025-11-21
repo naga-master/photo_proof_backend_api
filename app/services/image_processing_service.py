@@ -6,12 +6,16 @@ Server-side image processing for quality variants and optimization.
 
 import json
 import io
+import logging
 from pathlib import Path
 from typing import Dict, Optional
 from PIL import Image, ImageOps
 from sqlalchemy.orm import Session
 
 from app.db.models import Photo
+
+
+logger = logging.getLogger(__name__)
 
 
 class ImageProcessingService:
@@ -46,7 +50,7 @@ class ImageProcessingService:
         Generate all quality variants for a photo.
         Returns dict mapping quality names to file paths.
         """
-        print(f"[ImageProcessing] Generating variants for photo {photo.id}")
+        logger.debug(f"[ImageProcessing] Generating variants for photo {photo.id}")
         
         variants = {}
         
@@ -73,17 +77,17 @@ class ImageProcessingService:
                         settings['quality']
                     )
                     variants[variant_name] = variant_path
-                    print(f"[ImageProcessing] Created {variant_name} variant: {variant_path}")
+                    logger.debug(f"[ImageProcessing] Created {variant_name} variant: {variant_path}")
             
             # Store variants in photo record
             photo.variants_json = json.dumps(variants)
             db.commit()
             
-            print(f"[ImageProcessing] All variants generated for photo {photo.id}")
+            logger.debug(f"[ImageProcessing] All variants generated for photo {photo.id}")
             return variants
             
         except Exception as e:
-            print(f"[ImageProcessing] Error generating variants: {e}")
+            logger.debug(f"[ImageProcessing] Error generating variants: {e}")
             raise
     
     async def create_variant(
@@ -154,7 +158,7 @@ class ImageProcessingService:
                 return base64.b64encode(hash_bytes).decode('ascii')
                 
         except Exception as e:
-            print(f"[ImageProcessing] Error generating ThumbHash: {e}")
+            logger.debug(f"[ImageProcessing] Error generating ThumbHash: {e}")
             return ""
     
     def get_variant_path(

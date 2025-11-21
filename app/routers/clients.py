@@ -1,5 +1,6 @@
 """Clients router with CRUD operations."""
 
+import logging
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session, joinedload
@@ -12,6 +13,7 @@ from app.api.deps import get_current_user
 from app.services.auth_service import AuthService
 
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -31,7 +33,7 @@ def list_clients(
     Supports search by name/email and filtering by status.
     """
     print("\n" + "="*80)
-    print("[CLIENTS DEBUG] list_clients endpoint called")
+    logger.debug("[CLIENTS DEBUG] list_clients endpoint called")
     print("="*80 + "\n")
     # Only studio users can list clients
     if not current_user.studio_id:
@@ -82,9 +84,9 @@ def list_clients(
         client_dict = ClientResponse.model_validate(client).model_dump()
         client_dict['total_projects'] = len(client.projects) if client.projects else 0
         result.append(ClientResponse(**client_dict))
-        print(f"[CLIENTS DEBUG] Client {client.id} ({client.name}): {client_dict['total_projects']} projects")
+        logger.debug(f"[CLIENTS DEBUG] Client {client.id} ({client.name}): {client_dict['total_projects']} projects")
     
-    print(f"[CLIENTS DEBUG] Returning {len(result)} clients with project counts\n")
+    logger.debug(f"[CLIENTS DEBUG] Returning {len(result)} clients with project counts\n")
     return result
 
 

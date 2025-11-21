@@ -234,8 +234,8 @@ class UploadService:
             
         except Exception as e:
             # Log warning but don't fail - set default dimensions
-            print(f"[UploadService] Warning: Could not extract dimensions for {upload_token.filename}: {str(e)}")
-            print(f"[UploadService] File size: {len(file_data)} bytes, Content-Type: {upload_token.content_type}")
+            logger.warning(f"[UploadService] Warning: Could not extract dimensions for {upload_token.filename}: {str(e)}")
+            logger.warning(f"[UploadService] File size: {len(file_data)} bytes, Content-Type: {upload_token.content_type}")
             
             # Set default dimensions for images that can't be parsed
             # Backend will accept them but they'll need manual verification

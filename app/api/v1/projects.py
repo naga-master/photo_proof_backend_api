@@ -114,8 +114,8 @@ def list_projects(
     db: Session = Depends(get_db),
 ) -> Union[dict, ProjectMetadataListResponse]:
     print("\n" + "="*80)
-    print("[COVER DEBUG] list_projects endpoint called!")
-    print(f"[COVER DEBUG] User: {current_user.email}, Role: {current_user.role}")
+    logger.debug("[COVER DEBUG] list_projects endpoint called!")
+    logger.debug(f"[COVER DEBUG] User: {current_user.email}, Role: {current_user.role}")
     print("="*80)
     
     logger.debug(
@@ -130,7 +130,7 @@ def list_projects(
     )
     query = db.query(models.Project).options(joinedload(models.Project.cover_photo)).order_by(models.Project.created_at.desc())
     print("\n" + "="*80)
-    print("[COVER DEBUG] Executing query with joinedload for cover_photo relationship")
+    logger.debug("[COVER DEBUG] Executing query with joinedload for cover_photo relationship")
     print("="*80 + "\n")
 
     # Client users should only see their own projects
@@ -208,9 +208,9 @@ def list_projects(
         cover_photo_src = None
         if project.cover_photo:
             cover_photo_src = project.cover_photo.src
-            print(f"[COVER DEBUG] Project {project.id} ({project.title}) - Has cover_photo, src: {cover_photo_src}")
+            logger.debug(f"[COVER DEBUG] Project {project.id} ({project.title}) - Has cover_photo, src: {cover_photo_src}")
         else:
-            print(f"[COVER DEBUG] Project {project.id} ({project.title}) - No cover_photo, cover_photo_id: {project.cover_photo_id}")
+            logger.debug(f"[COVER DEBUG] Project {project.id} ({project.title}) - No cover_photo, cover_photo_id: {project.cover_photo_id}")
         
         project_dict = {
             "id": str(project.id),
@@ -232,10 +232,10 @@ def list_projects(
             "updated_at": project.updated_at.isoformat() if project.updated_at else None,
         }
         summaries.append(project_dict)
-        print(f"[COVER DEBUG] Project {project.id} response dict: cover_photo_src={project_dict.get('cover_photo_src')}")
+        logger.debug(f"[COVER DEBUG] Project {project.id} response dict: cover_photo_src={project_dict.get('cover_photo_src')}")
     
-    print(f"\n[COVER DEBUG] Returning {len(summaries)} projects")
-    print(f"[COVER DEBUG] Sample response: {summaries[0] if summaries else 'No projects'}")
+    logger.debug(f"\n[COVER DEBUG] Returning {len(summaries)} projects")
+    logger.debug(f"[COVER DEBUG] Sample response: {summaries[0] if summaries else 'No projects'}")
     print("="*80 + "\n")
     
     logger.info(f"Returned {len(summaries)} complete projects", extra={

@@ -32,8 +32,13 @@ class Settings(BaseModel):
         ]
     )
     allow_credentials: bool = Field(default=True)
-    allow_methods: List[str] = Field(default_factory=lambda: ["*"])
-    allow_headers: List[str] = Field(default_factory=lambda: ["*"])
+    # Restrict to specific methods for security (not "*")
+    allow_methods: List[str] = Field(default_factory=lambda: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
+    # Restrict to specific headers for security (not "*")
+    allow_headers: List[str] = Field(default_factory=lambda: [
+        "Content-Type", "Authorization", "Accept", "Origin",
+        "X-Requested-With", "Cache-Control", "X-Studio-ID"
+    ])
     data_directory: str = Field(default=os.getenv("DATA_DIR", "data"))
     database_url: str = Field(default=os.getenv("DATABASE_URL", "sqlite:///./photo_proof.db"))
     uploads_directory: str = Field(default=os.getenv("UPLOADS_DIR", "uploads"))
