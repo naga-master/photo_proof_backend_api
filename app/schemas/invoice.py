@@ -20,7 +20,8 @@ class ServicePackageFeature(BaseModel):
 class ServicePackageBase(BaseModel):
     """Base service package fields."""
     name: str = Field(..., min_length=1, max_length=500)
-    description: str = Field(..., min_length=1)
+    category: str = Field(..., min_length=1, max_length=100)  # Category (e.g., "Wedding", "Portrait")
+    description: str = Field(default="", min_length=0)  # Allow empty description
     price: Decimal = Field(..., ge=0)
 
 
@@ -33,6 +34,7 @@ class ServicePackageCreate(ServicePackageBase):
 class ServicePackageUpdate(BaseModel):
     """Service package update schema."""
     name: Optional[str] = Field(None, min_length=1, max_length=500)
+    category: Optional[str] = Field(None, min_length=1, max_length=100)
     description: Optional[str] = None
     price: Optional[Decimal] = Field(None, ge=0)
     features: Optional[List[ServicePackageFeature]] = None

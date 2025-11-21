@@ -6,7 +6,7 @@ from uuid import uuid4
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.core.dependencies import get_current_user, get_db
+from app.core.dependencies import get_current_user, get_db, is_studio_user
 from app.db.models import ServicePackage, User
 from app.schemas.invoice import (
     ServicePackageCreate,
@@ -33,7 +33,7 @@ def get_service_packages(
     - **category**: Optional category filter (e.g., "Wedding", "Portrait")
     """
     # Determine which studio to query
-    if current_user.role == "studio":
+    if is_studio_user(current_user.role):
         target_studio_id = studio_id or current_user.studio_id
     elif studio_id:
         target_studio_id = studio_id
@@ -72,7 +72,7 @@ def get_service_package(
         )
     
     # Check permissions
-    if current_user.role == "studio" and package.studio_id != current_user.studio_id:
+    if is_studio_user(current_user.role) and package.studio_id != current_user.studio_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to access this service package"
@@ -92,7 +92,7 @@ def create_service_package(
     
     Only studio users can create service packages for their studio.
     """
-    if current_user.role != "studio":
+    if not is_studio_user(current_user.role):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only studio users can create service packages"
@@ -128,7 +128,7 @@ def update_service_package(
     
     Only the owning studio can update their packages.
     """
-    if current_user.role != "studio":
+    if not is_studio_user(current_user.role):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only studio users can update service packages"
@@ -179,7 +179,7 @@ def delete_service_package(
     
     Only the owning studio can delete their packages.
     """
-    if current_user.role != "studio":
+    if not is_studio_user(current_user.role):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only studio users can delete service packages"

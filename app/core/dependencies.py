@@ -5,6 +5,14 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
+# Studio roles (any of these can manage studio resources)
+STUDIO_ROLES = {"studio", "studio_owner", "studio_admin", "studio_photographer"}
+
+
+def is_studio_user(role: str) -> bool:
+    """Check if user has any studio role."""
+    return role in STUDIO_ROLES
+
 from fastapi import Depends, HTTPException, Request, status, Cookie
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
