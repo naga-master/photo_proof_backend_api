@@ -10,6 +10,13 @@ from .notification import Notification
 from .upload import UploadSession, UploadToken
 from .settings import LayoutTemplate, CommunicationSettings
 from .ai_tool import AITool
+from .multi_tenant import (
+    StudioDomain,
+    SubscriptionPlan,
+    StudioSubscription,
+    StudioFeature,
+    StudioUsageStats,
+)
 
 # Backwards compatibility aliases
 Image = Photo  # Old code uses 'Image', we use 'Photo'
@@ -40,4 +47,10 @@ __all__ = [
     "LayoutTemplate",
     "CommunicationSettings",
     "AITool",
+    # Multi-tenant models
+    "StudioDomain",
+    "SubscriptionPlan",
+    "StudioSubscription",
+    "StudioFeature",
+    "StudioUsageStats",
 ]

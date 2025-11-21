@@ -21,6 +21,7 @@ from app.routers import invoices as invoices_v2
 from app.routers import service_packages as service_packages_v2
 from app.routers import files as files_v2
 from app.routers import ai_tools as ai_tools_v2
+from app.routers import studios as studios_v2
 
 
 api_router = APIRouter()
@@ -65,6 +66,9 @@ api_router.include_router(service_packages_v2.router, prefix="/v2/packages", tag
 
 # AI Tools
 api_router.include_router(ai_tools_v2.router, prefix="/v2", tags=["v2-ai-tools"])
+
+# Multi-Tenant Studio Management
+api_router.include_router(studios_v2.router, prefix="/api", tags=["studios"])  # /api/studio/*
 
 
 # ============================================================================

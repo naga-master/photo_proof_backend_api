@@ -19,6 +19,10 @@ class Studio(Base, TimestampMixin):
     phone = Column(String(50), nullable=True)
     address = Column(Text, nullable=True)
     
+    # Multi-tenant fields
+    subdomain = Column(String(100), unique=True, nullable=True, index=True)
+    # Example: 'mystudio' for mystudio.photoapp.com
+    
     # Branding
     logo_url = Column(String(500), nullable=True)
     brand_color = Column(String(7), nullable=False, default='#1e293b')  # Hex color
@@ -28,13 +32,19 @@ class Studio(Base, TimestampMixin):
     studio_photo = Column(String(500), nullable=True)
     studio_description = Column(Text, nullable=True)
     studio_display_image = Column(String(500), nullable=True)
+    custom_css = Column(Text, nullable=True)  # Custom CSS for white-labeling
     
-    # Subscription
+    # Subscription (legacy - will be replaced by StudioSubscription)
     subscription_tier = Column(String(50), nullable=False, default='free')
     subscription_status = Column(String(50), nullable=False, default='trial')
     max_projects = Column(Integer, nullable=False, default=5)
     max_storage_gb = Column(Integer, nullable=False, default=10)
     storage_used_bytes = Column(Integer, nullable=False, default=0)
+    
+    # Onboarding status
+    onboarding_completed = Column(Boolean, nullable=False, default=False)
+    onboarding_step = Column(String(50), nullable=True)
+    # Steps: 'registration', 'plan', 'domain', 'branding', 'payment', 'completed'
     
     is_active = Column(Boolean, nullable=False, default=True, index=True)
 
@@ -45,6 +55,12 @@ class Studio(Base, TimestampMixin):
     service_packages = relationship("ServicePackage", back_populates="studio", cascade="all, delete-orphan")
     invoices = relationship("Invoice", back_populates="studio", cascade="all, delete-orphan")
     communication_settings = relationship("CommunicationSettings", back_populates="studio", uselist=False)
+    
+    # Multi-tenant relationships
+    domains = relationship("StudioDomain", back_populates="studio", cascade="all, delete-orphan")
+    subscription = relationship("StudioSubscription", back_populates="studio", uselist=False)
+    features = relationship("StudioFeature", back_populates="studio", cascade="all, delete-orphan")
+    usage_stats = relationship("StudioUsageStats", back_populates="studio", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Studio(id={self.id}, name={self.name})>"

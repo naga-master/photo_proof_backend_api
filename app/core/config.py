@@ -23,6 +23,12 @@ class Settings(BaseModel):
             "http://localhost:3001",
             "http://localhost:3002",
             "http://localhost:5173",
+            # Multi-tenant studio domains
+            "http://*.photoapp.local:3001",  # Wildcard for all studio subdomains
+            "http://demo.photoapp.local:3001",
+            "http://alpha.photoapp.local:3001",
+            "http://beta.photoapp.local:3001",
+            "http://gamma.photoapp.local:3001",
         ]
     )
     allow_credentials: bool = Field(default=True)

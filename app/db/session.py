@@ -1,4 +1,4 @@
-"""Database engine and session management."""
+"""Database engine and session management with PostgreSQL optimizations."""
 
 from __future__ import annotations
 
@@ -31,19 +31,32 @@ def _ensure_sqlite_directory(database_url: str) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
 
 
-connect_args: dict[str, object] = {}
+# PostgreSQL-optimized engine configuration
+engine_config: dict[str, object] = {
+    "future": True,
+    "echo": False,
+}
+
 db_url = settings.database_url
-if db_url.startswith("sqlite"):
-    connect_args["check_same_thread"] = False
+
+if db_url.startswith("postgresql"):
+    # PostgreSQL with connection pooling
+    engine_config.update({
+        "pool_size": 20,              # Base connection pool
+        "max_overflow": 10,            # Additional connections under load
+        "pool_timeout": 30,            # Wait 30s for connection
+        "pool_pre_ping": True,         # Verify connections before use
+        "pool_recycle": 3600,          # Recycle connections after 1 hour
+    })
+    logger.info("Using PostgreSQL with connection pooling")
+elif db_url.startswith("sqlite"):
+    # SQLite configuration
+    engine_config["connect_args"] = {"check_same_thread": False}
     _ensure_sqlite_directory(db_url)
+    logger.info("Using SQLite database")
 
 
-engine: Engine = create_engine(
-    db_url,
-    future=True,
-    echo=False,
-    connect_args=connect_args,
-)
+engine: Engine = create_engine(db_url, **engine_config)
 
 
 @event.listens_for(engine, "connect")
@@ -54,7 +67,12 @@ def _set_sqlite_pragma(dbapi_connection, _connection_record) -> None:
         cursor.close()
 
 
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, expire_on_commit=False, future=True)
+SessionLocal = sessionmaker(
+    bind=engine,
+    autoflush=False,
+    autocommit=False,
+    expire_on_commit=False,
+)
 
 
 def get_db() -> Generator[Session, None, None]:

@@ -15,6 +15,7 @@ from app.api import api_router
 from app.core.config import get_settings
 from app.core.logging_config import configure_logging
 from app.db.init_db import init_db
+from app.middleware.tenant import tenant_middleware
 
 
 logger = logging.getLogger(__name__)
@@ -104,6 +105,10 @@ def create_app() -> FastAPI:
         minimum_size=1000,  # Only compress responses >1KB
         compresslevel=6     # Balance between speed and compression (1-9)
     )
+    
+    # Multi-tenant middleware - detect studio from domain
+    application.middleware("http")(tenant_middleware)
+    logger.info("✅ Tenant detection middleware enabled")
 
     uploads_dir = Path(settings.uploads_directory)
     uploads_dir.mkdir(parents=True, exist_ok=True)
