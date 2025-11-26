@@ -60,7 +60,7 @@ class ContractService:
     async def create_contract(
         self,
         studio_id: str,
-        client_id: str,
+        client_id: int,  # Client.id is Integer, not String
         template_id: Optional[str],
         title: str,
         content: Optional[str] = None,
@@ -115,12 +115,12 @@ class ContractService:
         
         # Add to database
         self.db.add(contract)
-        
-        # Log activity
-        self.log_activity(contract.id, "created", None, {"source": "api"})
-        
         self.db.commit()
         self.db.refresh(contract)
+        
+        # Log activity (after commit so contract.id is available)
+        self.log_activity(contract.id, "created", None, {"source": "api"})
+        self.db.commit()  # Commit the activity log
         
         return contract
     
@@ -181,7 +181,9 @@ class ContractService:
         elements.append(Spacer(1, 12))
         
         # Add contract number and date
-        info_text = f"Contract Number: {contract.contract_number}<br/>Date: {contract.created_at.strftime('%B %d, %Y')}"
+        # Use created_at if available, otherwise use current time (for contracts not yet committed)
+        contract_date = contract.created_at if contract.created_at else datetime.utcnow()
+        info_text = f"Contract Number: {contract.contract_number}<br/>Date: {contract_date.strftime('%B %d, %Y')}"
         elements.append(Paragraph(info_text, body_style))
         elements.append(Spacer(1, 24))
         
@@ -284,7 +286,9 @@ class ContractService:
         elements.append(Paragraph(contract.title, title_style))
         elements.append(Spacer(1, 12))
         
-        info_text = f"Contract Number: {contract.contract_number}<br/>Date: {contract.created_at.strftime('%B %d, %Y')}"
+        # Use created_at if available, otherwise use current time
+        contract_date = contract.created_at if contract.created_at else datetime.utcnow()
+        info_text = f"Contract Number: {contract.contract_number}<br/>Date: {contract_date.strftime('%B %d, %Y')}"
         elements.append(Paragraph(info_text, body_style))
         elements.append(Spacer(1, 24))
         

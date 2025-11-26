@@ -75,7 +75,7 @@ class Contract(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
     studio_id: Mapped[str] = mapped_column(ForeignKey("studios.id", ondelete="CASCADE"), nullable=False, index=True)
-    client_id: Mapped[str] = mapped_column(ForeignKey("clients.id", ondelete="CASCADE"), nullable=False, index=True)
+    client_id: Mapped[int] = mapped_column(ForeignKey("clients.id", ondelete="CASCADE"), nullable=False, index=True)
     project_id: Mapped[str | None] = mapped_column(ForeignKey("projects.id", ondelete="SET NULL"), nullable=True, index=True)
     template_id: Mapped[str | None] = mapped_column(ForeignKey("contract_templates.id", ondelete="SET NULL"), nullable=True)
     

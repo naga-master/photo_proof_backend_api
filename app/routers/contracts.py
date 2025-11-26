@@ -648,11 +648,20 @@ async def delete_contract(
             detail="Contract not found"
         )
     
-    # Only allow deleting draft contracts
-    if contract.status != "draft":
+    # Business rules for contract deletion (DPDPA 2023 compliance)
+    if contract.status == "signed":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Can only delete draft contracts"
+            detail="Cannot delete signed contracts. Legal requirement: must retain for 7 years (DPDPA 2023). Consider archiving instead."
+        )
+    
+    # Allow deleting: draft, sent, viewed, expired, cancelled
+    # Warn but allow viewed contracts (client has seen it)
+    allowed_statuses = ["draft", "sent", "viewed", "expired", "cancelled"]
+    if contract.status not in allowed_statuses:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot delete contracts in {contract.status} status"
         )
     
     db.delete(contract)

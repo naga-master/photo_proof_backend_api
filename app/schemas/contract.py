@@ -50,7 +50,7 @@ class ContractBase(BaseModel):
 
 class ContractCreate(BaseModel):
     """Create contract schema."""
-    client_id: str
+    client_id: int  # Client.id is Integer, not String
     project_id: Optional[str] = None
     template_id: Optional[str] = None
     title: str = Field(..., max_length=255)
@@ -74,7 +74,7 @@ class ContractResponse(BaseModel):
     """Contract response schema."""
     id: str
     studio_id: str
-    client_id: str
+    client_id: int  # Client.id is Integer, not String
     project_id: Optional[str] = None
     template_id: Optional[str] = None
     contract_number: str
@@ -88,7 +88,7 @@ class ContractResponse(BaseModel):
     expires_at: Optional[datetime] = None
     pdf_url: Optional[str] = None
     signed_pdf_url: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = None
+    # metadata field removed - SQLAlchemy conflict with table metadata
     created_at: datetime
     updated_at: datetime
     
