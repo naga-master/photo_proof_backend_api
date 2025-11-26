@@ -17,6 +17,17 @@ from .multi_tenant import (
     StudioFeature,
     StudioUsageStats,
 )
+from .contract import (
+    Contract,
+    ContractTemplate,
+    ContractActivity,
+    ContractEmailTemplate,
+)
+from .consent import (
+    UserConsent,
+    DataExportRequest,
+    AccountDeletionRequest,
+)
 
 # Backwards compatibility aliases
 Image = Photo  # Old code uses 'Image', we use 'Photo'
@@ -53,4 +64,13 @@ __all__ = [
     "StudioSubscription",
     "StudioFeature",
     "StudioUsageStats",
+    # Contract models
+    "Contract",
+    "ContractTemplate",
+    "ContractActivity",
+    "ContractEmailTemplate",
+    # Consent models
+    "UserConsent",
+    "DataExportRequest",
+    "AccountDeletionRequest",
 ]

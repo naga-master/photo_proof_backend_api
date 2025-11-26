@@ -23,6 +23,8 @@ from app.routers import files as files_v2
 from app.routers import ai_tools as ai_tools_v2
 from app.routers import studios as studios_v2
 from app.routers import onboarding as onboarding_v2
+from app.routers import contracts as contracts_v2
+from app.routers import data_rights as data_rights_v2
 
 
 api_router = APIRouter()
@@ -73,6 +75,12 @@ api_router.include_router(studios_v2.router, prefix="/api", tags=["studios"])  #
 
 # Studio Onboarding
 api_router.include_router(onboarding_v2.router, prefix="/api", tags=["onboarding"])  # /api/onboarding/*
+
+# Contracts Management
+api_router.include_router(contracts_v2.router, prefix="/v2/contracts", tags=["v2-contracts"])
+
+# Data Subject Rights (DPDPA 2023 Compliance)
+api_router.include_router(data_rights_v2.router, prefix="/v2/data-rights", tags=["v2-data-rights"])
 
 
 # ============================================================================

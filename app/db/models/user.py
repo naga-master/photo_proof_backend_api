@@ -61,6 +61,10 @@ class Studio(Base, TimestampMixin):
     subscription = relationship("StudioSubscription", back_populates="studio", uselist=False)
     features = relationship("StudioFeature", back_populates="studio", cascade="all, delete-orphan")
     usage_stats = relationship("StudioUsageStats", back_populates="studio", cascade="all, delete-orphan")
+    
+    # Contract relationships
+    contract_templates = relationship("ContractTemplate", back_populates="studio", cascade="all, delete-orphan")
+    contracts = relationship("Contract", back_populates="studio", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Studio(id={self.id}, name={self.name})>"
@@ -97,6 +101,11 @@ class User(Base, TimestampMixin):
     uploaded_photos = relationship("Photo", back_populates="uploaded_by_user", foreign_keys="Photo.uploaded_by")
     favorites = relationship("UserPhotoFavorite", back_populates="user", cascade="all, delete-orphan")
     selections = relationship("UserPhotoSelection", back_populates="user", cascade="all, delete-orphan")
+    
+    # Consent relationships
+    consents = relationship("UserConsent", back_populates="user", cascade="all, delete-orphan")
+    data_exports = relationship("DataExportRequest", back_populates="user", cascade="all, delete-orphan")
+    deletion_requests = relationship("AccountDeletionRequest", back_populates="user", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<User(id={self.id}, email={self.email}, role={self.role})>"
@@ -135,6 +144,7 @@ class Client(Base, TimestampMixin):
     user = relationship("User", back_populates="client_profile")
     projects = relationship("Project", back_populates="client", cascade="all, delete-orphan")
     orders = relationship("Order", back_populates="client", cascade="all, delete-orphan")
+    contracts = relationship("Contract", back_populates="client", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Client(id={self.id}, name={self.name}, email={self.email})>"

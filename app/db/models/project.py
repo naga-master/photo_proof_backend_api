@@ -48,6 +48,7 @@ class Project(Base, TimestampMixin):
     folders = relationship("Folder", back_populates="project", cascade="all, delete-orphan")
     photos = relationship("Photo", back_populates="project", foreign_keys="Photo.project_id", cascade="all, delete-orphan")
     invoices = relationship("Invoice", back_populates="project")
+    contracts = relationship("Contract", back_populates="project", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Project(id={self.id}, title={self.title}, client_id={self.client_id})>"
