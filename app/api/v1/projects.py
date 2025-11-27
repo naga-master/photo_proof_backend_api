@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import uuid
 from datetime import datetime
@@ -351,7 +352,6 @@ def create_project(
     
     if hasattr(request, 'package_id') and request.package_id:
         try:
-            import json
             snapshot_data = create_package_snapshot(request.package_id, db)
             package_snapshot = json.dumps(snapshot_data) if snapshot_data else None
         except Exception as e:
