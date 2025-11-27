@@ -130,7 +130,7 @@ class ImageProcessingService:
         # Return relative path from uploads/
         return f"projects/{photo.project_id}/variants/{photo.id}/{variant_filename}"
     
-    async def generate_thumbhash(
+    def generate_thumbhash(
         self,
         original_file_path: Path
     ) -> str:

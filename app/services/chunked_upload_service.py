@@ -277,7 +277,7 @@ class ChunkedUploadService:
             
             # Generate ThumbHash for instant placeholders
             logger.debug(f"[ChunkedUpload] Generating ThumbHash for photo {photo.id}")
-            thumbhash = await image_service.generate_thumbhash(storage_full_path)
+            thumbhash = image_service.generate_thumbhash(storage_full_path)
             if thumbhash:
                 photo.thumbhash = thumbhash
                 logger.debug(f"[ChunkedUpload] ThumbHash generated for photo {photo.id}")

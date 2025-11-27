@@ -125,6 +125,9 @@ async def complete_upload(
             updated_at=photo.updated_at,
         )
     
+    except HTTPException as e:
+        # Re-raise HTTP exceptions as-is (e.g., 409 for duplicates)
+        raise e
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
