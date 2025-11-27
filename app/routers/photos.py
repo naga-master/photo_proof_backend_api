@@ -128,6 +128,69 @@ def get_project_photos(
     }
 
 
+@router.get("/processing-issues")
+def get_user_processing_issues(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> dict:
+    """
+    Get photos with processing issues for current user.
+    
+    Returns photos that failed variant generation or are still processing,
+    limited to projects accessible by the current user.
+    """
+    # Get user's accessible projects
+    if current_user.studio_id:
+        # Studio user - can see all studio projects
+        user_projects = db.query(Project).filter(
+            Project.studio_id == current_user.studio_id
+        ).all()
+    elif current_user.client_profile:
+        # Client user - can only see their own projects
+        user_projects = db.query(Project).filter(
+            Project.client_id == current_user.client_profile.id
+        ).all()
+    else:
+        # No access
+        user_projects = []
+    
+    project_ids = [p.id for p in user_projects]
+    
+    if not project_ids:
+        return {
+            "total_failed": 0,
+            "photos": []
+        }
+    
+    # Find photos with processing errors in user's projects
+    failed_photos = (
+        db.query(Photo)
+        .filter(
+            Photo.project_id.in_(project_ids),
+            Photo.processing_error != None
+        )
+        .order_by(Photo.last_processing_attempt_at.desc())
+        .limit(20)
+        .all()
+    )
+    
+    return {
+        "total_failed": len(failed_photos),
+        "photos": [
+            {
+                "id": p.id,
+                "project_id": p.project_id,
+                "filename": p.original_filename,
+                "error": p.processing_error,
+                "uploaded_at": p.created_at.isoformat() if p.created_at else None,
+                "last_attempt": p.last_processing_attempt_at.isoformat() if p.last_processing_attempt_at else None,
+                "attempts": p.processing_attempts,
+            }
+            for p in failed_photos
+        ]
+    }
+
+
 @router.patch("/{photo_id}", response_model=PhotoResponse)
 def update_photo(
     photo_id: int,

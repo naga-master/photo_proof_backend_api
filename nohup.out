@@ -1,2 +1,30 @@
 INFO:     Will watch for changes in these directories: ['/Users/ns632@apac.comcast.com/Documents/v0_photo_proof/photo_proof_api']
-ERROR:    [Errno 48] Address already in use
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [24052] using WatchFiles
+2025-11-27 12:23:52 | INFO | app.main | ✅ Tenant detection middleware enabled
+2025-11-27 12:23:53 | INFO | app.main | Application initialized
+2025-11-27 12:23:53 | INFO | uvicorn.error | Started server process [24062]
+2025-11-27 12:23:53 | INFO | uvicorn.error | Waiting for application startup.
+2025-11-27 12:23:53 | INFO | uvicorn.error | Application startup complete.
+2025-11-27 12:23:58 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-27 12:23:58 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-27 12:23:58 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-27 12:23:58 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-27 12:23:58 | INFO | uvicorn.access | 127.0.0.1:56333 - "GET /health HTTP/1.1" 404
+2025-11-27 12:24:13 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-27 12:24:13 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-27 12:24:13 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-27 12:24:13 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-27 12:24:13 | DEBUG | app.api.v1.health | Root endpoint accessed
+2025-11-27 12:24:13 | INFO | uvicorn.access | 127.0.0.1:56426 - "GET / HTTP/1.1" 200
+2025-11-27 12:28:14 | DEBUG | app.middleware.tenant | Detecting studio from host: localhost
+2025-11-27 12:28:14 | INFO | app.middleware.tenant | 🔧 Development mode: Using 'demo' studio for localhost
+2025-11-27 12:28:14 | INFO | app.middleware.tenant | ✅ Found demo studio for localhost: Demo Photography Studio
+2025-11-27 12:28:14 | DEBUG | app.middleware.tenant | 📍 Request for studio: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-27 12:28:14 | DEBUG | app.db.session | Database session opened
+2025-11-27 12:28:14 | DEBUG | app.api.deps | Optional studio resolved: Demo Photography Studio (24cf1e21-d52c-4808-bb8a-bd382f52865b)
+2025-11-27 12:28:14 | DEBUG | app.services.cache_service | Cache MISS: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b
+2025-11-27 12:28:14 | DEBUG | app.services.cache_service | Cache SET: studio:theme:24cf1e21-d52c-4808-bb8a-bd382f52865b (TTL: 1800s)
+2025-11-27 12:28:14 | INFO | uvicorn.access | 127.0.0.1:57655 - "GET /api/studio/current HTTP/1.1" 200
+2025-11-27 12:28:14 | DEBUG | app.db.session | Database session committed
+2025-11-27 12:28:14 | DEBUG | app.db.session | Database session closed

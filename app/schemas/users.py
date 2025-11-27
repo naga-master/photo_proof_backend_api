@@ -70,7 +70,7 @@ class ClientRead(BaseModel):
     company_name: Optional[str] = None
     notes: Optional[str] = None
     status: ClientStatus
-    total_projects: int
+    total_projects: Optional[int] = 0
     last_project_date: Optional[date] = None
     created_at: datetime
     updated_at: datetime

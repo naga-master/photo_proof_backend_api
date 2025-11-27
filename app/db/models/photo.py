@@ -54,6 +54,11 @@ class Photo(Base, TimestampMixin):
     # Image Optimization (5-layer rural network optimization)
     variants_json = Column(Text, nullable=True)  # JSON: {"thumbnail": "path", "low": "path", ...}
     thumbhash = Column(String(100), nullable=True)  # Base64-encoded ThumbHash for placeholders
+    
+    # Background Processing Tracking
+    processing_error = Column(Text, nullable=True)
+    processing_attempts = Column(Integer, nullable=False, default=0)
+    last_processing_attempt_at = Column(DateTime, nullable=True)
 
     # Relationships
     project = relationship("Project", back_populates="photos", foreign_keys=[project_id])

@@ -25,6 +25,7 @@ from app.routers import studios as studios_v2
 from app.routers import onboarding as onboarding_v2
 from app.routers import contracts as contracts_v2
 from app.routers import data_rights as data_rights_v2
+from app.routers import admin as admin_v2
 
 
 api_router = APIRouter()
@@ -81,6 +82,9 @@ api_router.include_router(contracts_v2.router, prefix="/v2/contracts", tags=["v2
 
 # Data Subject Rights (DPDPA 2023 Compliance)
 api_router.include_router(data_rights_v2.router, prefix="/v2/data-rights", tags=["v2-data-rights"])
+
+# Admin & System Management
+api_router.include_router(admin_v2.router, prefix="/v2", tags=["v2-admin"])
 
 
 # ============================================================================
