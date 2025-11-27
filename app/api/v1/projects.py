@@ -32,6 +32,7 @@ from app.schemas import (
     ProjectMetadata,
     ProjectMetadataListResponse,
 )
+from app.middleware.package_restrictions import create_package_snapshot
 
 
 router = APIRouter(prefix="/api/projects", tags=["Projects"])
@@ -344,6 +345,19 @@ def create_project(
     slug = request.name.lower().replace(" ", "-")
     access_url = f"{slug}-{project_id[:6]}"
 
+    # Create package snapshot if package is selected
+    package_snapshot = None
+    usage_stats = {"photos_selected": 0, "video_gb_used": 0}
+    
+    if hasattr(request, 'package_id') and request.package_id:
+        try:
+            import json
+            snapshot_data = create_package_snapshot(request.package_id, db)
+            package_snapshot = json.dumps(snapshot_data) if snapshot_data else None
+        except Exception as e:
+            logger.warning(f"Failed to create package snapshot: {e}")
+            package_snapshot = None
+    
     project = models.Project(
         studio_id=current_user.studio_id,
         client_id=client.id,
@@ -351,6 +365,9 @@ def create_project(
         shoot_date=request.shoot_date,
         status='draft',
         has_folders=False,
+        package_id=getattr(request, 'package_id', None),
+        package_snapshot=package_snapshot,
+        usage_stats=json.dumps(usage_stats),
     )
     db.add(project)
     db.flush()
