@@ -128,6 +128,7 @@ def get_client(
 @router.post("/", response_model=ClientResponse, status_code=status.HTTP_201_CREATED)
 def create_client(
     client_data: ClientCreate,
+    force: bool = Query(False, description="Force creation even if phone exists"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Client:
@@ -172,6 +173,33 @@ def create_client(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Client with this email already exists"
         )
+    
+    # Check for duplicate phone number (warning only, unless force=True)
+    if client_data.phone and not force:
+        existing_phone = (
+            db.query(Client)
+            .filter(
+                Client.studio_id == current_user.studio_id,
+                Client.phone == client_data.phone
+            )
+            .first()
+        )
+        
+        if existing_phone:
+            raise HTTPException(
+                status_code=409,
+                detail={
+                    "error": "duplicate_detected",
+                    "type": "client_phone",
+                    "message": "A client with this phone number already exists",
+                    "existing_client": {
+                        "id": existing_phone.id,
+                        "name": existing_phone.name,
+                        "email": existing_phone.email
+                    },
+                    "actions": ["use_existing", "create_anyway"]
+                }
+            )
     
     # Check if username is unique (if provided)
     if client_data.username:

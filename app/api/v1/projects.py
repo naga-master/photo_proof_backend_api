@@ -719,30 +719,35 @@ def create_project_folder(
                 detail="Not authorized to create folders in this project"
             )
     
-    # Check if folder with same name already exists
+    # Check if folder with same name already exists (case-insensitive)
     existing_folder = (
         db.query(models.Folder)
         .filter(
             models.Folder.project_id == project_id_int,
-            models.Folder.name == folder_name
+            func.lower(models.Folder.name) == folder_name.lower()
         )
         .first()
     )
     
     if existing_folder:
-        # Return existing folder instead of error
-        logger.info("Folder already exists, returning existing", extra={"folder_id": existing_folder.id, "folder_name": folder_name})
-        return {
-            "id": existing_folder.id,
-            "name": existing_folder.name,
-            "project_id": existing_folder.project_id,
-            "photoCount": existing_folder.photo_count,
-            "coverPhotoId": existing_folder.cover_photo_id,
-            "coverPhotoSrc": None,
-            "order_index": existing_folder.order_index,
-            "created_at": existing_folder.created_at.isoformat() if existing_folder.created_at else None,
-            "updated_at": existing_folder.updated_at.isoformat() if existing_folder.updated_at else None,
-        }
+        logger.warning("Duplicate folder name detected", extra={
+            "folder_name": folder_name,
+            "existing_folder_id": existing_folder.id
+        })
+        
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error": "duplicate_detected",
+                "type": "folder_name",
+                "message": f"Folder '{folder_name}' already exists in this project. Please use a different folder name.",
+                "existing_folder": {
+                    "id": existing_folder.id,
+                    "name": existing_folder.name,
+                    "photo_count": existing_folder.photo_count
+                }
+            }
+        )
     
     # Get the next order index
     max_order = db.query(func.max(models.Folder.order_index)).filter(

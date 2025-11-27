@@ -59,6 +59,9 @@ class Photo(Base, TimestampMixin):
     processing_error = Column(Text, nullable=True)
     processing_attempts = Column(Integer, nullable=False, default=0)
     last_processing_attempt_at = Column(DateTime, nullable=True)
+    
+    # Duplicate Detection
+    content_hash = Column(String(64), nullable=True, index=True)
 
     # Relationships
     project = relationship("Project", back_populates="photos", foreign_keys=[project_id])

@@ -3,6 +3,7 @@
 import logging
 import secrets
 import time
+import hashlib
 from datetime import datetime, timedelta
 from typing import Optional, Tuple, List, Dict
 from sqlalchemy.orm import Session
@@ -13,6 +14,8 @@ from pathlib import Path
 from app.db.models import UploadSession, UploadToken, Photo, Project
 from app.services.storage_service import StorageService
 
+from fastapi import HTTPException
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,6 +24,11 @@ class UploadService:
     
     def __init__(self, storage_service: StorageService):
         self.storage = storage_service
+    
+    @staticmethod
+    def calculate_file_hash(file_data: bytes) -> str:
+        """Calculate SHA-256 hash of file content for duplicate detection."""
+        return hashlib.sha256(file_data).hexdigest()
     
     def generate_upload_token(
         self,
@@ -226,6 +234,126 @@ class UploadService:
                     raise ValueError(f"Empty file data for {upload_token.filename}")
                 # Otherwise allow it through with default dimensions
         
+        # Calculate file hash for duplicate detection
+        file_hash = self.calculate_file_hash(file_data)
+        
+        # Check for duplicate content in same folder (not project-wide)
+        # Same photo can exist in different folders (different contexts)
+        if upload_token.folder_id:
+            duplicate_photo = db.query(Photo).filter(
+                Photo.project_id == project.id,
+                Photo.folder_id == upload_token.folder_id,
+                Photo.content_hash == file_hash
+            ).first()
+            
+            if duplicate_photo:
+                # Get folder name for better error message
+                from app.db.models.project import Folder
+                folder = db.query(Folder).filter(Folder.id == upload_token.folder_id).first()
+                folder_name = folder.name if folder else "this folder"
+                
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "error": "duplicate_detected",
+                        "type": "photo_content",
+                        "message": f"This photo already exists in folder '{folder_name}'",
+                        "existing_photo": {
+                            "id": duplicate_photo.id,
+                            "filename": duplicate_photo.original_filename,
+                            "folder_name": folder_name,
+                            "uploaded_at": duplicate_photo.created_at.isoformat(),
+                            "thumbnail_url": f"/api/photos/{duplicate_photo.id}/thumbnail"
+                        }
+                    }
+                )
+        else:
+            # For photos without folders, check at project level
+            duplicate_photo = db.query(Photo).filter(
+                Photo.project_id == project.id,
+                Photo.folder_id.is_(None),
+                Photo.content_hash == file_hash
+            ).first()
+            
+            if duplicate_photo:
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "error": "duplicate_detected",
+                        "type": "photo_content",
+                        "message": "This photo already exists in this project (no folder)",
+                        "existing_photo": {
+                            "id": duplicate_photo.id,
+                            "filename": duplicate_photo.original_filename,
+                            "uploaded_at": duplicate_photo.created_at.isoformat(),
+                            "thumbnail_url": f"/api/photos/{duplicate_photo.id}/thumbnail"
+                        }
+                    }
+                )
+        
+        # Check for same filename in same folder - BLOCK if duplicate
+        # Photos must have unique filenames within their folder (or within project if no folder)
+        if upload_token.folder_id:
+            # Check for duplicate filename in the same folder
+            same_filename = db.query(Photo).filter(
+                Photo.project_id == project.id,
+                Photo.folder_id == upload_token.folder_id,
+                Photo.original_filename == upload_token.filename
+            ).first()
+            
+            if same_filename:
+                # Get folder name for better error message
+                from app.db.models.project import Folder
+                folder = db.query(Folder).filter(Folder.id == upload_token.folder_id).first()
+                folder_name = folder.name if folder else "this folder"
+                
+                logger.warning(
+                    f"Duplicate filename in folder {upload_token.folder_id}: "
+                    f"{upload_token.filename} (existing ID: {same_filename.id})"
+                )
+                
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "error": "duplicate_detected",
+                        "type": "photo_filename",
+                        "message": f"File '{upload_token.filename}' already exists in folder '{folder_name}'. Please rename the file.",
+                        "existing_photo": {
+                            "id": same_filename.id,
+                            "filename": same_filename.original_filename,
+                            "folder_name": folder_name,
+                            "uploaded_at": same_filename.created_at.isoformat()
+                        }
+                    }
+                )
+        else:
+            # Check for duplicate filename in project (no folder)
+            same_filename = db.query(Photo).filter(
+                Photo.project_id == project.id,
+                Photo.folder_id.is_(None),
+                Photo.original_filename == upload_token.filename
+            ).first()
+            
+            if same_filename:
+                logger.warning(
+                    f"Duplicate filename in project {project.id} (no folder): "
+                    f"{upload_token.filename} (existing ID: {same_filename.id})"
+                )
+                
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "error": "duplicate_detected",
+                        "type": "photo_filename",
+                        "message": f"File '{upload_token.filename}' already exists in this project. Please rename the file.",
+                        "existing_photo": {
+                            "id": same_filename.id,
+                            "filename": same_filename.original_filename,
+                            "uploaded_at": same_filename.created_at.isoformat()
+                        }
+                    }
+                )
+        
         # Save file to storage
         file_obj = io.BytesIO(file_data)
         url = await self.storage.save_file(file_obj, upload_token.storage_path)
@@ -245,6 +373,7 @@ class UploadService:
             mime_type=upload_token.content_type,
             uploaded_by=upload_session.user_id,
             status='processing',  # Changed from 'completed' - variants generated in background
+            content_hash=file_hash,  # For duplicate detection
         )
         
         db.add(photo)

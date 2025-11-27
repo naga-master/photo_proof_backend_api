@@ -52,7 +52,7 @@ class Settings(BaseModel):
         "X-Requested-With", "Cache-Control", "X-Studio-ID"
     ])
     data_directory: str = Field(default=os.getenv("DATA_DIR", "data"))
-    database_url: str = Field(default=os.getenv("DATABASE_URL", "sqlite:///./photo_proof.db"))
+    database_url: str = Field(default=os.getenv("DATABASE_URL", "postgresql://photo_proof_user:PhotoProof2024!@localhost/photo_proof_production"))
     uploads_directory: str = Field(default=os.getenv("UPLOADS_DIR", "uploads"))
     log_directory: str = Field(default_factory=lambda: os.getenv("LOG_DIR", "logs"))
     log_file_name: str = Field(default_factory=lambda: os.getenv("LOG_FILE", "photo_proof_api.log"))
