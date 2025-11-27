@@ -1,6 +1,6 @@
 """Project and Folder models."""
 
-from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, Date, Text, Numeric
+from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, Date, Text, Numeric, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
@@ -39,6 +39,10 @@ class Project(Base, TimestampMixin):
     
     # Folder structure flag
     has_folders = Column(Boolean, nullable=False, default=False)
+    
+    # Package snapshot and usage tracking
+    package_snapshot = Column(JSON, nullable=True)  # Frozen copy of package config at creation
+    usage_stats = Column(JSON, nullable=True)  # Tracks usage vs limits
 
     # Relationships
     studio = relationship("Studio", back_populates="projects")

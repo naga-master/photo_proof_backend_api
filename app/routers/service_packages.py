@@ -106,7 +106,11 @@ def create_service_package(
         category=package_data.category,
         description=package_data.description,
         price=package_data.price,
+        package_type_id=package_data.package_type_id,
         features=package_data.features,
+        restrictions=package_data.restrictions,
+        deliverables=package_data.deliverables,
+        lifecycle_config=package_data.lifecycle_config,
     )
     
     db.add(new_package)
@@ -159,8 +163,16 @@ def update_service_package(
         package.description = package_data.description
     if package_data.price is not None:
         package.price = package_data.price
+    if package_data.package_type_id is not None:
+        package.package_type_id = package_data.package_type_id
     if package_data.features is not None:
         package.features = package_data.features
+    if package_data.deliverables is not None:
+        package.deliverables = package_data.deliverables
+    if package_data.restrictions is not None:
+        package.restrictions = package_data.restrictions
+    if package_data.lifecycle_config is not None:
+        package.lifecycle_config = package_data.lifecycle_config
     
     db.commit()
     db.refresh(package)

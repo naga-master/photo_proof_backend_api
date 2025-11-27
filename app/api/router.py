@@ -19,6 +19,8 @@ from app.routers import cart as cart_v2
 from app.routers import orders as orders_v2
 from app.routers import invoices as invoices_v2
 from app.routers import service_packages as service_packages_v2
+from app.routers import package_types as package_types_v2
+from app.routers import selection_status as selection_status_v2
 from app.routers import files as files_v2
 from app.routers import ai_tools as ai_tools_v2
 from app.routers import studios as studios_v2
@@ -67,6 +69,10 @@ api_router.include_router(orders_v2.router, prefix="/v2/orders", tags=["v2-order
 # Billing & Services
 api_router.include_router(invoices_v2.router, prefix="/v2/invoices", tags=["v2-invoices"])
 api_router.include_router(service_packages_v2.router, prefix="/v2/packages", tags=["v2-service-packages"])
+api_router.include_router(package_types_v2.router, prefix="/v2/package-types", tags=["v2-package-types"])
+
+# Selection & Restrictions
+api_router.include_router(selection_status_v2.router, prefix="/v2", tags=["v2-restrictions"])
 
 # AI Tools
 api_router.include_router(ai_tools_v2.router, prefix="/v2", tags=["v2-ai-tools"])

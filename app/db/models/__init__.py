@@ -5,6 +5,7 @@ from .user import Studio, User, Client
 from .project import Project, Folder
 from .photo import Photo, Comment, UserPhotoFavorite, UserPhotoSelection
 from .service import ServicePackage, Invoice
+from .package_type import PackageType
 from .store import Product, ProductOption, CartItem, Order
 from .notification import Notification
 from .upload import UploadSession, UploadToken
@@ -48,6 +49,7 @@ __all__ = [
     "UserPhotoSelection",
     "ServicePackage",
     "Invoice",
+    "PackageType",
     "Product",
     "ProductOption",
     "CartItem",

@@ -237,8 +237,17 @@ class UploadService:
         # Calculate file hash for duplicate detection
         file_hash = self.calculate_file_hash(file_data)
         
-        # Check for duplicate content in same folder (not project-wide)
-        # Same photo can exist in different folders (different contexts)
+        logger.debug(
+            f"[UploadService] Checking for duplicates: "
+            f"filename={upload_token.filename}, "
+            f"project_id={project.id}, "
+            f"folder_id={upload_token.folder_id}, "
+            f"content_hash={file_hash[:16]}..."
+        )
+        
+        # Duplicate detection: ONLY checks within same project + same folder
+        # Allows same photo in: different folders within same project, or different projects
+        # Blocks same photo in: same folder of same project (duplicate in same location)
         if upload_token.folder_id:
             duplicate_photo = db.query(Photo).filter(
                 Photo.project_id == project.id,
@@ -252,19 +261,40 @@ class UploadService:
                 folder = db.query(Folder).filter(Folder.id == upload_token.folder_id).first()
                 folder_name = folder.name if folder else "this folder"
                 
+                logger.warning(
+                    f"[UploadService] Duplicate photo detected: "
+                    f"filename={upload_token.filename}, "
+                    f"project_id={project.id}, "
+                    f"folder={folder_name} ({upload_token.folder_id}), "
+                    f"existing_photo_id={duplicate_photo.id}"
+                )
+                
+                # Check if it's the same filename or just same content
+                is_same_filename = duplicate_photo.original_filename == upload_token.filename
+                
+                if is_same_filename:
+                    message = f"A photo with filename '{upload_token.filename}' already exists in folder '{folder_name}'."
+                    help_text = "This exact file was already uploaded to this folder. Remove it from your upload list."
+                else:
+                    message = f"This photo (content) already exists in folder '{folder_name}' as '{duplicate_photo.original_filename}'. Your file '{upload_token.filename}' has the same image content but a different name."
+                    help_text = f"The photo you're uploading has the same content as '{duplicate_photo.original_filename}' already in this folder. If this is the same photo renamed, skip it. If they should be different, check your source files."
+                
                 raise HTTPException(
                     status_code=409,
                     detail={
                         "error": "duplicate_detected",
                         "type": "photo_content",
-                        "message": f"This photo already exists in folder '{folder_name}'",
+                        "message": message,
+                        "your_file": upload_token.filename,
                         "existing_photo": {
                             "id": duplicate_photo.id,
                             "filename": duplicate_photo.original_filename,
                             "folder_name": folder_name,
                             "uploaded_at": duplicate_photo.created_at.isoformat(),
                             "thumbnail_url": f"/api/photos/{duplicate_photo.id}/thumbnail"
-                        }
+                        },
+                        "help": help_text,
+                        "note": "Duplicate detection checks image content, not just filename. This prevents the same photo being uploaded multiple times with different names."
                     }
                 )
         else:
@@ -276,18 +306,31 @@ class UploadService:
             ).first()
             
             if duplicate_photo:
+                # Check if it's the same filename or just same content
+                is_same_filename = duplicate_photo.original_filename == upload_token.filename
+                
+                if is_same_filename:
+                    message = f"A photo with filename '{upload_token.filename}' already exists at the root level of this project."
+                    help_text = "This exact file was already uploaded. Remove it from your upload list."
+                else:
+                    message = f"This photo (content) already exists at the root level as '{duplicate_photo.original_filename}'. Your file '{upload_token.filename}' has the same image content but a different name."
+                    help_text = f"The photo you're uploading has the same content as '{duplicate_photo.original_filename}'. If this is the same photo renamed, skip it. If they should be different, check your source files."
+                
                 raise HTTPException(
                     status_code=409,
                     detail={
                         "error": "duplicate_detected",
                         "type": "photo_content",
-                        "message": "This photo already exists in this project (no folder)",
+                        "message": message,
+                        "your_file": upload_token.filename,
                         "existing_photo": {
                             "id": duplicate_photo.id,
                             "filename": duplicate_photo.original_filename,
                             "uploaded_at": duplicate_photo.created_at.isoformat(),
                             "thumbnail_url": f"/api/photos/{duplicate_photo.id}/thumbnail"
-                        }
+                        },
+                        "help": help_text,
+                        "note": "Duplicate detection checks image content, not just filename. This prevents the same photo being uploaded multiple times with different names."
                     }
                 )
         

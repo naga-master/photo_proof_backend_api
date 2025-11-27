@@ -13,6 +13,7 @@ from app.schemas.photo import PhotoResponse, PhotoUpdate, PhotoListResponse
 from app.api.deps import get_current_user
 from app.services.storage_service import get_storage_service
 from app.services.version_service import VersionService
+from app.middleware.package_restrictions import validate_photo_selection, update_usage_stats
 
 
 router = APIRouter()
@@ -340,6 +341,7 @@ def select_photo(
     Mark a photo as selected for the current user.
     
     Used by clients to select photos they want to purchase.
+    Enforces package restrictions on selection limits.
     """
     photo = db.query(Photo).filter(Photo.id == photo_id).first()
     if not photo:
@@ -359,12 +361,22 @@ def select_photo(
     )
     
     if not existing:
+        # Validate package restrictions before allowing selection
+        validate_photo_selection(current_user.id, photo.project_id, photo_id, db)
+        
         selection = UserPhotoSelection(
             user_id=current_user.id,
             photo_id=photo_id
         )
         db.add(selection)
         db.commit()
+        
+        # Update usage stats
+        current_count = db.query(UserPhotoSelection).join(Photo).filter(
+            Photo.project_id == photo.project_id,
+            UserPhotoSelection.user_id == current_user.id
+        ).count()
+        update_usage_stats(photo.project_id, db, photos_selected=current_count)
 
 
 @router.delete("/{photo_id}/select", status_code=status.HTTP_204_NO_CONTENT)
@@ -376,6 +388,13 @@ def unselect_photo(
     """
     Remove selection mark from a photo for the current user.
     """
+    photo = db.query(Photo).filter(Photo.id == photo_id).first()
+    if not photo:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Photo not found"
+        )
+    
     selection = (
         db.query(UserPhotoSelection)
         .filter(
@@ -388,6 +407,13 @@ def unselect_photo(
     if selection:
         db.delete(selection)
         db.commit()
+        
+        # Update usage stats
+        current_count = db.query(UserPhotoSelection).join(Photo).filter(
+            Photo.project_id == photo.project_id,
+            UserPhotoSelection.user_id == current_user.id
+        ).count()
+        update_usage_stats(photo.project_id, db, photos_selected=current_count)
 
 
 @router.get("/{photo_id}/favorites", response_model=List[str])

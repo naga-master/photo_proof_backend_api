@@ -27,8 +27,11 @@ class ServicePackageBase(BaseModel):
 
 class ServicePackageCreate(ServicePackageBase):
     """Service package creation schema."""
+    package_type_id: Optional[str] = None  # Reference to package type
     features: List[ServicePackageFeature] = []
     deliverables: List[str] = []
+    restrictions: Optional[Dict[str, Any]] = None  # Package-specific restrictions
+    lifecycle_config: Optional[Dict[str, Any]] = None  # Retention, archival, editing periods
 
 
 class ServicePackageUpdate(BaseModel):
@@ -37,16 +40,22 @@ class ServicePackageUpdate(BaseModel):
     category: Optional[str] = Field(None, min_length=1, max_length=100)
     description: Optional[str] = None
     price: Optional[Decimal] = Field(None, ge=0)
+    package_type_id: Optional[str] = None
     features: Optional[List[ServicePackageFeature]] = None
     deliverables: Optional[List[str]] = None
+    restrictions: Optional[Dict[str, Any]] = None
+    lifecycle_config: Optional[Dict[str, Any]] = None
 
 
 class ServicePackageResponse(ServicePackageBase):
     """Service package response schema."""
     id: str
     studio_id: str
+    package_type_id: Optional[str] = None
     features: List[ServicePackageFeature]
     deliverables: Optional[List[str]] = []
+    restrictions: Optional[Dict[str, Any]] = None
+    lifecycle_config: Optional[Dict[str, Any]] = None
     created_at: datetime
     updated_at: datetime
     
