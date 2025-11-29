@@ -1,8 +1,8 @@
 """Notification service for creating and managing notifications."""
 
 import uuid
-from datetime import datetime
-from typing import Optional, List
+from datetime import datetime, timedelta
+from typing import Optional, List, Dict, Any
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 
@@ -10,6 +10,18 @@ from app.db.models.notification import Notification
 from app.db.models.user import User, Client
 from app.db.models.project import Project
 from app.db.models.photo import Photo
+
+
+# Category configuration for notifications
+CATEGORY_CONFIG = {
+    'upload': {'retention_days': 90, 'email_default': False, 'priority': 'low'},
+    'comment': {'retention_days': 365, 'email_default': True, 'priority': 'normal'},
+    'order': {'retention_days': 730, 'email_default': True, 'priority': 'high'},
+    'contract': {'retention_days': 730, 'email_default': True, 'priority': 'high'},
+    'payment': {'retention_days': 730, 'email_default': True, 'priority': 'high'},
+    'download': {'retention_days': 90, 'email_default': False, 'priority': 'low'},
+    'system': {'retention_days': 730, 'email_default': True, 'priority': 'normal'},
+}
 
 
 def _format_timestamp(dt: datetime) -> str:
@@ -34,6 +46,125 @@ def _format_timestamp(dt: datetime) -> str:
 
 class NotificationService:
     """Service for notification operations."""
+    
+    @staticmethod
+    def notify(
+        db: Session,
+        category: str,
+        event_type: str,
+        recipients: List[Dict[str, Any]],
+        title: str,
+        message: str,
+        project_id: Optional[int] = None,
+        entity_type: Optional[str] = None,
+        entity_id: Optional[str] = None,
+        actor_name: Optional[str] = None,
+        actor_type: Optional[str] = None,
+        extra_data: Optional[Dict[str, Any]] = None,
+        photo_id: Optional[int] = None,
+        comment_id: Optional[int] = None,
+    ) -> List[Notification]:
+        """
+        Unified method to create notifications.
+        
+        Args:
+            category: 'upload', 'comment', 'order', 'contract', 'payment', 'system'
+            event_type: Specific event like 'upload_complete', 'comment_new', etc.
+            recipients: List of dicts with 'user_id' or 'client_id'
+            title: Short title like "Upload Complete"
+            message: Detailed message like "87/101 files uploaded"
+            project_id: Related project if any
+            entity_type: 'photo', 'order', 'contract', etc.
+            entity_id: ID of the related entity
+            actor_name: Name of who triggered the notification
+            actor_type: 'studio', 'client', or 'system'
+            extra_data: Additional JSON data for category-specific info
+            photo_id: Related photo if any
+            comment_id: Related comment if any
+        
+        Returns:
+            List of created Notification objects
+        """
+        notifications = []
+        config = CATEGORY_CONFIG.get(category, {'retention_days': 365, 'email_default': True, 'priority': 'normal'})
+        expires_at = datetime.utcnow() + timedelta(days=config.get('retention_days', 365))
+        
+        for recipient in recipients:
+            notification = Notification(
+                id=str(uuid.uuid4()),
+                user_id=recipient.get('user_id'),
+                client_id=recipient.get('client_id'),
+                category=category,
+                event_type=event_type,
+                type=category,  # For backward compatibility
+                title=title,
+                message=message,
+                text=title,  # For backward compatibility
+                context=message,  # For backward compatibility
+                timestamp=_format_timestamp(datetime.utcnow()),
+                is_read=False,
+                priority=config.get('priority', 'normal'),
+                project_id=project_id,
+                entity_type=entity_type,
+                entity_id=entity_id,
+                photo_id=photo_id,
+                comment_id=comment_id,
+                actor_name=actor_name,
+                actor_type=actor_type,
+                extra_data=extra_data,
+                email_enabled=config.get('email_default', True),
+                expires_at=expires_at,
+            )
+            db.add(notification)
+            notifications.append(notification)
+        
+        db.commit()
+        return notifications
+    
+    @staticmethod
+    def create_upload_notification(
+        db: Session,
+        user_id: str,
+        project_id: int,
+        project_name: str,
+        total_files: int,
+        completed_files: int,
+        failed_files: int,
+        status: str,  # 'success', 'partial', 'failed'
+    ) -> Notification:
+        """
+        Create a notification for upload completion.
+        Called once per upload batch, not per file.
+        """
+        if status == 'success':
+            title = "Upload Complete"
+            message = f"All {total_files} files uploaded to {project_name}"
+        elif status == 'partial':
+            title = "Upload Partially Complete"
+            message = f"{completed_files}/{total_files} files uploaded to {project_name} ({failed_files} failed)"
+        else:
+            title = "Upload Failed"
+            message = f"Failed to upload files to {project_name}"
+        
+        notifications = NotificationService.notify(
+            db=db,
+            category='upload',
+            event_type=f'upload_{status}',
+            recipients=[{'user_id': user_id}],
+            title=title,
+            message=message,
+            project_id=project_id,
+            actor_type='system',
+            extra_data={
+                'total': total_files,
+                'success': completed_files,
+                'failed': failed_files,
+                'status': status,
+                'project_name': project_name,
+            },
+        )
+        
+        return notifications[0] if notifications else None
     
     @staticmethod
     def create_comment_notification(

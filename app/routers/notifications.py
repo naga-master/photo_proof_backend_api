@@ -11,8 +11,10 @@ from app.schemas.notification import (
     NotificationListResponse,
     NotificationCountResponse,
     MarkReadResponse,
+    UploadNotificationRequest,
 )
 from app.services.notification_service import NotificationService
+from app.services.notification_cleanup_service import NotificationCleanupService
 
 
 router = APIRouter(prefix="/api/notifications", tags=["notifications"])
@@ -77,12 +79,25 @@ async def get_notifications(
                 timestamp=n.timestamp,
                 is_read=n.is_read,
                 avatar_url=n.avatar_url,
+                # New unified fields
+                category=n.category,
+                event_type=n.event_type,
+                title=n.title,
+                message=n.message,
+                priority=n.priority,
+                extra_data=n.extra_data,
+                # Related entities
                 project_id=n.project_id,
                 photo_id=n.photo_id,
                 comment_id=n.comment_id,
+                entity_type=n.entity_type,
+                entity_id=n.entity_id,
+                # Actor info
                 actor_name=n.actor_name,
                 actor_type=n.actor_type,
+                # Timestamps
                 created_at=n.created_at,
+                expires_at=n.expires_at,
             )
             for n in notifications
         ],
@@ -148,3 +163,85 @@ async def mark_all_read(
         success=True,
         message=f"Marked {count} notification(s) as read"
     )
+
+
+@router.post("/upload", response_model=NotificationResponse)
+async def create_upload_notification(
+    request: UploadNotificationRequest,
+    db: Session = Depends(get_db),
+    current_user: UserRead = Depends(get_current_user),
+):
+    """Create a notification for upload completion.
+    
+    Called once per upload batch (not per file).
+    """
+    user_id, client_id = _get_user_and_client_ids(current_user)
+    
+    # Only studio users can create upload notifications
+    if client_id is not None:
+        raise HTTPException(status_code=403, detail="Clients cannot create upload notifications")
+    
+    notification = NotificationService.create_upload_notification(
+        db=db,
+        user_id=user_id,
+        project_id=request.project_id,
+        project_name=request.project_name,
+        total_files=request.total_files,
+        completed_files=request.completed_files,
+        failed_files=request.failed_files,
+        status=request.status,
+    )
+    
+    if not notification:
+        raise HTTPException(status_code=500, detail="Failed to create notification")
+    
+    return NotificationResponse(
+        id=notification.id,
+        type=notification.type,
+        text=notification.text,
+        context=notification.context,
+        timestamp=notification.timestamp,
+        is_read=notification.is_read,
+        avatar_url=notification.avatar_url,
+        category=notification.category,
+        event_type=notification.event_type,
+        title=notification.title,
+        message=notification.message,
+        priority=notification.priority,
+        extra_data=notification.extra_data,
+        project_id=notification.project_id,
+        photo_id=notification.photo_id,
+        comment_id=notification.comment_id,
+        entity_type=notification.entity_type,
+        entity_id=notification.entity_id,
+        actor_name=notification.actor_name,
+        actor_type=notification.actor_type,
+        created_at=notification.created_at,
+        expires_at=notification.expires_at,
+    )
+
+
+@router.delete("/cleanup")
+async def cleanup_notifications(
+    db: Session = Depends(get_db),
+    current_user: UserRead = Depends(get_current_user),
+):
+    """Clean up expired notifications (admin only).
+    
+    This endpoint removes notifications that have passed their expiry date.
+    """
+    user_id, client_id = _get_user_and_client_ids(current_user)
+    
+    # Only allow for studio users (not clients)
+    if client_id is not None:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    results = NotificationCleanupService.cleanup_all_categories(db)
+    
+    total_deleted = sum(results.values())
+    
+    return {
+        "success": True,
+        "message": f"Cleaned up {total_deleted} expired notification(s)",
+        "details": results,
+    }
