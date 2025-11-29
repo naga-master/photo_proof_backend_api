@@ -90,7 +90,12 @@ def studio_login(login_data: LoginRequest, response: Response, db: Session = Dep
 
 @router.post("/client/login", response_model=LoginResponse)
 def client_login(login_data: LoginRequest, response: Response, db: Session = Depends(get_db)):
-    """Client user login with httpOnly cookie support."""
+    """Client user login with httpOnly cookie support.
+    
+    Supports both:
+    - Direct Client authentication (Client.password) - new simple method
+    - Legacy User table authentication (User.password_hash)
+    """
     result = AuthService.client_login(db, login_data)
     
     if not result:
@@ -99,20 +104,50 @@ def client_login(login_data: LoginRequest, response: Response, db: Session = Dep
             detail="Invalid username or password"
         )
     
-    user, access_token = result
+    entity, access_token = result
     
-    # Get client record
-    from app.db.models import Client
-    client = db.query(Client).filter(Client.user_id == user.id).first()
+    # Determine if this is a Client or User entity
+    from app.db.models import Client, User
     
-    # Create refresh token
-    token_data = {
-        "sub": user.id,
-        "email": user.email,
-        "role": user.role,
-        "studio_id": user.studio_id,
-        "client_id": client.id if client else None
-    }
+    if isinstance(entity, Client):
+        # Direct Client authentication (new method)
+        client = entity
+        token_data = {
+            "sub": f"client_{client.id}",
+            "email": client.email,
+            "role": "client",
+            "studio_id": client.studio_id,
+            "client_id": client.id
+        }
+        user_response = UserResponse(
+            id=str(client.id),
+            email=client.email,
+            username=client.email,
+            name=client.name,
+            role="client",
+            studio_id=client.studio_id,
+            is_active=True,
+            email_verified=False,
+            phone=client.phone,
+            avatar_url=client.avatar_url or client.profile_picture,
+            created_at=client.created_at.isoformat() if client.created_at else None,
+            updated_at=client.updated_at.isoformat() if client.updated_at else None
+        )
+        client_id = client.id
+    else:
+        # Legacy User table authentication
+        user = entity
+        client = db.query(Client).filter(Client.user_id == user.id).first()
+        token_data = {
+            "sub": user.id,
+            "email": user.email,
+            "role": user.role,
+            "studio_id": user.studio_id,
+            "client_id": client.id if client else None
+        }
+        user_response = UserResponse.model_validate(user)
+        client_id = client.id if client else None
+    
     refresh_token = AuthService.create_refresh_token(token_data)
     
     # Set httpOnly cookies for better security
@@ -141,8 +176,8 @@ def client_login(login_data: LoginRequest, response: Response, db: Session = Dep
     return LoginResponse(
         token=access_token,
         refresh_token=refresh_token,
-        user=UserResponse.model_validate(user),
-        client_id=client.id if client else None
+        user=user_response,
+        client_id=client_id
     )
 
 
@@ -223,36 +258,74 @@ def refresh_token(
         )
     
     user_id = payload.get("sub")
+    role = payload.get("role")
+    
     if not user_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token payload"
         )
     
-    # Fetch user from database to ensure they still exist and are active
-    from app.db.models import User
-    user = db.query(User).filter(User.id == user_id, User.is_active == True).first()
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found or inactive"
-        )
-    
-    # Generate new access token
-    token_data = {
-        "sub": user.id,
-        "email": user.email,
-        "role": user.role,
-        "studio_id": user.studio_id,
-    }
-    
-    if user.role == "client":
+    # Handle client tokens (sub starts with "client_" or role is "client")
+    if role == "client" or (isinstance(user_id, str) and user_id.startswith("client_")):
+        client_id = payload.get("client_id")
+        if not client_id and isinstance(user_id, str) and user_id.startswith("client_"):
+            try:
+                client_id = int(user_id.replace("client_", ""))
+            except ValueError:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Invalid client token"
+                )
+        
+        if not client_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Client ID not found in token"
+            )
+        
         from app.db.models import Client
-        client = db.query(Client).filter(Client.user_id == user.id).first()
-        if client:
-            token_data["client_id"] = client.id
-    
-    new_access_token = AuthService.create_access_token(token_data)
+        client = db.query(Client).filter(Client.id == client_id).first()
+        if not client:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Client not found"
+            )
+        
+        # Generate new access token for client
+        token_data = {
+            "sub": f"client_{client.id}",
+            "email": client.email,
+            "role": "client",
+            "studio_id": client.studio_id,
+            "client_id": client.id,
+        }
+        new_access_token = AuthService.create_access_token(token_data)
+    else:
+        # Regular user lookup
+        from app.db.models import User
+        user = db.query(User).filter(User.id == user_id, User.is_active == True).first()
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User not found or inactive"
+            )
+        
+        # Generate new access token
+        token_data = {
+            "sub": user.id,
+            "email": user.email,
+            "role": user.role,
+            "studio_id": user.studio_id,
+        }
+        
+        if user.role == "client":
+            from app.db.models import Client
+            client = db.query(Client).filter(Client.user_id == user.id).first()
+            if client:
+                token_data["client_id"] = client.id
+        
+        new_access_token = AuthService.create_access_token(token_data)
     
     # Set new access token in cookie
     response.set_cookie(

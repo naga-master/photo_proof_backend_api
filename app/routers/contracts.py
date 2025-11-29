@@ -245,14 +245,23 @@ def list_contracts(
         query = query.filter(Contract.studio_id == current_user.studio_id)
     else:
         # Clients can only see their own contracts
-        # Find client record for current user
         from app.db.models import Client
-        client = db.query(Client).filter(Client.user_id == current_user.id).first()
-        if client:
-            query = query.filter(Contract.client_id == client.id)
+        
+        # New client auth: ID is "client_{id}" format
+        if isinstance(current_user.id, str) and current_user.id.startswith("client_"):
+            try:
+                client_id_int = int(current_user.id.replace("client_", ""))
+                query = query.filter(Contract.client_id == client_id_int)
+            except ValueError:
+                return ContractListResponse(contracts=[], total=0, offset=offset, limit=limit)
         else:
-            # User has no associated client record, return empty list
-            return ContractListResponse(contracts=[], total=0, offset=offset, limit=limit)
+            # Legacy: Find client record by user_id
+            client = db.query(Client).filter(Client.user_id == current_user.id).first()
+            if client:
+                query = query.filter(Contract.client_id == client.id)
+            else:
+                # User has no associated client record, return empty list
+                return ContractListResponse(contracts=[], total=0, offset=offset, limit=limit)
     
     if status_filter:
         query = query.filter(Contract.status == status_filter)
@@ -335,8 +344,21 @@ def get_contract(
     else:
         # Check if user is the client
         from app.db.models import Client
-        client = db.query(Client).filter(Client.user_id == current_user.id).first()
-        if not client or contract.client_id != client.id:
+        
+        # New client auth: ID is "client_{id}" format
+        user_client_id = None
+        if isinstance(current_user.id, str) and current_user.id.startswith("client_"):
+            try:
+                user_client_id = int(current_user.id.replace("client_", ""))
+            except ValueError:
+                pass
+        else:
+            # Legacy: Find client record by user_id
+            client = db.query(Client).filter(Client.user_id == current_user.id).first()
+            if client:
+                user_client_id = client.id
+        
+        if user_client_id is None or contract.client_id != user_client_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Not authorized to view this contract"

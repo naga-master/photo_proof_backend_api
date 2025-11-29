@@ -83,6 +83,8 @@ def list_clients(
         # Create response with computed project count
         client_dict = ClientResponse.model_validate(client).model_dump()
         client_dict['total_projects'] = len(client.projects) if client.projects else 0
+        client_dict['has_password'] = bool(client.password)  # True if password hash exists
+        client_dict['password'] = None  # Don't expose hash in list response
         result.append(ClientResponse(**client_dict))
         logger.debug(f"[CLIENTS DEBUG] Client {client.id} ({client.name}): {client_dict['total_projects']} projects")
     
@@ -214,6 +216,10 @@ def create_client(
                 detail="Username already taken"
             )
     
+    # Generate password if not provided (auto-generate for gallery access)
+    plain_password = client_data.password if client_data.password else AuthService.generate_password()
+    hashed_password = AuthService.hash_password(plain_password)
+    
     # Create client
     client = Client(
         studio_id=current_user.studio_id,
@@ -221,8 +227,8 @@ def create_client(
         email=client_data.email,
         phone=client_data.phone,
         address=client_data.address,
-        username=client_data.username,
-        password=AuthService.hash_password(client_data.password) if client_data.password else None,
+        username=client_data.username or client_data.email,  # Default username to email
+        password=hashed_password,
         whatsapp_opt_in=client_data.whatsapp_opt_in,
         email_opt_in=client_data.email_opt_in,
         status="active"
@@ -232,10 +238,13 @@ def create_client(
     db.commit()
     db.refresh(client)
     
-    # TODO: Optionally create User account if username/password provided
-    # This would allow client to log in to the system
+    # Return response with plain password (one-time display)
+    # The plain password is only shown during creation
+    response = ClientResponse.model_validate(client)
+    response_dict = response.model_dump()
+    response_dict['password'] = plain_password  # Return plain password for studio to share
     
-    return client
+    return ClientResponse(**response_dict)
 
 
 @router.patch("/{client_id}", response_model=ClientResponse)
@@ -335,6 +344,117 @@ def delete_client(
     
     db.delete(client)
     db.commit()
+
+
+@router.put("/{client_id}/password")
+def set_client_password(
+    client_id: int,
+    password_data: dict,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Set or reset a client's gallery access password.
+    
+    Only studio admins can set client passwords.
+    Returns the plain password for the studio to share with the client.
+    """
+    # Only studio users can set passwords
+    if not current_user.studio_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only studio users can set client passwords"
+        )
+    
+    client = db.query(Client).filter(Client.id == client_id).first()
+    
+    if not client:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Client not found"
+        )
+    
+    # Check studio ownership
+    if client.studio_id != current_user.studio_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to modify this client"
+        )
+    
+    # Get new password or generate one
+    new_password = password_data.get("password")
+    if not new_password:
+        new_password = AuthService.generate_password()
+    
+    # Validate password length
+    if len(new_password) < 4:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password must be at least 4 characters"
+        )
+    
+    # Hash and store password
+    client.password = AuthService.hash_password(new_password)
+    db.commit()
+    
+    return {
+        "message": "Password updated successfully",
+        "client_id": client.id,
+        "password": new_password  # Return plain password for studio to share
+    }
+
+
+@router.get("/{client_id}/password")
+def get_client_password(
+    client_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Get client's password (for studio admin to share with client).
+    
+    Note: This returns a newly generated password since we can't decrypt the stored hash.
+    The old password is replaced with this new one.
+    """
+    # Only studio users can get passwords
+    if not current_user.studio_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only studio users can access client passwords"
+        )
+    
+    client = db.query(Client).filter(Client.id == client_id).first()
+    
+    if not client:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Client not found"
+        )
+    
+    # Check studio ownership
+    if client.studio_id != current_user.studio_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to access this client"
+        )
+    
+    # If client has no password, generate one
+    if not client.password:
+        new_password = AuthService.generate_password()
+        client.password = AuthService.hash_password(new_password)
+        db.commit()
+        return {
+            "client_id": client.id,
+            "password": new_password,
+            "is_new": True
+        }
+    
+    # Since we can't decrypt, offer to reset
+    return {
+        "client_id": client.id,
+        "has_password": True,
+        "message": "Password is set but cannot be retrieved. Use PUT to reset it."
+    }
 
 
 @router.patch("/{client_id}/archive", response_model=ClientResponse)

@@ -137,15 +137,25 @@ def list_projects(
 
     # Client users should only see their own projects
     if current_user.role == UserRole.CLIENT:
-        # Get client record for this user
-        client = db.query(models.Client).filter(models.Client.user_id == current_user.id).first()
-        if client:
-            query = query.filter(models.Project.client_id == client.id)
-            logger.debug("Filtering projects for client", extra={"client_id": client.id})
+        # New client auth: ID is "client_{id}" format
+        if isinstance(current_user.id, str) and current_user.id.startswith("client_"):
+            try:
+                client_id = int(current_user.id.replace("client_", ""))
+                query = query.filter(models.Project.client_id == client_id)
+                logger.debug("Filtering projects for client (new auth)", extra={"client_id": client_id})
+            except ValueError:
+                logger.warning("Invalid client ID format", extra={"user_id": current_user.id})
+                return {"projects": [], "total": 0}
         else:
-            # User is a client but has no client record, return empty
-            logger.warning("Client user has no client record", extra={"user_id": current_user.id})
-            return {"projects": [], "total": 0}
+            # Legacy: Get client record by user_id (for clients with User accounts)
+            client = db.query(models.Client).filter(models.Client.user_id == current_user.id).first()
+            if client:
+                query = query.filter(models.Project.client_id == client.id)
+                logger.debug("Filtering projects for client (legacy auth)", extra={"client_id": client.id})
+            else:
+                # User is a client but has no client record, return empty
+                logger.warning("Client user has no client record", extra={"user_id": current_user.id})
+                return {"projects": [], "total": 0}
     else:
         # Studio users see all projects in their studio
         if studio_id:
@@ -626,7 +636,15 @@ def get_project_folders(
     
     # Authorization check
     if current_user.role == UserRole.CLIENT:
-        if project.client_id != current_user.id:
+        # Extract client_id from user ID (format: "client_{id}")
+        user_client_id = None
+        if isinstance(current_user.id, str) and current_user.id.startswith("client_"):
+            try:
+                user_client_id = int(current_user.id.replace("client_", ""))
+            except ValueError:
+                pass
+        
+        if user_client_id is None or project.client_id != user_client_id:
             logger.warning(
                 "Unauthorized folder access attempt",
                 extra={"project_id": project_id, "user_id": current_user.id}

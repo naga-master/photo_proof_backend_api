@@ -172,6 +172,8 @@ class ClientResponse(ClientBase):
     studio_id: str
     user_id: Optional[str] = None
     username: Optional[str] = None
+    password: Optional[str] = None  # Plain password (only returned during creation/reset)
+    has_password: bool = False  # Indicates if client has a password set
     avatar_url: Optional[str] = None
     profile_picture: Optional[str] = None
     whatsapp_opt_in: bool

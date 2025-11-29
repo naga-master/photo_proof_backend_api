@@ -1,8 +1,9 @@
 """Authentication service with JWT token management."""
 
 import secrets
+import string
 from datetime import datetime, timedelta
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 import bcrypt
 from jose import JWTError, jwt
 import os
@@ -49,6 +50,13 @@ class AuthService:
         password_bytes = plain_password.encode('utf-8')[:72]
         hashed_bytes = hashed_password.encode('utf-8')
         return bcrypt.checkpw(password_bytes, hashed_bytes)
+    
+    @staticmethod
+    def generate_password(length: int = 8) -> str:
+        """Generate a random password for client gallery access."""
+        # Use letters and digits for easy sharing (no confusing chars like 0/O, l/1)
+        chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789'
+        return ''.join(secrets.choice(chars) for _ in range(length))
     
     @staticmethod
     def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
@@ -119,9 +127,32 @@ class AuthService:
         return user, access_token
     
     @staticmethod
-    def client_login(db: Session, login_data: LoginRequest) -> Optional[Tuple[User, str]]:
-        """Authenticate client user and return user + token."""
-        # Clients use User table for authentication
+    def client_login(db: Session, login_data: LoginRequest) -> Optional[Tuple[Union[User, Client], str]]:
+        """Authenticate client and return client + token.
+        
+        Uses Client.password directly for simple gallery access authentication.
+        Falls back to User table for legacy accounts.
+        """
+        # First, try direct Client authentication (new simple method)
+        client = db.query(Client).filter(
+            Client.email == login_data.username
+        ).first()
+        
+        if client and client.password:
+            # Client has direct password - use it
+            if AuthService.verify_password(login_data.password, client.password):
+                # Create token with client info
+                token_data = {
+                    "sub": f"client_{client.id}",
+                    "email": client.email,
+                    "role": "client",
+                    "studio_id": client.studio_id,
+                    "client_id": client.id
+                }
+                access_token = AuthService.create_access_token(token_data)
+                return client, access_token
+        
+        # Fallback: Try legacy User table authentication
         user = db.query(User).filter(
             User.username == login_data.username,
             User.role == "client"

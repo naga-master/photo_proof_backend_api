@@ -46,6 +46,12 @@ def get_client_ip(request: Request) -> str:
     return request.client.host if request.client else "unknown"
 
 
+# Helper to check if user is a client (synthetic ID)
+def is_client_user(user_id: str) -> bool:
+    """Check if user ID is a client (starts with 'client_')."""
+    return isinstance(user_id, str) and user_id.startswith("client_")
+
+
 # Consent Management
 @router.get("/consent", response_model=ConsentPreferences)
 async def get_consent_preferences(
@@ -53,6 +59,15 @@ async def get_consent_preferences(
     db: Session = Depends(get_db),
 ):
     """Get user's consent preferences."""
+    # Clients don't have consent records - return all true (implicit consent via gallery access)
+    if is_client_user(current_user.id):
+        return ConsentPreferences(
+            essential=True,
+            marketing_emails=False,
+            sms_notifications=False,
+            analytics=True,
+        )
+    
     consents = db.query(UserConsent).filter(
         UserConsent.user_id == current_user.id,
         UserConsent.withdrawal_timestamp.is_(None),
@@ -89,6 +104,21 @@ async def update_consent(
     db: Session = Depends(get_db),
 ):
     """Update or create a consent."""
+    # Clients have implicit consent - return a mock response
+    if is_client_user(current_user.id):
+        # Return a mock consent response for clients (no DB record needed)
+        now = datetime.utcnow()
+        return ConsentResponse(
+            id="client_consent",
+            user_id=current_user.id,
+            consent_type=consent_data.consent_type,
+            consent_given=consent_data.consent_given,
+            consent_version=consent_data.consent_version,
+            consent_timestamp=now,
+            ip_address=get_client_ip(request),
+            created_at=now,
+        )
+    
     # Check if consent already exists
     existing = db.query(UserConsent).filter(
         UserConsent.user_id == current_user.id,
