@@ -13,6 +13,63 @@ class CommentService:
     """Comment service with nested reply tree building."""
     
     @staticmethod
+    def _get_or_create_user_for_client(db: Session, client_id: int) -> str:
+        """
+        Get or create a shadow User record for a client.
+        This allows clients to use features that require a User record (comments, favorites, etc.)
+        """
+        import uuid
+        
+        # Find the client
+        client = db.query(Client).filter(Client.id == client_id).first()
+        if not client:
+            raise ValueError(f"Client {client_id} not found")
+        
+        # If client already has a user_id, use it
+        if client.user_id:
+            return client.user_id
+        
+        # Create a shadow User record for this client
+        shadow_user_id = str(uuid.uuid4())
+        shadow_user = User(
+            id=shadow_user_id,
+            email=f"client_{client_id}@internal.photoproof.com",  # Internal email
+            username=f"client_{client_id}",
+            name=client.name,
+            password_hash=None,  # No password - auth is via Client table
+            role="client",
+            studio_id=client.studio_id,
+            is_active=True,
+            email_verified=True,
+        )
+        
+        db.add(shadow_user)
+        db.flush()
+        
+        # Link client to shadow user
+        client.user_id = shadow_user_id
+        db.commit()
+        
+        return shadow_user_id
+    
+    @staticmethod
+    def _resolve_user_id(db: Session, user_id: str) -> str:
+        """
+        Resolve user_id for clients using new auth format.
+        Returns a valid User ID that can be stored in the database.
+        """
+        # Check if this is a new-style client ID (format: "client_{id}")
+        if isinstance(user_id, str) and user_id.startswith("client_"):
+            try:
+                client_id = int(user_id.replace("client_", ""))
+                return CommentService._get_or_create_user_for_client(db, client_id)
+            except (ValueError, Exception) as e:
+                raise ValueError(f"Invalid client ID format: {user_id}")
+        
+        # Regular user ID - return as-is
+        return user_id
+    
+    @staticmethod
     def create_comment(
         db: Session,
         photo_id: int,
@@ -31,9 +88,12 @@ class CommentService:
             parent_comment_id: Parent comment for storage hierarchy
             reply_to_id: Specific comment being replied to (for UI context)
         """
+        # Resolve user_id for clients
+        resolved_user_id = CommentService._resolve_user_id(db, user_id)
+        
         comment = Comment(
             photo_id=photo_id,
-            user_id=user_id,
+            user_id=resolved_user_id,
             text=text,
             parent_comment_id=parent_comment_id,
             reply_to_id=reply_to_id,
@@ -66,6 +126,20 @@ class CommentService:
     @staticmethod
     def get_user_info(db: Session, user_id: str) -> dict:
         """Get user information for comment author."""
+        # Handle new-style client IDs (format: "client_{id}")
+        if isinstance(user_id, str) and user_id.startswith("client_"):
+            try:
+                client_id = int(user_id.replace("client_", ""))
+                client = db.query(Client).filter(Client.id == client_id).first()
+                if client:
+                    return {
+                        "name": client.name,
+                        "avatar": client.avatar_url or client.profile_picture,
+                        "role": "client",
+                    }
+            except ValueError:
+                pass
+        
         # Get user from User table
         user = db.query(User).filter(User.id == user_id).first()
         if not user:
@@ -75,15 +149,13 @@ class CommentService:
                 "role": "unknown",
             }
         
-        # Check if user is a Studio user (studio_owner role)
-        if user.role == "studio_owner" and user.studio_id:
-            studio = db.query(Studio).filter(Studio.id == user.studio_id).first()
-            if studio:
-                return {
-                    "name": studio.name,
-                    "avatar": studio.logo_url,
-                    "role": "studio",
-                }
+        # For studio users - return the USER's actual name, not studio name
+        if user.role in ["studio_owner", "studio_admin", "studio_photographer", "studio"]:
+            return {
+                "name": user.name,
+                "avatar": user.avatar_url,
+                "role": "studio",
+            }
         
         # Check if user is a Client
         if user.role == "client":
@@ -196,9 +268,12 @@ class CommentService:
         text: str,
     ) -> Comment:
         """Update a comment (only by original author)."""
+        # Resolve user_id for clients (they may have a shadow user)
+        resolved_user_id = CommentService._resolve_user_id(db, user_id)
+        
         comment = db.query(Comment).filter(
             Comment.id == comment_id,
-            Comment.user_id == user_id,
+            Comment.user_id == resolved_user_id,
             Comment.is_deleted == None,  # is_deleted is DATETIME, NULL means not deleted
         ).first()
         
@@ -221,9 +296,12 @@ class CommentService:
         user_id: str,
     ) -> bool:
         """Soft delete a comment (only by original author)."""
+        # Resolve user_id for clients (they may have a shadow user)
+        resolved_user_id = CommentService._resolve_user_id(db, user_id)
+        
         comment = db.query(Comment).filter(
             Comment.id == comment_id,
-            Comment.user_id == user_id,
+            Comment.user_id == resolved_user_id,
             Comment.is_deleted == None,  # is_deleted is DATETIME, NULL means not deleted
         ).first()
         
