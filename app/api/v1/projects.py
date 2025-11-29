@@ -72,7 +72,7 @@ def _project_detail(project: models.Project, include_images: bool = True, db: Op
         "name": project.title,  # Map title to name
         "total_images": project.photo_count,  # Map photo_count to total_images
         "selected_images": 0,  # Not tracked in current schema
-        "total_comments": 0,  # Not tracked at project level
+        "total_comments": getattr(project, 'total_comments', 0),
         "storage_used_bytes": 0,  # Not tracked in current schema
         "access_url": None,  # Not in current schema
     }
@@ -230,6 +230,7 @@ def list_projects(
             "package_id": project.package_id,
             "status": project.status,
             "has_folders": project.has_folders,
+            "total_comments": getattr(project, 'total_comments', 0),
             "created_at": project.created_at.isoformat() if project.created_at else None,
             "updated_at": project.updated_at.isoformat() if project.updated_at else None,
         }

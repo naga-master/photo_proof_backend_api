@@ -704,6 +704,15 @@ def _process_photo_variants_background(
                 # SUCCESS - mark as completed
                 photo.status = 'completed'
                 photo.processing_error = None
+                
+                # Update project photo_count now that status is 'completed'
+                project = db.query(Project).filter(Project.id == photo.project_id).first()
+                if project:
+                    project.photo_count = db.query(Photo).filter(
+                        Photo.project_id == project.id,
+                        Photo.status == "completed"
+                    ).count()
+                
                 db.commit()
                 logger.info(f"Successfully generated variants for photo {photo_id}")
                 return
@@ -719,6 +728,15 @@ def _process_photo_variants_background(
         # All retries failed - still mark as completed but with error
         photo.status = 'completed'  # Photo is still usable with original
         photo.processing_error = f"Failed after {max_retries} attempts: {last_error}"
+        
+        # Update project photo_count now that status is 'completed'
+        project = db.query(Project).filter(Project.id == photo.project_id).first()
+        if project:
+            project.photo_count = db.query(Photo).filter(
+                Photo.project_id == project.id,
+                Photo.status == "completed"
+            ).count()
+        
         db.commit()
         logger.error(f"Failed to generate variants for photo {photo_id} after {max_retries} attempts: {last_error}")
         
@@ -729,6 +747,15 @@ def _process_photo_variants_background(
             if photo:
                 photo.status = 'completed'
                 photo.processing_error = f"Critical error: {str(e)}"
+                
+                # Update project photo_count now that status is 'completed'
+                project = db.query(Project).filter(Project.id == photo.project_id).first()
+                if project:
+                    project.photo_count = db.query(Photo).filter(
+                        Photo.project_id == project.id,
+                        Photo.status == "completed"
+                    ).count()
+                
                 db.commit()
         except:
             pass

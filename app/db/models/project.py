@@ -23,6 +23,7 @@ class Project(Base, TimestampMixin):
     
     # Cached counts for performance
     photo_count = Column(Integer, nullable=False, default=0)
+    total_comments = Column(Integer, nullable=False, default=0)
     
     # Gallery settings
     is_locked = Column(Boolean, nullable=False, default=False, index=True)

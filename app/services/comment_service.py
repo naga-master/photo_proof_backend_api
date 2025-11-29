@@ -6,6 +6,7 @@ from sqlalchemy import and_
 from datetime import datetime
 
 from app.db.models import Comment, User, Client, Studio, Photo
+from app.db.models.project import Project
 
 
 class CommentService:
@@ -49,6 +50,15 @@ class CommentService:
                 Comment.photo_id == photo_id,
                 Comment.is_deleted == None  # is_deleted is DATETIME, NULL means not deleted
             ).count()
+            
+            # Update project total_comments
+            project = db.query(Project).filter(Project.id == photo.project_id).first()
+            if project:
+                project.total_comments = db.query(Comment).join(Photo).filter(
+                    Photo.project_id == project.id,
+                    Comment.is_deleted == None
+                ).count()
+            
             db.commit()
         
         return comment
@@ -230,6 +240,14 @@ class CommentService:
                 Comment.photo_id == comment.photo_id,
                 Comment.is_deleted == None  # is_deleted is DATETIME, NULL means not deleted
             ).count()
+            
+            # Update project total_comments
+            project = db.query(Project).filter(Project.id == photo.project_id).first()
+            if project:
+                project.total_comments = db.query(Comment).join(Photo).filter(
+                    Photo.project_id == project.id,
+                    Comment.is_deleted == None
+                ).count()
         
         db.commit()
         
