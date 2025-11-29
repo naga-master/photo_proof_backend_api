@@ -168,6 +168,18 @@ def create_app() -> FastAPI:
 
     init_db()
     
+    # Clean up expired notifications on startup
+    try:
+        from app.db.session import session_scope
+        from app.services.notification_cleanup_service import NotificationCleanupService
+        
+        with session_scope() as db:
+            results = NotificationCleanupService.cleanup_expired(db)
+            if results > 0:
+                logger.info(f"✅ Cleaned up {results} expired notification(s)")
+    except Exception as e:
+        logger.warning(f"⚠️ Notification cleanup failed: {e}")
+    
     # Include API router (which now handles /uploads via files router with proper CORS)
     application.include_router(api_router)
     
