@@ -29,6 +29,7 @@ from app.routers import contracts as contracts_v2
 from app.routers import data_rights as data_rights_v2
 from app.routers import admin as admin_v2
 from app.routers import network_test as network_test_v2
+from app.routers import notifications as notifications_v2
 
 
 api_router = APIRouter()
@@ -95,6 +96,9 @@ api_router.include_router(admin_v2.router, prefix="/v2", tags=["v2-admin"])
 
 # Network Testing (for performance-based network detection)
 api_router.include_router(network_test_v2.router, prefix="/api", tags=["network"])
+
+# Notifications (in-app notifications for comments, etc.)
+api_router.include_router(notifications_v2.router, tags=["notifications"])
 
 
 # ============================================================================

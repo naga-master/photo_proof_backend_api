@@ -7,6 +7,7 @@ from datetime import datetime
 
 from app.db.models import Comment, User, Client, Studio, Photo
 from app.db.models.project import Project
+from app.services.notification_service import NotificationService
 
 
 class CommentService:
@@ -88,6 +89,9 @@ class CommentService:
             parent_comment_id: Parent comment for storage hierarchy
             reply_to_id: Specific comment being replied to (for UI context)
         """
+        # Store original user_id for notification (before resolving)
+        original_user_id = user_id
+        
         # Resolve user_id for clients
         resolved_user_id = CommentService._resolve_user_id(db, user_id)
         
@@ -105,6 +109,7 @@ class CommentService:
         
         # Update photo comment count
         photo = db.query(Photo).filter(Photo.id == photo_id).first()
+        project = None
         if photo:
             photo.comment_count = db.query(Comment).filter(
                 Comment.photo_id == photo_id,
@@ -120,6 +125,45 @@ class CommentService:
                 ).count()
             
             db.commit()
+        
+        # Create notification for the other party
+        if photo and project:
+            try:
+                # Determine commenter info
+                commenter_client_id = None
+                commenter_user_id = None
+                commenter_type = "studio"
+                commenter_name = "Someone"
+                
+                if original_user_id.startswith("client_"):
+                    # Client commenting
+                    commenter_client_id = int(original_user_id.replace("client_", ""))
+                    commenter_type = "client"
+                    client = db.query(Client).filter(Client.id == commenter_client_id).first()
+                    if client:
+                        commenter_name = client.name
+                else:
+                    # Studio user commenting
+                    commenter_user_id = original_user_id
+                    commenter_type = "studio"
+                    user = db.query(User).filter(User.id == commenter_user_id).first()
+                    if user:
+                        commenter_name = user.name
+                
+                NotificationService.create_comment_notification(
+                    db=db,
+                    comment_id=comment.id,
+                    comment_text=text,
+                    photo_id=photo_id,
+                    project_id=project.id,
+                    commenter_user_id=commenter_user_id,
+                    commenter_client_id=commenter_client_id,
+                    commenter_name=commenter_name,
+                    commenter_type=commenter_type,
+                )
+            except Exception as e:
+                # Don't fail comment creation if notification fails
+                print(f"[CommentService] Failed to create notification: {e}")
         
         return comment
     
