@@ -8,7 +8,7 @@ from fastapi import FastAPI, Request, status
 from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from app.api import api_router
@@ -53,7 +53,8 @@ def create_app() -> FastAPI:
         headers = {
             "Cache-Control": "no-cache, no-store, must-revalidate",  # Prevent caching errors
             "Pragma": "no-cache",
-            "Expires": "0"
+            "Expires": "0",
+            "Vary": "Origin",  # Cache separately per origin to prevent CORS issues
         }
         if origin and origin_matches_pattern(origin, settings.cors_origins):
             headers["Access-Control-Allow-Origin"] = origin
@@ -64,6 +65,32 @@ def create_app() -> FastAPI:
         return JSONResponse(
             status_code=exc.status_code,
             content={"detail": exc.detail},
+            headers=headers
+        )
+
+    # Add generic exception handler to ensure ALL errors get CORS headers
+    @application.exception_handler(Exception)
+    async def generic_exception_handler(request: Request, exc: Exception):
+        """Ensure ALL errors (not just HTTPException) get CORS headers."""
+        origin = request.headers.get("origin", "")
+        
+        headers = {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+            "Vary": "Origin",  # Cache separately per origin to prevent CORS issues
+        }
+        if origin and origin_matches_pattern(origin, settings.cors_origins):
+            headers["Access-Control-Allow-Origin"] = origin
+            headers["Access-Control-Allow-Credentials"] = "true"
+            headers["Access-Control-Allow-Methods"] = "*"
+            headers["Access-Control-Allow-Headers"] = "*"
+        
+        logger.error(f"Unhandled exception: {exc}", exc_info=True)
+        
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "Internal server error"},
             headers=headers
         )
 
@@ -109,6 +136,32 @@ def create_app() -> FastAPI:
     # Multi-tenant middleware - detect studio from domain
     application.middleware("http")(tenant_middleware)
     logger.info("✅ Tenant detection middleware enabled")
+
+    # Explicit CORS preflight middleware - handles OPTIONS before any authentication
+    # This runs FIRST (added last = runs first in LIFO order)
+    @application.middleware("http")
+    async def cors_preflight_middleware(request: Request, call_next):
+        """Handle CORS preflight requests explicitly before any auth checks."""
+        if request.method == "OPTIONS":
+            origin = request.headers.get("origin", "")
+            if origin and origin_matches_pattern(origin, settings.cors_origins):
+                return Response(
+                    status_code=200,
+                    headers={
+                        "Access-Control-Allow-Origin": origin,
+                        "Access-Control-Allow-Credentials": "true",
+                        "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+                        "Access-Control-Allow-Headers": "Content-Type,Authorization,Accept,Origin,X-Requested-With,Cache-Control,X-Studio-ID",
+                        "Access-Control-Max-Age": "86400",  # Cache preflight for 24 hours
+                        "Vary": "Origin",  # Cache separately per origin
+                    }
+                )
+        response = await call_next(request)
+        # Add Vary: Origin to ALL responses to prevent CORS caching issues
+        # This tells browsers to cache responses separately for each origin
+        response.headers["Vary"] = "Origin"
+        return response
+    logger.info("✅ CORS preflight middleware enabled")
 
     uploads_dir = Path(settings.uploads_directory)
     uploads_dir.mkdir(parents=True, exist_ok=True)
