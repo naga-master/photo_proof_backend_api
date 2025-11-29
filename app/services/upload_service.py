@@ -704,6 +704,7 @@ def _process_photo_variants_background(
                 # SUCCESS - mark as completed
                 photo.status = 'completed'
                 photo.processing_error = None
+                db.flush()  # Flush status change so count query includes this photo
                 
                 # Update project photo_count now that status is 'completed'
                 project = db.query(Project).filter(Project.id == photo.project_id).first()
@@ -728,6 +729,7 @@ def _process_photo_variants_background(
         # All retries failed - still mark as completed but with error
         photo.status = 'completed'  # Photo is still usable with original
         photo.processing_error = f"Failed after {max_retries} attempts: {last_error}"
+        db.flush()  # Flush status change so count query includes this photo
         
         # Update project photo_count now that status is 'completed'
         project = db.query(Project).filter(Project.id == photo.project_id).first()
@@ -747,6 +749,7 @@ def _process_photo_variants_background(
             if photo:
                 photo.status = 'completed'
                 photo.processing_error = f"Critical error: {str(e)}"
+                db.flush()  # Flush status change so count query includes this photo
                 
                 # Update project photo_count now that status is 'completed'
                 project = db.query(Project).filter(Project.id == photo.project_id).first()
