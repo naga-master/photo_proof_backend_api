@@ -714,6 +714,16 @@ def _process_photo_variants_background(
                         Photo.status == "completed"
                     ).count()
                 
+                # Update folder photo_count if photo belongs to a folder
+                if photo.folder_id:
+                    from app.db.models.project import Folder
+                    folder = db.query(Folder).filter(Folder.id == photo.folder_id).first()
+                    if folder:
+                        folder.photo_count = db.query(Photo).filter(
+                            Photo.folder_id == folder.id,
+                            Photo.status == "completed"
+                        ).count()
+                
                 db.commit()
                 logger.info(f"Successfully generated variants for photo {photo_id}")
                 return
@@ -739,6 +749,16 @@ def _process_photo_variants_background(
                 Photo.status == "completed"
             ).count()
         
+        # Update folder photo_count if photo belongs to a folder
+        if photo.folder_id:
+            from app.db.models.project import Folder
+            folder = db.query(Folder).filter(Folder.id == photo.folder_id).first()
+            if folder:
+                folder.photo_count = db.query(Photo).filter(
+                    Photo.folder_id == folder.id,
+                    Photo.status == "completed"
+                ).count()
+        
         db.commit()
         logger.error(f"Failed to generate variants for photo {photo_id} after {max_retries} attempts: {last_error}")
         
@@ -758,6 +778,16 @@ def _process_photo_variants_background(
                         Photo.project_id == project.id,
                         Photo.status == "completed"
                     ).count()
+                
+                # Update folder photo_count if photo belongs to a folder
+                if photo.folder_id:
+                    from app.db.models.project import Folder
+                    folder = db.query(Folder).filter(Folder.id == photo.folder_id).first()
+                    if folder:
+                        folder.photo_count = db.query(Photo).filter(
+                            Photo.folder_id == folder.id,
+                            Photo.status == "completed"
+                        ).count()
                 
                 db.commit()
         except:
