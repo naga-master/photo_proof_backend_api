@@ -23,6 +23,7 @@ class CreateProjectRequest(BaseModel):
     client_phone: Optional[str] = None
     project_type: Optional[str] = None
     shoot_date: Optional[date] = None
+    package_id: Optional[str] = None  # Service package ID for pricing/restrictions
     categories: Optional[List[CreateCategoryRequest]] = None
 
 
