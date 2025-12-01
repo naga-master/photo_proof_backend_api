@@ -4,11 +4,111 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr, Field
 import re
+import os
+import base64
+import uuid
 from datetime import datetime, timedelta
+from pathlib import Path
 
 from app.db.session import get_db
 from app.db.models import Studio, StudioDomain, User, SubscriptionPlan, StudioSubscription
 from app.services.auth_service import AuthService
+from app.core.config import get_settings
+
+
+def save_studio_photo_from_base64(studio_id: str, base64_data: str) -> str:
+    """
+    Save base64 image data to file system and return the URL path.
+    
+    Args:
+        studio_id: The studio's ID
+        base64_data: Base64 encoded image (data:image/jpeg;base64,...)
+    
+    Returns:
+        URL path to the saved image (e.g., /uploads/studios/{studio_id}/photo.jpg)
+    """
+    settings = get_settings()
+    
+    # Parse the base64 data
+    if not base64_data.startswith('data:image'):
+        raise ValueError("Invalid image data format")
+    
+    # Extract format and data
+    header, encoded = base64_data.split(',', 1)
+    # Get extension from MIME type (e.g., data:image/jpeg;base64 -> jpeg)
+    mime_type = header.split(':')[1].split(';')[0]
+    ext_map = {
+        'image/jpeg': 'jpg',
+        'image/jpg': 'jpg',
+        'image/png': 'png',
+        'image/gif': 'gif',
+        'image/webp': 'webp',
+    }
+    extension = ext_map.get(mime_type, 'jpg')
+    
+    # Create directory for studio photos
+    studio_dir = Path(settings.uploads_directory) / 'studios' / studio_id
+    studio_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Generate unique filename
+    filename = f"studio_photo_{uuid.uuid4().hex[:8]}.{extension}"
+    filepath = studio_dir / filename
+    
+    # Decode and save
+    image_data = base64.b64decode(encoded)
+    with open(filepath, 'wb') as f:
+        f.write(image_data)
+    
+    # Return relative URL path
+    return f"/uploads/studios/{studio_id}/{filename}"
+
+
+def save_logo_from_base64(studio_id: str, base64_data: str) -> str:
+    """
+    Save base64 logo image to file system and return the URL path.
+    
+    Args:
+        studio_id: The studio's ID
+        base64_data: Base64 encoded image (data:image/png;base64,...)
+    
+    Returns:
+        URL path to the saved logo (e.g., /uploads/studios/{studio_id}/logo.png)
+    """
+    settings = get_settings()
+    
+    # Parse the base64 data
+    if not base64_data.startswith('data:image'):
+        raise ValueError("Invalid image data format")
+    
+    # Extract format and data
+    header, encoded = base64_data.split(',', 1)
+    mime_type = header.split(':')[1].split(';')[0]
+    ext_map = {
+        'image/jpeg': 'jpg',
+        'image/jpg': 'jpg',
+        'image/png': 'png',
+        'image/gif': 'gif',
+        'image/webp': 'webp',
+        'image/svg+xml': 'svg',
+    }
+    extension = ext_map.get(mime_type, 'png')
+    
+    # Create directory for studio logos
+    studio_dir = Path(settings.uploads_directory) / 'studios' / studio_id
+    studio_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Use consistent filename for logo (overwrites previous)
+    filename = f"logo.{extension}"
+    filepath = studio_dir / filename
+    
+    # Decode and save
+    image_data = base64.b64decode(encoded)
+    with open(filepath, 'wb') as f:
+        f.write(image_data)
+    
+    # Return relative URL path
+    return f"/uploads/studios/{studio_id}/{filename}"
+
 
 router = APIRouter(prefix="/onboarding", tags=["Onboarding"])
 
@@ -32,6 +132,8 @@ class OnboardingBrandingRequest(BaseModel):
     studio_id: str
     brand_color: str = Field(default="#6366F1")
     typography: str = Field(default="System Default (Inter & Cormorant)")
+    studio_photo: str | None = None  # Base64 data URL for About page image
+    logo: str | None = None          # Base64 data URL for studio logo
     custom_css: str | None = None
 
 
@@ -172,7 +274,7 @@ async def update_branding(
     data: OnboardingBrandingRequest,
     db: Session = Depends(get_db)
 ):
-    """Update studio branding."""
+    """Update studio branding including optional studio photo."""
     
     studio = db.query(Studio).filter_by(id=data.studio_id).first()
     if not studio:
@@ -185,6 +287,35 @@ async def update_branding(
     studio.typography = data.typography
     studio.custom_css = data.custom_css
     studio.onboarding_step = "domain"
+    
+    # Handle studio photo upload (for About page)
+    if data.studio_photo:
+        try:
+            if data.studio_photo.startswith('data:image'):
+                # Base64 encoded image - save to file system
+                photo_url = save_studio_photo_from_base64(data.studio_id, data.studio_photo)
+                studio.studio_photo = photo_url
+            else:
+                # Direct URL (external image)
+                studio.studio_photo = data.studio_photo
+        except Exception as e:
+            # Log but don't fail the whole request if photo upload fails
+            import logging
+            logging.getLogger(__name__).error(f"Failed to save studio photo: {e}")
+    
+    # Handle logo upload (for branding/invoices)
+    if data.logo:
+        try:
+            if data.logo.startswith('data:image'):
+                # Base64 encoded image - save to file system
+                logo_url = save_logo_from_base64(data.studio_id, data.logo)
+                studio.logo_url = logo_url
+            else:
+                # Direct URL (external image)
+                studio.logo_url = data.logo
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).error(f"Failed to save logo: {e}")
     
     db.commit()
     

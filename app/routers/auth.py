@@ -8,6 +8,7 @@ from typing import Optional
 from app.db.session import get_db
 from app.services.auth_service import AuthService
 from app.core.dependencies import get_current_user
+from app.core.config import get_settings
 from app.schemas.auth import (
     LoginRequest,
     LoginResponse,
@@ -59,14 +60,17 @@ def studio_login(login_data: LoginRequest, response: Response, db: Session = Dep
     refresh_token = AuthService.create_refresh_token(token_data)
     
     # Set httpOnly cookies for better security
+    settings = get_settings()
+    
     # Access token - short lived
     response.set_cookie(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,  # Set to True in production with HTTPS
-        samesite="lax",
-        path="/",  # Explicitly set path to root
+        secure=settings.cookie_secure,
+        samesite=settings.cookie_samesite,
+        domain=settings.cookie_domain,
+        path="/",
         max_age=30 * 60  # 30 minutes
     )
     
@@ -75,9 +79,10 @@ def studio_login(login_data: LoginRequest, response: Response, db: Session = Dep
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=False,  # Set to True in production with HTTPS
-        samesite="lax",
-        path="/",  # Explicitly set path to root
+        secure=settings.cookie_secure,
+        samesite=settings.cookie_samesite,
+        domain=settings.cookie_domain,
+        path="/",
         max_age=7 * 24 * 60 * 60  # 7 days
     )
     
@@ -151,14 +156,17 @@ def client_login(login_data: LoginRequest, response: Response, db: Session = Dep
     refresh_token = AuthService.create_refresh_token(token_data)
     
     # Set httpOnly cookies for better security
+    settings = get_settings()
+    
     # Access token - short lived
     response.set_cookie(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,  # Set to True in production with HTTPS
-        samesite="lax",
-        path="/",  # Explicitly set path to root
+        secure=settings.cookie_secure,
+        samesite=settings.cookie_samesite,
+        domain=settings.cookie_domain,
+        path="/",
         max_age=30 * 60  # 30 minutes
     )
     
@@ -167,9 +175,10 @@ def client_login(login_data: LoginRequest, response: Response, db: Session = Dep
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=False,  # Set to True in production with HTTPS
-        samesite="lax",
-        path="/",  # Explicitly set path to root
+        secure=settings.cookie_secure,
+        samesite=settings.cookie_samesite,
+        domain=settings.cookie_domain,
+        path="/",
         max_age=7 * 24 * 60 * 60  # 7 days
     )
     
@@ -328,12 +337,15 @@ def refresh_token(
         new_access_token = AuthService.create_access_token(token_data)
     
     # Set new access token in cookie
+    settings = get_settings()
     response.set_cookie(
         key="access_token",
         value=new_access_token,
         httponly=True,
-        secure=False,  # Set to True in production with HTTPS
-        samesite="lax",
+        secure=settings.cookie_secure,
+        samesite=settings.cookie_samesite,
+        domain=settings.cookie_domain,
+        path="/",
         max_age=30 * 60  # 30 minutes
     )
     

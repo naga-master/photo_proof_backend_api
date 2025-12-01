@@ -32,12 +32,45 @@ def origin_matches_pattern(origin: str, patterns: list[str]) -> bool:
     return False
 
 
+def resolve_user_id_for_selections(current_user, db, project=None) -> tuple[str | None, int | None]:
+    """
+    Resolve actual user_id for selection/favorite operations.
+    Returns (user_id, client_id) tuple.
+    
+    - For clients: returns their linked user_id
+    - For studio users viewing a project: returns the project's client's user_id
+      (so studio can see what the client selected)
+    - For clients without linked users: returns (None, client_id)
+    """
+    from app.db.models import Client
+    
+    # For clients, return their linked user_id
+    if current_user.role == "client" or (isinstance(current_user.id, str) and current_user.id.startswith("client_")):
+        try:
+            client_id = int(current_user.id.replace("client_", ""))
+            client = db.query(Client).filter(Client.id == client_id).first()
+            if client and client.user_id:
+                return (client.user_id, client_id)
+            return (None, client_id)
+        except (ValueError, AttributeError):
+            return (None, None)
+    
+    # For studio users viewing a project, return the project's client's user_id
+    # This allows studio to see what the client selected
+    if project and current_user.studio_id == project.studio_id and project.client_id:
+        client = db.query(Client).filter(Client.id == project.client_id).first()
+        if client and client.user_id:
+            return (client.user_id, client.id)
+    
+    return (current_user.id, None)
+
+
 @router.get("/{photo_id}", response_model=PhotoResponse)
 def get_photo(
     photo_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
-) -> Photo:
+) -> dict:
     """
     Get a specific photo by ID.
     
@@ -61,18 +94,45 @@ def get_photo(
     # Check access permissions
     project = photo.project
     
+    # Resolve user_id and client_id - pass project so studio sees client's selections
+    actual_user_id, client_id = resolve_user_id_for_selections(current_user, db, project)
+    
+    has_access = False
+    
     # Studio users can access all photos in their studio's projects
     if current_user.studio_id == project.studio_id:
-        return photo
+        has_access = True
     
     # Clients can access photos from their projects
-    if current_user.client_profile and project.client_id == current_user.client_profile.id:
-        return photo
+    if client_id and project.client_id == client_id:
+        has_access = True
     
-    raise HTTPException(
-        status_code=status.HTTP_403_FORBIDDEN,
-        detail="Not authorized to access this photo"
-    )
+    if not has_access:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to access this photo"
+        )
+    
+    # Check if current user has selected/favorited this photo
+    is_selected = False
+    is_favorite = False
+    if actual_user_id:
+        is_selected = db.query(UserPhotoSelection).filter(
+            UserPhotoSelection.user_id == actual_user_id,
+            UserPhotoSelection.photo_id == photo_id
+        ).first() is not None
+        
+        is_favorite = db.query(UserPhotoFavorite).filter(
+            UserPhotoFavorite.user_id == actual_user_id,
+            UserPhotoFavorite.photo_id == photo_id
+        ).first() is not None
+    
+    # Return photo with user-specific flags
+    return {
+        **{c.name: getattr(photo, c.name) for c in photo.__table__.columns},
+        "is_selected": is_selected,
+        "is_favorite": is_favorite,
+    }
 
 
 @router.get("/projects/{project_id}/photos", response_model=PhotoListResponse)
@@ -97,13 +157,21 @@ def get_project_photos(
             detail="Project not found"
         )
     
+    # Resolve user_id and client_id - pass project so studio sees client's selections
+    actual_user_id, client_id = resolve_user_id_for_selections(current_user, db, project)
+    
     # Verify access
-    if current_user.studio_id != project.studio_id:
-        if not (current_user.client_profile and project.client_id == current_user.client_profile.id):
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Not authorized to access this project"
-            )
+    has_access = False
+    if current_user.studio_id == project.studio_id:
+        has_access = True
+    if client_id and project.client_id == client_id:
+        has_access = True
+    
+    if not has_access:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to access this project"
+        )
     
     # Build query
     query = db.query(Photo).filter(Photo.project_id == project_id)
@@ -123,8 +191,38 @@ def get_project_photos(
         .all()
     )
     
+    # Get user's selections and favorites for these photos in batch
+    photo_ids = [p.id for p in photos]
+    user_selections = set()
+    user_favorites = set()
+    
+    if actual_user_id and photo_ids:
+        user_selections = set(
+            s.photo_id for s in db.query(UserPhotoSelection.photo_id)
+            .filter(
+                UserPhotoSelection.user_id == actual_user_id,
+                UserPhotoSelection.photo_id.in_(photo_ids)
+            ).all()
+        )
+        
+        user_favorites = set(
+            f.photo_id for f in db.query(UserPhotoFavorite.photo_id)
+            .filter(
+                UserPhotoFavorite.user_id == actual_user_id,
+                UserPhotoFavorite.photo_id.in_(photo_ids)
+            ).all()
+        )
+    
+    # Build response with user-specific flags
+    photos_with_flags = []
+    for photo in photos:
+        photo_dict = {c.name: getattr(photo, c.name) for c in photo.__table__.columns}
+        photo_dict["is_selected"] = photo.id in user_selections
+        photo_dict["is_favorite"] = photo.id in user_favorites
+        photos_with_flags.append(photo_dict)
+    
     return {
-        "photos": photos,
+        "photos": photos_with_flags,
         "total": total
     }
 
@@ -198,11 +296,12 @@ def update_photo(
     photo_update: PhotoUpdate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
-) -> Photo:
+) -> dict:
     """
-    Update a photo's metadata.
+    Update a photo's metadata including selection and favorite status.
     
-    Only studio users can update photos.
+    - Studio users can update alt, order_index
+    - Any authenticated user can update is_selected, is_favorite for themselves
     """
     photo = (
         db.query(Photo)
@@ -217,22 +316,74 @@ def update_photo(
             detail="Photo not found"
         )
     
-    # Only studio users can update
-    if current_user.studio_id != photo.project.studio_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can update photos"
-        )
+    # Resolve user_id and client_id
+    actual_user_id, client_id = resolve_user_id_for_selections(current_user, db)
     
-    # Update fields
+    project = photo.project
     update_data = photo_update.model_dump(exclude_unset=True)
-    for field, value in update_data.items():
-        setattr(photo, field, value)
+    
+    # Handle is_selected - update junction table for current user
+    if 'is_selected' in update_data:
+        is_selected = update_data.pop('is_selected')
+        if actual_user_id:
+            existing_selection = db.query(UserPhotoSelection).filter(
+                UserPhotoSelection.user_id == actual_user_id,
+                UserPhotoSelection.photo_id == photo_id
+            ).first()
+            
+            if is_selected and not existing_selection:
+                selection = UserPhotoSelection(user_id=actual_user_id, photo_id=photo_id)
+                db.add(selection)
+            elif not is_selected and existing_selection:
+                db.delete(existing_selection)
+    
+    # Handle is_favorite - update junction table for current user
+    if 'is_favorite' in update_data:
+        is_favorite = update_data.pop('is_favorite')
+        if actual_user_id:
+            existing_favorite = db.query(UserPhotoFavorite).filter(
+                UserPhotoFavorite.user_id == actual_user_id,
+                UserPhotoFavorite.photo_id == photo_id
+            ).first()
+            
+            if is_favorite and not existing_favorite:
+                favorite = UserPhotoFavorite(user_id=actual_user_id, photo_id=photo_id)
+                db.add(favorite)
+            elif not is_favorite and existing_favorite:
+                db.delete(existing_favorite)
+    
+    # For other fields (alt, order_index), only studio users can update
+    if update_data:
+        if current_user.studio_id != project.studio_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Only studio users can update photo metadata"
+            )
+        for field, value in update_data.items():
+            setattr(photo, field, value)
     
     db.commit()
     db.refresh(photo)
     
-    return photo
+    # Get current user's selection/favorite status
+    is_selected = False
+    is_favorite = False
+    if actual_user_id:
+        is_selected = db.query(UserPhotoSelection).filter(
+            UserPhotoSelection.user_id == actual_user_id,
+            UserPhotoSelection.photo_id == photo_id
+        ).first() is not None
+        
+        is_favorite = db.query(UserPhotoFavorite).filter(
+            UserPhotoFavorite.user_id == actual_user_id,
+            UserPhotoFavorite.photo_id == photo_id
+        ).first() is not None
+    
+    return {
+        **{c.name: getattr(photo, c.name) for c in photo.__table__.columns},
+        "is_selected": is_selected,
+        "is_favorite": is_favorite,
+    }
 
 
 @router.delete("/{photo_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -271,149 +422,7 @@ def delete_photo(
     db.commit()
 
 
-@router.post("/{photo_id}/favorite", status_code=status.HTTP_204_NO_CONTENT)
-def favorite_photo(
-    photo_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-) -> None:
-    """
-    Mark a photo as favorite for the current user.
-    
-    Clients and studio users can favorite photos.
-    """
-    photo = db.query(Photo).filter(Photo.id == photo_id).first()
-    if not photo:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Photo not found"
-        )
-    
-    # Check if already favorited
-    existing = (
-        db.query(UserPhotoFavorite)
-        .filter(
-            UserPhotoFavorite.user_id == current_user.id,
-            UserPhotoFavorite.photo_id == photo_id
-        )
-        .first()
-    )
-    
-    if not existing:
-        favorite = UserPhotoFavorite(
-            user_id=current_user.id,
-            photo_id=photo_id
-        )
-        db.add(favorite)
-        db.commit()
 
-
-@router.delete("/{photo_id}/favorite", status_code=status.HTTP_204_NO_CONTENT)
-def unfavorite_photo(
-    photo_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-) -> None:
-    """
-    Remove favorite mark from a photo for the current user.
-    """
-    favorite = (
-        db.query(UserPhotoFavorite)
-        .filter(
-            UserPhotoFavorite.user_id == current_user.id,
-            UserPhotoFavorite.photo_id == photo_id
-        )
-        .first()
-    )
-    
-    if favorite:
-        db.delete(favorite)
-        db.commit()
-
-
-@router.post("/{photo_id}/select", status_code=status.HTTP_204_NO_CONTENT)
-def select_photo(
-    photo_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-) -> None:
-    """
-    Mark a photo as selected for the current user.
-    
-    Used by clients to select photos they want to purchase.
-    Enforces package restrictions on selection limits.
-    """
-    photo = db.query(Photo).filter(Photo.id == photo_id).first()
-    if not photo:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Photo not found"
-        )
-    
-    # Check if already selected
-    existing = (
-        db.query(UserPhotoSelection)
-        .filter(
-            UserPhotoSelection.user_id == current_user.id,
-            UserPhotoSelection.photo_id == photo_id
-        )
-        .first()
-    )
-    
-    if not existing:
-        # Validate package restrictions before allowing selection
-        validate_photo_selection(current_user.id, photo.project_id, photo_id, db)
-        
-        selection = UserPhotoSelection(
-            user_id=current_user.id,
-            photo_id=photo_id
-        )
-        db.add(selection)
-        db.commit()
-        
-        # Update usage stats
-        current_count = db.query(UserPhotoSelection).join(Photo).filter(
-            Photo.project_id == photo.project_id,
-            UserPhotoSelection.user_id == current_user.id
-        ).count()
-        update_usage_stats(photo.project_id, db, photos_selected=current_count)
-
-
-@router.delete("/{photo_id}/select", status_code=status.HTTP_204_NO_CONTENT)
-def unselect_photo(
-    photo_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-) -> None:
-    """
-    Remove selection mark from a photo for the current user.
-    """
-    photo = db.query(Photo).filter(Photo.id == photo_id).first()
-    if not photo:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Photo not found"
-        )
-    
-    selection = (
-        db.query(UserPhotoSelection)
-        .filter(
-            UserPhotoSelection.user_id == current_user.id,
-            UserPhotoSelection.photo_id == photo_id
-        )
-        .first()
-    )
-    
-    if selection:
-        db.delete(selection)
-        db.commit()
-        
-        # Update usage stats
-        current_count = db.query(UserPhotoSelection).join(Photo).filter(
-            Photo.project_id == photo.project_id,
-            UserPhotoSelection.user_id == current_user.id
-        ).count()
-        update_usage_stats(photo.project_id, db, photos_selected=current_count)
 
 
 @router.get("/{photo_id}/favorites", response_model=List[str])

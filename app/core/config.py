@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from functools import lru_cache
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -79,6 +79,20 @@ class Settings(BaseModel):
     version_storage_prefix: str = Field(
         default="versions",
         description="Storage prefix for versions"
+    )
+    
+    # Cookie Security Settings (for httpOnly cookies)
+    cookie_secure: bool = Field(
+        default_factory=lambda: os.getenv("COOKIE_SECURE", "false").lower() == "true",
+        description="Set Secure flag on cookies (requires HTTPS)"
+    )
+    cookie_samesite: str = Field(
+        default_factory=lambda: os.getenv("COOKIE_SAMESITE", "lax"),
+        description="SameSite cookie attribute: 'strict', 'lax', or 'none'"
+    )
+    cookie_domain: Optional[str] = Field(
+        default_factory=lambda: os.getenv("COOKIE_DOMAIN", None),
+        description="Cookie domain (None = current domain only, use '.domain.com' for subdomains)"
     )
 
     model_config = {

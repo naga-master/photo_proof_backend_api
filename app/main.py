@@ -16,6 +16,7 @@ from app.core.config import get_settings
 from app.core.logging_config import configure_logging
 from app.db.init_db import init_db
 from app.middleware.tenant import tenant_middleware
+from app.middleware.security import security_headers_middleware
 
 
 logger = logging.getLogger(__name__)
@@ -136,6 +137,10 @@ def create_app() -> FastAPI:
     # Multi-tenant middleware - detect studio from domain
     application.middleware("http")(tenant_middleware)
     logger.info("✅ Tenant detection middleware enabled")
+    
+    # Security headers middleware - adds HSTS, X-Frame-Options, etc. in production
+    application.middleware("http")(security_headers_middleware)
+    logger.info("✅ Security headers middleware enabled")
 
     # Explicit CORS preflight middleware - handles OPTIONS before any authentication
     # This runs FIRST (added last = runs first in LIFO order)

@@ -78,6 +78,15 @@ class Studio(Base):
     country: Mapped[str | None] = mapped_column(String(100), nullable=True)
     logo_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     brand_color: Mapped[str | None] = mapped_column(String(7), nullable=True)
+    # Multi-tenant branding fields
+    subdomain: Mapped[str | None] = mapped_column(String(63), unique=True, nullable=True, index=True)
+    typography: Mapped[str | None] = mapped_column(String(255), nullable=True, default="System Default (Inter & Cormorant)")
+    custom_css: Mapped[str | None] = mapped_column(Text, nullable=True)
+    studio_photo: Mapped[str | None] = mapped_column(Text, nullable=True)  # About page photo URL
+    studio_description: Mapped[str | None] = mapped_column(Text, nullable=True)  # About page description
+    # Onboarding tracking
+    onboarding_step: Mapped[str | None] = mapped_column(String(50), nullable=True, default="studio")
+    onboarding_completed: Mapped[bool] = mapped_column(Boolean, default=False)
     subscription_tier: Mapped[str] = mapped_column(SubscriptionTier, default="free")
     subscription_status: Mapped[str] = mapped_column(SubscriptionStatus, default="trial")
     max_projects: Mapped[int] = mapped_column(Integer, default=5)

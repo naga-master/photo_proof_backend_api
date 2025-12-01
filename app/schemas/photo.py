@@ -89,6 +89,8 @@ class PhotoUpdate(BaseModel):
     """Photo update schema."""
     alt: Optional[str] = Field(None, min_length=1, max_length=500)
     order_index: Optional[int] = None
+    is_selected: Optional[bool] = None
+    is_favorite: Optional[bool] = None
 
 
 class PhotoResponse(PhotoBase):
@@ -109,6 +111,10 @@ class PhotoResponse(PhotoBase):
     uploaded_by: str
     created_at: datetime
     updated_at: datetime
+    
+    # User-specific status (populated based on current user)
+    is_selected: bool = False
+    is_favorite: bool = False
     
     # Optional nested data
     comments: Optional[List[CommentResponse]] = None

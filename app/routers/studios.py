@@ -1,5 +1,8 @@
 """Studio management and tenant endpoints."""
 
+import base64
+import uuid
+from pathlib import Path
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from typing import Optional
@@ -9,7 +12,51 @@ from app.db.models import Studio, StudioDomain, SubscriptionPlan, StudioSubscrip
 from app.api.deps import get_current_studio, get_optional_studio, require_studio_user
 from app.services.storage_service import tenant_storage
 from app.services.cache_service import cache_studio_theme, get_cached_studio_theme, invalidate_studio_cache
+from app.core.config import get_settings
 from pydantic import BaseModel
+
+
+def save_branding_image_from_base64(studio_id: str, base64_data: str, image_type: str) -> str:
+    """
+    Save base64 image to file system and return the URL path.
+    
+    Args:
+        studio_id: The studio's ID
+        base64_data: Base64 encoded image (data:image/png;base64,...)
+        image_type: Type of image ('logo', 'studio_photo', 'display_image')
+    
+    Returns:
+        URL path to the saved image
+    """
+    settings = get_settings()
+    
+    if not base64_data.startswith('data:image'):
+        raise ValueError("Invalid image data format")
+    
+    header, encoded = base64_data.split(',', 1)
+    mime_type = header.split(':')[1].split(';')[0]
+    ext_map = {
+        'image/jpeg': 'jpg',
+        'image/jpg': 'jpg',
+        'image/png': 'png',
+        'image/gif': 'gif',
+        'image/webp': 'webp',
+        'image/svg+xml': 'svg',
+    }
+    extension = ext_map.get(mime_type, 'png')
+    
+    studio_dir = Path(settings.uploads_directory) / 'studios' / studio_id
+    studio_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Use consistent filename based on image type
+    filename = f"{image_type}.{extension}"
+    filepath = studio_dir / filename
+    
+    image_data = base64.b64decode(encoded)
+    with open(filepath, 'wb') as f:
+        f.write(image_data)
+    
+    return f"/uploads/studios/{studio_id}/{filename}"
 
 
 router = APIRouter(prefix="/studio", tags=["Studio"])
@@ -26,6 +73,8 @@ class StudioThemeResponse(BaseModel):
     brand_color: str
     typography: str
     custom_css: Optional[str]
+    studio_photo: Optional[str] = None
+    studio_description: Optional[str] = None
     
     class Config:
         from_attributes = True
@@ -70,6 +119,17 @@ class StudioDetailsResponse(BaseModel):
     domains: list[str]
 
 
+class StudioBrandingUpdate(BaseModel):
+    """Request model for updating studio branding."""
+    logo_url: Optional[str] = None
+    brand_color: Optional[str] = None
+    typography: Optional[str] = None
+    custom_css: Optional[str] = None
+    name: Optional[str] = None
+    studio_photo: Optional[str] = None  # Base64 or URL for About page photo
+    studio_description: Optional[str] = None  # About page description
+
+
 # ========== Endpoints ==========
 
 @router.get("/current", response_model=StudioThemeResponse)
@@ -105,7 +165,9 @@ async def get_current_studio_theme(
         logo_url=studio.logo_url,
         brand_color=studio.brand_color,
         typography=studio.typography,
-        custom_css=studio.custom_css
+        custom_css=studio.custom_css,
+        studio_photo=studio.studio_photo,
+        studio_description=studio.studio_description
     )
     
     # Cache for 30 minutes
@@ -250,6 +312,98 @@ async def invalidate_theme_cache(
     return {
         "message": "Theme cache invalidated successfully",
         "studio_id": studio.id
+    }
+
+
+@router.patch("/branding")
+async def update_studio_branding(
+    data: StudioBrandingUpdate,
+    request_studio: Studio = Depends(get_current_studio),
+    db: Session = Depends(get_db)
+):
+    """Update studio branding (logo, colors, typography, etc.).
+    
+    Only updates fields that are provided (non-null).
+    Automatically invalidates the theme cache after update.
+    Supports base64 encoded images for logo and studio_photo.
+    
+    **Fields:**
+    - `logo_url`: URL or base64 data for studio logo
+    - `brand_color`: Hex color code (e.g., "#1e293b")
+    - `typography`: Font/typography preference
+    - `custom_css`: Custom CSS overrides
+    - `name`: Studio display name
+    - `studio_photo`: URL or base64 data for About page photo
+    - `studio_description`: About page description text
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    # IMPORTANT: The studio from get_current_studio is DETACHED from the session
+    # (the tenant middleware closes its session). We need to get a fresh copy.
+    studio = db.query(Studio).filter(Studio.id == request_studio.id).first()
+    if not studio:
+        raise HTTPException(status_code=404, detail="Studio not found")
+    
+    logger.info(f"Updating branding for studio: {studio.id} ({studio.name})")
+    
+    # Update only provided fields
+    if data.logo_url is not None:
+        if data.logo_url.startswith('data:image'):
+            try:
+                studio.logo_url = save_branding_image_from_base64(studio.id, data.logo_url, 'logo')
+            except Exception as e:
+                logger.error(f"Failed to save logo: {e}")
+        else:
+            studio.logo_url = data.logo_url
+            
+    if data.brand_color is not None:
+        studio.brand_color = data.brand_color
+    if data.typography is not None:
+        studio.typography = data.typography
+    if data.custom_css is not None:
+        studio.custom_css = data.custom_css
+    if data.name is not None:
+        studio.name = data.name
+        
+    # Handle studio photo (About page image)
+    if data.studio_photo is not None:
+        logger.info(f"Processing studio_photo for studio {studio.id}, is_base64: {data.studio_photo.startswith('data:image')}")
+        if data.studio_photo.startswith('data:image'):
+            try:
+                photo_url = save_branding_image_from_base64(studio.id, data.studio_photo, 'studio_photo')
+                studio.studio_photo = photo_url
+                logger.info(f"Saved studio photo to: {photo_url}")
+            except Exception as e:
+                logger.error(f"Failed to save studio photo: {e}", exc_info=True)
+                raise HTTPException(status_code=500, detail=f"Failed to save studio photo: {str(e)}")
+        else:
+            studio.studio_photo = data.studio_photo
+            logger.info(f"Set studio photo URL directly: {data.studio_photo}")
+            
+    # Handle studio description
+    if data.studio_description is not None:
+        studio.studio_description = data.studio_description
+        logger.info(f"Set studio description: {data.studio_description[:50]}...")
+    
+    # Log what we're about to save
+    logger.info(f"About to commit studio update: studio_photo={studio.studio_photo}, studio_description={studio.studio_description is not None}")
+    
+    db.commit()
+    db.refresh(studio)  # Ensure we have the latest from DB
+    
+    logger.info(f"After commit: studio_photo={studio.studio_photo}, studio_description={studio.studio_description is not None}")
+    
+    # Invalidate cache so changes are reflected immediately
+    invalidate_studio_cache(studio.id)
+    
+    return {
+        "message": "Branding updated successfully",
+        "studio_id": studio.id,
+        "updated_fields": [
+            field for field, value in data.model_dump().items() 
+            if value is not None
+        ]
     }
 
 
