@@ -6,6 +6,7 @@ from enum import Enum
 class UserRole(str, Enum):
     STUDIO_OWNER = "studio_owner"
     STUDIO_ADMIN = "studio_admin"
+    STUDIO_EDITOR = "studio_editor"
     STUDIO_PHOTOGRAPHER = "studio_photographer"
     CLIENT = "client"
 

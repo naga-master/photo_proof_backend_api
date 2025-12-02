@@ -108,6 +108,9 @@ class User(Base, TimestampMixin):
     consents = relationship("UserConsent", back_populates="user", cascade="all, delete-orphan")
     data_exports = relationship("DataExportRequest", back_populates="user", cascade="all, delete-orphan")
     deletion_requests = relationship("AccountDeletionRequest", back_populates="user", cascade="all, delete-orphan")
+    
+    # Project assignment relationship
+    project_memberships = relationship("ProjectMember", foreign_keys="ProjectMember.user_id", back_populates="user", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<User(id={self.id}, email={self.email}, role={self.role})>"

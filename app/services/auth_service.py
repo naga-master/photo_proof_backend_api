@@ -133,16 +133,25 @@ class AuthService:
         return user, access_token
     
     @staticmethod
-    def client_login(db: Session, login_data: LoginRequest) -> Optional[Tuple[Union[User, Client], str]]:
+    def client_login(db: Session, login_data: LoginRequest, studio_id: str = None) -> Optional[Tuple[Union[User, Client], str]]:
         """Authenticate client and return client + token.
         
         Uses Client.password directly for simple gallery access authentication.
         Falls back to User table for legacy accounts.
+        
+        Args:
+            db: Database session
+            login_data: Login credentials
+            studio_id: Optional studio ID for multi-tenant filtering (from domain)
         """
         # First, try direct Client authentication (new simple method)
-        client = db.query(Client).filter(
-            Client.email == login_data.username
-        ).first()
+        query = db.query(Client).filter(Client.email == login_data.username)
+        
+        # Filter by studio if provided (multi-tenant support)
+        if studio_id:
+            query = query.filter(Client.studio_id == studio_id)
+        
+        client = query.first()
         
         if client and client.password:
             # Client has direct password - use it
@@ -159,10 +168,16 @@ class AuthService:
                 return client, access_token
         
         # Fallback: Try legacy User table authentication
-        user = db.query(User).filter(
+        user_query = db.query(User).filter(
             User.username == login_data.username,
             User.role == "client"
-        ).first()
+        )
+        
+        # Filter by studio if provided (multi-tenant support)
+        if studio_id:
+            user_query = user_query.filter(User.studio_id == studio_id)
+        
+        user = user_query.first()
         
         if not user or not user.password_hash:
             return None

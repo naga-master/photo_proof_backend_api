@@ -3,6 +3,7 @@
 from .base import Base, TimestampMixin, SoftDeleteMixin
 from .user import Studio, User, Client
 from .project import Project, Folder
+from .project_member import ProjectMember
 from .photo import Photo, Comment, UserPhotoFavorite, UserPhotoSelection
 from .service import ServicePackage, Invoice
 from .package_type import PackageType
@@ -42,6 +43,7 @@ __all__ = [
     "Client",
     "Project",
     "Folder",
+    "ProjectMember",
     "Photo",
     "Image",  # Alias for backwards compatibility
     "Comment",

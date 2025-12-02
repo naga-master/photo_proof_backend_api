@@ -254,9 +254,15 @@ class NotificationService:
         client_id: Optional[int] = None,
         type_filter: Optional[str] = None,
         unread_only: bool = False,
-        limit: int = 50
+        limit: int = 50,
+        project_ids: Optional[List[int]] = None
     ) -> List[Notification]:
-        """Get notifications for a user or client."""
+        """Get notifications for a user or client.
+        
+        Args:
+            project_ids: If provided, only return notifications for these projects.
+                        Used for filtering editor notifications to their assigned projects.
+        """
         query = db.query(Notification)
         
         # Filter by recipient
@@ -266,6 +272,16 @@ class NotificationService:
             query = query.filter(Notification.client_id == client_id)
         else:
             return []
+        
+        # Filter by assigned projects (for editors)
+        if project_ids is not None:
+            # Include notifications for these projects OR system-wide notifications (no project)
+            query = query.filter(
+                or_(
+                    Notification.project_id.in_(project_ids),
+                    Notification.project_id.is_(None)
+                )
+            )
         
         # Filter by type
         if type_filter:
@@ -293,7 +309,8 @@ class NotificationService:
     def get_unread_count(
         db: Session,
         user_id: Optional[str] = None,
-        client_id: Optional[int] = None
+        client_id: Optional[int] = None,
+        project_ids: Optional[List[int]] = None
     ) -> int:
         """Get unread notification count."""
         query = db.query(Notification).filter(Notification.is_read == False)
@@ -304,6 +321,15 @@ class NotificationService:
             query = query.filter(Notification.client_id == client_id)
         else:
             return 0
+        
+        # Filter by assigned projects (for editors)
+        if project_ids is not None:
+            query = query.filter(
+                or_(
+                    Notification.project_id.in_(project_ids),
+                    Notification.project_id.is_(None)
+                )
+            )
         
         return query.count()
     

@@ -44,6 +44,10 @@ class Project(Base, TimestampMixin):
     # Package snapshot and usage tracking
     package_snapshot = Column(JSON, nullable=True)  # Frozen copy of package config at creation
     usage_stats = Column(JSON, nullable=True)  # Tracks usage vs limits
+    
+    # Gallery password protection
+    is_password_protected = Column(Boolean, nullable=False, default=False)
+    gallery_password = Column(String(255), nullable=True)  # Hashed password
 
     # Relationships
     studio = relationship("Studio", back_populates="projects")
@@ -54,6 +58,7 @@ class Project(Base, TimestampMixin):
     photos = relationship("Photo", back_populates="project", foreign_keys="Photo.project_id", cascade="all, delete-orphan")
     invoices = relationship("Invoice", back_populates="project")
     contracts = relationship("Contract", back_populates="project", cascade="all, delete-orphan")
+    members = relationship("ProjectMember", back_populates="project", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Project(id={self.id}, title={self.title}, client_id={self.client_id})>"

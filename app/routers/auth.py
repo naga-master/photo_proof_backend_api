@@ -1,6 +1,6 @@
 """Authentication router."""
 
-from fastapi import APIRouter, Depends, HTTPException, status, Response, Cookie
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Cookie, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -125,14 +125,21 @@ def studio_login(login_data: LoginRequest, response: Response, db: Session = Dep
 
 
 @router.post("/client/login", response_model=LoginResponse)
-def client_login(login_data: LoginRequest, response: Response, db: Session = Depends(get_db)):
+def client_login(login_data: LoginRequest, response: Response, request: Request, db: Session = Depends(get_db)):
     """Client user login with httpOnly cookie support.
     
     Supports both:
     - Direct Client authentication (Client.password) - new simple method
     - Legacy User table authentication (User.password_hash)
+    
+    Uses studio context from domain for multi-tenant isolation.
     """
-    result = AuthService.client_login(db, login_data)
+    from app.middleware.tenant import TenantContext
+    
+    # Get studio_id from tenant middleware (domain-based)
+    studio_id = TenantContext.get_studio_id_from_request(request)
+    
+    result = AuthService.client_login(db, login_data, studio_id=studio_id)
     
     if not result:
         raise HTTPException(

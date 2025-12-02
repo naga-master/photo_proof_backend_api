@@ -34,6 +34,8 @@ from app.schemas import (
     ProjectMetadataListResponse,
 )
 from app.middleware.package_restrictions import create_package_snapshot
+from app.services.project_member_service import ProjectMemberService
+import bcrypt
 
 
 router = APIRouter(prefix="/api/projects", tags=["Projects"])
@@ -157,11 +159,23 @@ def list_projects(
                 logger.warning("Client user has no client record", extra={"user_id": current_user.id})
                 return {"projects": [], "total": 0}
     else:
-        # Studio users see all projects in their studio
+        # Studio users - filter by studio
         if studio_id:
             query = query.filter(models.Project.studio_id == studio_id)
         elif current_user.studio_id:
             query = query.filter(models.Project.studio_id == current_user.studio_id)
+        
+        # For editors/photographers, only show assigned projects
+        # Studio owners and admins see all projects in their studio
+        if current_user.role in [UserRole.STUDIO_PHOTOGRAPHER, UserRole.STUDIO_EDITOR]:
+            member_service = ProjectMemberService(db)
+            assigned_project_ids = member_service.get_user_projects(current_user.id)
+            if assigned_project_ids:
+                query = query.filter(models.Project.id.in_(assigned_project_ids))
+            else:
+                # No assigned projects - return empty
+                logger.debug(f"User {current_user.id} has no assigned projects")
+                return {"projects": [], "total": 0}
 
     if status:
         query = query.filter(models.Project.status == status.value)
@@ -274,6 +288,88 @@ def get_project_by_access_url(access_url: str, db: Session = Depends(get_db)) ->
         status_code=status.HTTP_501_NOT_IMPLEMENTED,
         detail="Access URL lookup not implemented in current schema"
     )
+
+
+@router.post("/{project_id}/verify-password")
+def verify_gallery_password(
+    project_id: str,
+    body: dict,
+    db: Session = Depends(get_db),
+) -> dict:
+    """
+    Verify gallery password for a password-protected project.
+    
+    This endpoint is public (no auth required) to allow clients to access galleries.
+    
+    Args:
+        project_id: The project ID
+        body: JSON with 'password' field
+        
+    Returns:
+        success: True if password matches, raises 403 if invalid
+    """
+    logger.debug("Verifying gallery password", extra={"project_id": project_id})
+    
+    # Convert project_id to integer
+    try:
+        project_id_int = int(project_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid project ID format"
+        )
+    
+    # Get project
+    project = db.query(models.Project).filter(models.Project.id == project_id_int).first()
+    if not project:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found"
+        )
+    
+    # Check if password protection is enabled
+    if not project.is_password_protected:
+        return {"success": True, "message": "Project is not password protected"}
+    
+    # Get password from body
+    password = body.get("password", "")
+    if not password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password is required"
+        )
+    
+    # Verify password
+    if not project.gallery_password:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Password protection enabled but no password set"
+        )
+    
+    try:
+        password_valid = bcrypt.checkpw(
+            password.encode('utf-8'),
+            project.gallery_password.encode('utf-8')
+        )
+    except Exception as e:
+        logger.error(f"Password verification error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Password verification failed"
+        )
+    
+    if not password_valid:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Invalid password"
+        )
+    
+    return {
+        "success": True,
+        "message": "Password verified",
+        "project_id": project.id,
+        "project_title": project.title,
+    }
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -526,6 +622,22 @@ def update_project(
                       extra={"project_id": project_id})
         # Skip settings update - ProjectSettings model doesn't exist
         # The Project model doesn't have a settings relationship
+
+    # Handle gallery password protection
+    if "is_password_protected" in project_update:
+        project.is_password_protected = project_update["is_password_protected"]
+        # If disabling password protection, clear the password
+        if not project_update["is_password_protected"]:
+            project.gallery_password = None
+    
+    if "gallery_password" in project_update:
+        password = project_update["gallery_password"]
+        if password:
+            # Hash the password before storing
+            hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            project.gallery_password = hashed.decode('utf-8')
+        else:
+            project.gallery_password = None
 
     project.updated_at = datetime.utcnow()
     

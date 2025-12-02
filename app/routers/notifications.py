@@ -1,11 +1,11 @@
 """Notification router for in-app notifications."""
 
-from typing import Optional
+from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_db, get_current_user
-from app.schemas.users import UserRead
+from app.schemas.users import UserRead, UserRole
 from app.schemas.notification import (
     NotificationResponse,
     NotificationListResponse,
@@ -15,6 +15,7 @@ from app.schemas.notification import (
 )
 from app.services.notification_service import NotificationService
 from app.services.notification_cleanup_service import NotificationCleanupService
+from app.services.project_member_service import ProjectMemberService
 
 
 router = APIRouter(prefix="/api/notifications", tags=["notifications"])
@@ -37,6 +38,14 @@ def _get_user_and_client_ids(current_user: UserRead) -> tuple[Optional[str], Opt
     return user_id, client_id
 
 
+def _get_assigned_project_ids(current_user: UserRead, db: Session) -> Optional[List[int]]:
+    """Get assigned project IDs for editors/photographers, or None for owners/admins."""
+    if current_user.role in [UserRole.STUDIO_PHOTOGRAPHER, UserRole.STUDIO_EDITOR]:
+        member_service = ProjectMemberService(db)
+        return member_service.get_user_projects(current_user.id)
+    return None  # Owners/admins see all notifications
+
+
 @router.get("", response_model=NotificationListResponse)
 async def get_notifications(
     type: Optional[str] = None,
@@ -51,8 +60,13 @@ async def get_notifications(
     - type: Filter by notification type ('comment', 'order', 'payment', 'system')
     - unread: If true, only return unread notifications
     - limit: Max notifications to return (default 50)
+    
+    Note: Editors and photographers only see notifications for projects they're assigned to.
     """
     user_id, client_id = _get_user_and_client_ids(current_user)
+    
+    # Get assigned project IDs for filtering (editors/photographers only)
+    project_ids = _get_assigned_project_ids(current_user, db) if user_id else None
     
     notifications = NotificationService.get_notifications(
         db=db,
@@ -61,12 +75,14 @@ async def get_notifications(
         type_filter=type,
         unread_only=unread or False,
         limit=limit,
+        project_ids=project_ids,
     )
     
     unread_count = NotificationService.get_unread_count(
         db=db,
         user_id=user_id,
         client_id=client_id,
+        project_ids=project_ids,
     )
     
     return NotificationListResponse(
@@ -114,10 +130,14 @@ async def get_unread_count(
     """Get unread notification count (lightweight endpoint for badge)."""
     user_id, client_id = _get_user_and_client_ids(current_user)
     
+    # Get assigned project IDs for filtering (editors/photographers only)
+    project_ids = _get_assigned_project_ids(current_user, db) if user_id else None
+    
     count = NotificationService.get_unread_count(
         db=db,
         user_id=user_id,
         client_id=client_id,
+        project_ids=project_ids,
     )
     
     return NotificationCountResponse(unread_count=count)
