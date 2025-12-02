@@ -148,6 +148,7 @@ require_manage_packages = require_permission("canManagePackages")
 # Communication
 require_send_notifications = require_permission("canSendNotifications")
 require_manage_communication = require_permission("canManageCommunication")
+require_view_notifications = require_permission("canViewNotifications")
 
 # Advanced / Fine-grained
 require_download_originals = require_permission("canDownloadOriginals")
@@ -155,3 +156,6 @@ require_manage_comments = require_permission("canManageComments")
 require_apply_discounts = require_permission("canApplyDiscounts")
 require_view_revenue = require_permission("canViewRevenue")
 require_share_externally = require_permission("canShareExternally")
+
+# AI Tools
+require_use_ai_tools = require_permission("canUseAITools")

@@ -8,6 +8,7 @@ from app.db.session import get_db
 from app.core.dependencies import get_current_user
 from app.schemas import UserRead
 from app.services.ai_tools_service import AIToolsService
+from app.core.permissions import require_use_ai_tools
 from app.schemas.ai_tools import (
     AIToolCreate,
     AIToolUpdate,
@@ -22,7 +23,8 @@ router = APIRouter()
 @router.get("/ai-tools", response_model=AIToolListResponse)
 def get_ai_tools(
     active_only: bool = True,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: UserRead = Depends(require_use_ai_tools)
 ):
     """
     Get all AI tools.
@@ -53,7 +55,8 @@ def get_ai_tools(
 @router.get("/ai-tools/{tool_id}", response_model=AIToolResponse)
 def get_ai_tool(
     tool_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: UserRead = Depends(require_use_ai_tools)
 ):
     """Get a specific AI tool by ID."""
     try:
@@ -80,10 +83,10 @@ def get_ai_tool(
 @router.post("/ai-tools", response_model=AIToolResponse, status_code=status.HTTP_201_CREATED)
 def create_ai_tool(
     tool_data: AIToolCreate,
-    current_user: UserRead = Depends(get_current_user),
+    current_user: UserRead = Depends(require_use_ai_tools),
     db: Session = Depends(get_db)
 ):
-    """Create a new AI tool. Requires authentication."""
+    """Create a new AI tool. Requires canUseAITools permission."""
     try:
         service = AIToolsService(db)
         tool = service.create_tool(tool_data)
@@ -101,10 +104,10 @@ def create_ai_tool(
 def update_ai_tool(
     tool_id: str,
     tool_data: AIToolUpdate,
-    current_user: UserRead = Depends(get_current_user),
+    current_user: UserRead = Depends(require_use_ai_tools),
     db: Session = Depends(get_db)
 ):
-    """Update an existing AI tool. Requires authentication."""
+    """Update an existing AI tool. Requires canUseAITools permission."""
     try:
         service = AIToolsService(db)
         tool = service.update_tool(tool_id, tool_data)
@@ -129,10 +132,10 @@ def update_ai_tool(
 @router.delete("/ai-tools/{tool_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_ai_tool(
     tool_id: str,
-    current_user: UserRead = Depends(get_current_user),
+    current_user: UserRead = Depends(require_use_ai_tools),
     db: Session = Depends(get_db)
 ):
-    """Delete an AI tool. Requires authentication."""
+    """Delete an AI tool. Requires canUseAITools permission."""
     try:
         service = AIToolsService(db)
         success = service.delete_tool(tool_id)

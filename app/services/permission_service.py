@@ -39,12 +39,15 @@ ALL_PERMISSIONS = [
     # Communication
     "canSendNotifications",
     "canManageCommunication",
+    "canViewNotifications",
     # Advanced / Fine-grained
     "canDownloadOriginals",
     "canManageComments",
     "canApplyDiscounts",
     "canViewRevenue",
     "canShareExternally",
+    # AI Tools
+    "canUseAITools",
 ]
 
 # Default permissions per role
@@ -78,11 +81,13 @@ ROLE_DEFAULTS = {
         "canManageBranding": True,
         "canSendNotifications": True,
         "canManageCommunication": True,
+        "canViewNotifications": True,
         "canDownloadOriginals": True,
         "canManageComments": True,
         "canApplyDiscounts": True,
         "canViewRevenue": True,
         "canShareExternally": True,
+        "canUseAITools": True,
     },
     "studio_admin": {
         # Admin: Full access except some owner-only settings
@@ -113,11 +118,13 @@ ROLE_DEFAULTS = {
         "canManageBranding": True,
         "canSendNotifications": True,
         "canManageCommunication": True,
+        "canViewNotifications": True,
         "canDownloadOriginals": True,
         "canManageComments": True,
         "canApplyDiscounts": True,
         "canViewRevenue": True,
         "canShareExternally": True,
+        "canUseAITools": True,
     },
     "studio_photographer": {
         # Photographer/Editor: Content focused, limited admin
@@ -148,11 +155,13 @@ ROLE_DEFAULTS = {
         "canManageBranding": False,
         "canSendNotifications": False,
         "canManageCommunication": False,
+        "canViewNotifications": True,
         "canDownloadOriginals": True,
         "canManageComments": False,
         "canApplyDiscounts": False,
         "canViewRevenue": False,
         "canShareExternally": True,
+        "canUseAITools": False,
     },
     "client": {
         # Client: View only, very limited
@@ -183,11 +192,13 @@ ROLE_DEFAULTS = {
         "canManageBranding": False,
         "canSendNotifications": False,
         "canManageCommunication": False,
+        "canViewNotifications": True,
         "canDownloadOriginals": False,
         "canManageComments": False,
         "canApplyDiscounts": False,
         "canViewRevenue": False,
         "canShareExternally": False,
+        "canUseAITools": False,
     },
 }
 
