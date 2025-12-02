@@ -104,14 +104,21 @@ class Studio(Base):
 
 class User(Base):
     __tablename__ = "users"
+    
+    # Composite unique constraints: email/username unique per studio
+    __table_args__ = (
+        UniqueConstraint('email', 'studio_id', name='uq_users_email_studio'),
+        UniqueConstraint('username', 'studio_id', name='uq_users_username_studio'),
+    )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
     studio_id: Mapped[str | None] = mapped_column(ForeignKey("studios.id", ondelete="SET NULL"), nullable=True, index=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
-    email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
-    username: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
+    email: Mapped[str] = mapped_column(String(255), nullable=False, index=True)  # Unique per studio, not globally
+    username: Mapped[str] = mapped_column(String(255), nullable=False, index=True)  # Unique per studio, not globally
     password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)
     role: Mapped[str] = mapped_column(UserRole, nullable=False, index=True)
+    permissions: Mapped[dict | None] = mapped_column(JSON, default={}, nullable=True)  # RBAC permissions
     avatar_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)

@@ -16,6 +16,11 @@ from app.services.storage_service import tenant_storage
 from app.services.cache_service import cache_studio_theme, get_cached_studio_theme, invalidate_studio_cache
 from app.core.config import get_settings
 from pydantic import BaseModel
+from app.core.permissions import (
+    require_manage_settings,
+    require_manage_branding,
+    require_view_analytics,
+)
 
 
 def save_branding_image_from_base64(studio_id: str, base64_data: str, image_type: str) -> str:

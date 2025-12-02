@@ -57,12 +57,17 @@ def studio_login(login_data: LoginRequest, response: Response, db: Session = Dep
     
     user, access_token = result
     
-    # Create refresh token
+    # Get user's permissions for the refresh token
+    from app.services.permission_service import PermissionService
+    permissions = PermissionService.get_user_permissions(user)
+    
+    # Create refresh token with permissions
     token_data = {
         "sub": user.id,
         "email": user.email,
         "role": user.role,
         "studio_id": user.studio_id,
+        "permissions": permissions,
     }
     refresh_token = AuthService.create_refresh_token(token_data)
     

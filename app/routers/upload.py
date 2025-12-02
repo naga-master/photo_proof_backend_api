@@ -15,6 +15,7 @@ from app.schemas.photo import (
     BatchPresignedUploadResponse,
     PhotoResponse,
 )
+from app.core.permissions import require_upload_photos
 
 # Import chunked upload router
 from app.routers.chunked_upload import router as chunked_upload_router

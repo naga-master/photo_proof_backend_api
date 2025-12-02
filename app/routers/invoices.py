@@ -11,6 +11,12 @@ import uuid
 from app.db.session import get_db
 from app.db.models import Invoice, User, Client, Project
 from app.api.deps import get_current_user
+from app.core.permissions import (
+    require_view_invoices,
+    require_create_invoices,
+    require_edit_invoices,
+    require_delete_invoices,
+)
 
 
 router = APIRouter()

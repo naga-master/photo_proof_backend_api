@@ -11,6 +11,12 @@ from app.db.models import Client, User
 from app.schemas.auth import ClientCreate, ClientUpdate, ClientResponse
 from app.api.deps import get_current_user
 from app.services.auth_service import AuthService
+from app.core.permissions import (
+    require_view_clients,
+    require_create_clients,
+    require_edit_clients,
+    require_delete_clients,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -24,7 +30,7 @@ def list_clients(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=500),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_view_clients),
 ) -> List[Client]:
     """
     List all clients for the current studio.
@@ -96,7 +102,7 @@ def list_clients(
 def get_client(
     client_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_view_clients),
 ) -> Client:
     """
     Get a specific client by ID.
@@ -132,7 +138,7 @@ def create_client(
     client_data: ClientCreate,
     force: bool = Query(False, description="Force creation even if phone exists"),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_create_clients),
 ) -> Client:
     """
     Create a new client for the current studio.
@@ -252,7 +258,7 @@ def update_client(
     client_id: int,
     client_update: ClientUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_edit_clients),
 ) -> Client:
     """
     Update a client's information.
@@ -319,7 +325,7 @@ def update_client(
 def delete_client(
     client_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_delete_clients),
 ) -> None:
     """
     Delete a client.
@@ -351,7 +357,7 @@ def set_client_password(
     client_id: int,
     password_data: dict,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_edit_clients),
 ):
     """
     Set or reset a client's gallery access password.
@@ -408,7 +414,7 @@ def set_client_password(
 def get_client_password(
     client_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_edit_clients),
 ):
     """
     Get client's password (for studio admin to share with client).
@@ -461,7 +467,7 @@ def get_client_password(
 def archive_client(
     client_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_edit_clients),
 ) -> Client:
     """
     Archive a client (soft delete).
@@ -495,7 +501,7 @@ def archive_client(
 def activate_client(
     client_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_edit_clients),
 ) -> Client:
     """
     Activate an archived or inactive client.

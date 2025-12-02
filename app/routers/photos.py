@@ -14,6 +14,12 @@ from app.api.deps import get_current_user
 from app.services.storage_service import get_storage_service
 from app.services.version_service import VersionService
 from app.middleware.package_restrictions import validate_photo_selection, update_usage_stats
+from app.core.permissions import (
+    require_view_projects,
+    require_edit_photos,
+    require_delete_photos,
+    require_upload_photos,
+)
 
 
 router = APIRouter()

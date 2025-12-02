@@ -100,10 +100,15 @@ class AuthService:
     @staticmethod
     def studio_login(db: Session, login_data: LoginRequest) -> Optional[Tuple[User, str]]:
         """Authenticate studio user and return user + token."""
-        # Studio users are in the User table with role='studio_owner'
+        from app.services.permission_service import PermissionService
+        
+        # Studio users are in the User table with any studio role
+        # Allow: studio_owner, studio_admin, studio_photographer
+        STUDIO_ROLES = ["studio_owner", "studio_admin", "studio_photographer"]
+        
         user = db.query(User).filter(
             User.username == login_data.username,
-            User.role == "studio_owner"
+            User.role.in_(STUDIO_ROLES)
         ).first()
         
         if not user or not user.password_hash:
@@ -112,15 +117,16 @@ class AuthService:
         if not AuthService.verify_password(login_data.password, user.password_hash):
             return None
         
-        # Get the studio associated with this user
-        studio = db.query(Studio).filter(Studio.id == user.studio_id).first()
+        # Get user's effective permissions
+        permissions = PermissionService.get_user_permissions(user)
         
-        # Create token
+        # Create token with permissions
         token_data = {
             "sub": user.id,
             "email": user.email,
             "role": user.role,
             "studio_id": user.studio_id,
+            "permissions": permissions,
         }
         access_token = AuthService.create_access_token(token_data)
         

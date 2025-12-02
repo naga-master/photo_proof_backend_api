@@ -2,7 +2,7 @@
 
 import secrets
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
@@ -11,6 +11,7 @@ from app.db.session import get_db
 from app.db.models import User, Studio
 from app.core.dependencies import get_current_user
 from app.services.auth_service import AuthService
+from app.services.permission_service import PermissionService
 
 
 router = APIRouter(prefix="/api/studio/users", tags=["Studio Users"])
@@ -21,6 +22,7 @@ class InviteUserRequest(BaseModel):
     email: EmailStr
     name: str
     role: str  # studio_admin, studio_photographer
+    permissions: Optional[Dict[str, bool]] = None  # Custom permissions override
     
 
 class InviteUserResponse(BaseModel):
@@ -39,6 +41,7 @@ class StudioUserResponse(BaseModel):
     name: str
     username: str
     role: str
+    permissions: Optional[Dict[str, bool]] = None  # User's permissions
     avatar_url: Optional[str] = None
     is_active: bool
     invitation_accepted: bool
@@ -54,6 +57,7 @@ class UpdateUserRequest(BaseModel):
     name: Optional[str] = None
     role: Optional[str] = None
     is_active: Optional[bool] = None
+    permissions: Optional[Dict[str, bool]] = None  # Custom permissions
 
 
 class AcceptInvitationRequest(BaseModel):
@@ -94,7 +98,7 @@ def list_studio_users(
     from sqlalchemy import text
     
     result = db.execute(text("""
-        SELECT id, email, name, username, role, avatar_url, is_active, 
+        SELECT id, email, name, username, role, permissions, avatar_url, is_active, 
                password_hash, invitation_accepted_at, invitation_sent_at, 
                last_login_at, created_at
         FROM users 
@@ -103,22 +107,27 @@ def list_studio_users(
     
     users = result.fetchall()
     
-    return [
-        StudioUserResponse(
+    response_list = []
+    for u in users:
+        # Get effective permissions (custom or role defaults)
+        user_permissions = u.permissions if u.permissions else PermissionService.get_default_permissions(u.role)
+        
+        response_list.append(StudioUserResponse(
             id=u.id,
             email=u.email,
             name=u.name,
             username=u.username,
             role=u.role,
+            permissions=user_permissions,
             avatar_url=u.avatar_url,
             is_active=u.is_active,
             invitation_accepted=u.invitation_accepted_at is not None or u.password_hash is not None,
             invitation_sent_at=u.invitation_sent_at.isoformat() if u.invitation_sent_at else None,
             last_login_at=u.last_login_at.isoformat() if u.last_login_at else None,
             created_at=u.created_at.isoformat() if u.created_at else datetime.utcnow().isoformat()
-        )
-        for u in users
-    ]
+        ))
+    
+    return response_list
 
 
 @router.post("", response_model=InviteUserResponse)
@@ -149,23 +158,42 @@ def invite_user(
             detail=f"Invalid role. Must be one of: {', '.join(valid_roles)}"
         )
     
-    # Check if email already exists
-    existing_user = db.query(User).filter(User.email == request.email).first()
-    if existing_user:
+    # Check if email already exists in THIS studio (per-studio uniqueness)
+    existing_in_studio = db.query(User).filter(
+        User.email == request.email,
+        User.studio_id == current_user.studio_id
+    ).first()
+    if existing_in_studio:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="A user with this email already exists"
+            detail="A user with this email already exists in this studio"
         )
+    # Note: Same email can now exist in different studios (multi-tenant support)
     
     # Generate invitation token
     invitation_token = generate_invitation_token()
     
+    # Validate and normalize permissions
+    user_permissions = None
+    if request.permissions:
+        is_valid, error = PermissionService.validate_permissions(request.permissions)
+        if not is_valid:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=error
+            )
+        user_permissions = PermissionService.normalize_permissions(request.permissions, request.role)
+    else:
+        # Use role defaults if no custom permissions provided
+        user_permissions = PermissionService.get_default_permissions(request.role)
+    
     # Create user without password
     new_user = User(
         email=request.email,
-        username=request.email,  # Use email as username initially
+        username=request.email,  # Use email as username
         name=request.name,
         role=request.role,
+        permissions=user_permissions,
         studio_id=current_user.studio_id,
         password_hash=None,  # No password until invitation is accepted
         is_active=True,
@@ -177,9 +205,10 @@ def invite_user(
     
     # Set invitation fields via raw SQL (to avoid model caching issues)
     from sqlalchemy import text
+    import json
     db.execute(
-        text("UPDATE users SET invitation_token = :token, invitation_sent_at = :sent_at, invited_by_id = :invited_by WHERE id = :user_id"),
-        {"token": invitation_token, "sent_at": datetime.utcnow(), "invited_by": current_user.id, "user_id": new_user.id}
+        text("UPDATE users SET invitation_token = :token, invitation_sent_at = :sent_at, invited_by_id = :invited_by, permissions = :permissions WHERE id = :user_id"),
+        {"token": invitation_token, "sent_at": datetime.utcnow(), "invited_by": current_user.id, "permissions": json.dumps(user_permissions), "user_id": new_user.id}
     )
     db.commit()
     
@@ -281,6 +310,20 @@ def update_user(
     if request.is_active is not None:
         update_parts.append("is_active = :is_active")
         params["is_active"] = request.is_active
+    if request.permissions is not None:
+        # Validate permissions
+        is_valid, error = PermissionService.validate_permissions(request.permissions)
+        if not is_valid:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=error
+            )
+        # Normalize permissions with role defaults
+        role_for_permissions = request.role if request.role else user.role
+        normalized_permissions = PermissionService.normalize_permissions(request.permissions, role_for_permissions)
+        import json
+        update_parts.append("permissions = :permissions")
+        params["permissions"] = json.dumps(normalized_permissions)
     
     if update_parts:
         query = f"UPDATE users SET {', '.join(update_parts)} WHERE id = :user_id"
@@ -290,7 +333,7 @@ def update_user(
     # Fetch updated user data with raw SQL
     result = db.execute(
         text("""
-            SELECT id, email, name, username, role, avatar_url, is_active, 
+            SELECT id, email, name, username, role, permissions, avatar_url, is_active, 
                    password_hash, invitation_accepted_at, invitation_sent_at, 
                    last_login_at, created_at
             FROM users WHERE id = :user_id
@@ -299,12 +342,16 @@ def update_user(
     )
     updated_user = result.fetchone()
     
+    # Get effective permissions
+    user_permissions = updated_user.permissions if updated_user.permissions else PermissionService.get_default_permissions(updated_user.role)
+    
     return StudioUserResponse(
         id=updated_user.id,
         email=updated_user.email,
         name=updated_user.name,
         username=updated_user.username,
         role=updated_user.role,
+        permissions=user_permissions,
         avatar_url=updated_user.avatar_url,
         is_active=updated_user.is_active,
         invitation_accepted=updated_user.invitation_accepted_at is not None or updated_user.password_hash is not None,

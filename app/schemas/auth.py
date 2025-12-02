@@ -97,6 +97,7 @@ class UserResponse(UserBase):
     avatar_url: Optional[str] = None
     is_active: bool
     email_verified: bool
+    permissions: Optional[dict] = None  # RBAC permissions
     last_login_at: Optional[datetime] = None
     created_at: datetime
     updated_at: datetime

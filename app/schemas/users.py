@@ -15,6 +15,7 @@ class UserRead(BaseModel):
     email: str
     username: str  # Added missing username field
     role: UserRole
+    permissions: Optional[dict] = None  # RBAC permissions
     avatar_url: Optional[str] = None
     phone: Optional[str] = None
     last_login_at: Optional[datetime] = None
