@@ -87,8 +87,8 @@ def list_studio_users(
             detail="You must belong to a studio to view users"
         )
     
-    # Only studio_owner can list users
-    if current_user.role != "studio_owner":
+    # Check canManageUsers permission (studio_owner always has this)
+    if current_user.role != "studio_owner" and not PermissionService.has_permission(current_user, "canManageUsers"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to view studio users"
@@ -143,8 +143,8 @@ def invite_user(
             detail="You must belong to a studio to invite users"
         )
     
-    # Only studio_owner can invite users
-    if current_user.role != "studio_owner":
+    # Check canManageUsers permission
+    if current_user.role != "studio_owner" and not PermissionService.has_permission(current_user, "canManageUsers"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to invite users"
@@ -269,8 +269,8 @@ def update_user(
             detail="You must belong to a studio"
         )
     
-    # Only studio_owner can update users
-    if current_user.role != "studio_owner":
+    # Check canManageUsers permission
+    if current_user.role != "studio_owner" and not PermissionService.has_permission(current_user, "canManageUsers"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to update users"
@@ -374,11 +374,11 @@ def delete_user(
             detail="You must belong to a studio"
         )
     
-    # Only studio_owner can delete users
-    if current_user.role != "studio_owner":
+    # Check canManageUsers permission
+    if current_user.role != "studio_owner" and not PermissionService.has_permission(current_user, "canManageUsers"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only the studio owner can delete users"
+            detail="You don't have permission to delete users"
         )
     
     # Find the user
@@ -426,8 +426,8 @@ def resend_invitation(
             detail="You must belong to a studio"
         )
     
-    # Only studio_owner can resend invitations
-    if current_user.role != "studio_owner":
+    # Check canManageUsers permission
+    if current_user.role != "studio_owner" and not PermissionService.has_permission(current_user, "canManageUsers"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to resend invitations"

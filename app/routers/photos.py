@@ -20,6 +20,7 @@ from app.core.permissions import (
     require_delete_photos,
     require_upload_photos,
 )
+from app.services.permission_service import PermissionService
 
 
 router = APIRouter()
@@ -358,12 +359,18 @@ def update_photo(
             elif not is_favorite and existing_favorite:
                 db.delete(existing_favorite)
     
-    # For other fields (alt, order_index), only studio users can update
+    # For other fields (alt, order_index), only studio users with permission can update
     if update_data:
         if current_user.studio_id != project.studio_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Only studio users can update photo metadata"
+            )
+        # Check RBAC permission
+        if not PermissionService.has_permission(current_user, "canEditPhotos"):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You don't have permission to edit photos"
             )
         for field, value in update_data.items():
             setattr(photo, field, value)
@@ -422,6 +429,13 @@ def delete_photo(
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only studio users can delete photos"
+        )
+    
+    # Check RBAC permission for studio users
+    if not PermissionService.has_permission(current_user, "canDeletePhotos"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have permission to delete photos"
         )
     
     db.delete(photo)
