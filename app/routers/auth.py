@@ -2,8 +2,10 @@
 
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Cookie
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from typing import Optional
+from datetime import datetime
 
 from app.db.session import get_db
 from app.services.auth_service import AuthService
@@ -433,6 +435,123 @@ def forgot_password(request: ForgotPasswordRequest, db: Session = Depends(get_db
     return ForgotPasswordResponse(
         message="If an account with that email exists, we've sent password reset instructions."
     )
+
+
+class AcceptInvitationRequest(BaseModel):
+    """Request to accept an invitation."""
+    token: str
+    password: str
+
+
+class AcceptInvitationResponse(BaseModel):
+    """Response after accepting invitation."""
+    message: str
+    user_id: str
+    email: str
+    name: str
+
+
+@router.post("/accept-invitation", response_model=AcceptInvitationResponse)
+def accept_invitation(request: AcceptInvitationRequest, db: Session = Depends(get_db)):
+    """
+    Accept an invitation and set password.
+    This endpoint allows invited users to set their password and activate their account.
+    """
+    from sqlalchemy import text
+    
+    # Find user by invitation token using raw SQL
+    result = db.execute(
+        text("SELECT id, email, name, invitation_accepted_at, password_hash FROM users WHERE invitation_token = :token"),
+        {"token": request.token}
+    )
+    user = result.fetchone()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired invitation token"
+        )
+    
+    # Check if invitation already accepted
+    if user.invitation_accepted_at:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This invitation has already been accepted"
+        )
+    
+    # Check if user already has a password (shouldn't happen, but safety check)
+    if user.password_hash:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Account already has a password set"
+        )
+    
+    # Set password and mark invitation as accepted via raw SQL (avoid model cache issues)
+    from sqlalchemy import text
+    hashed_password = AuthService.hash_password(request.password)
+    
+    db.execute(
+        text("""
+            UPDATE users 
+            SET password_hash = :password_hash, 
+                invitation_accepted_at = :accepted_at, 
+                invitation_token = NULL, 
+                email_verified = TRUE 
+            WHERE id = :user_id
+        """),
+        {"password_hash": hashed_password, "accepted_at": datetime.utcnow(), "user_id": user.id}
+    )
+    
+    db.commit()
+    
+    return AcceptInvitationResponse(
+        message="Invitation accepted successfully. You can now log in.",
+        user_id=user.id,
+        email=user.email,
+        name=user.name
+    )
+
+
+@router.get("/invitation/{token}")
+def get_invitation_details(token: str, db: Session = Depends(get_db)):
+    """
+    Get details about an invitation (for the accept-invitation page).
+    """
+    from app.db.models import Studio
+    from sqlalchemy import text
+    
+    # Use raw SQL to query by invitation_token (avoid model cache issues)
+    result = db.execute(
+        text("""
+            SELECT u.id, u.email, u.name, u.role, u.studio_id, u.invitation_accepted_at,
+                   s.name as studio_name, s.logo_url as studio_logo
+            FROM users u
+            LEFT JOIN studios s ON u.studio_id = s.id
+            WHERE u.invitation_token = :token
+        """),
+        {"token": token}
+    )
+    row = result.fetchone()
+    
+    if not row:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Invalid or expired invitation token"
+        )
+    
+    if row.invitation_accepted_at:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This invitation has already been accepted"
+        )
+    
+    return {
+        "email": row.email,
+        "name": row.name,
+        "role": row.role,
+        "studio_name": row.studio_name,
+        "studio_logo": row.studio_logo,
+    }
 
 
 @router.post("/reset-password", response_model=ResetPasswordResponse)

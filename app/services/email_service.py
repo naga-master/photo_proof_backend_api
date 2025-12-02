@@ -269,3 +269,136 @@ Thank you,
             from_name=studio_name,
             reply_to=reply_to
         )
+    
+    @staticmethod
+    def get_invitation_template(
+        user_name: str,
+        user_email: str,
+        role: str,
+        invitation_url: str,
+        studio_name: str,
+        invited_by_name: str,
+        studio_logo_url: Optional[str] = None,
+        brand_color: str = "#0a58d0"
+    ) -> Tuple[str, str]:
+        """
+        Generate invitation email template.
+        
+        Returns:
+            Tuple of (html_body, text_body)
+        """
+        # Format role for display
+        role_display = role.replace('studio_', '').replace('_', ' ').title()
+        
+        # Only include logo if it's a valid external URL
+        logo_html = ""
+        if studio_logo_url and studio_logo_url.startswith('http') and 'localhost' not in studio_logo_url:
+            logo_html = f'<img src="{studio_logo_url}" alt="{studio_name}" style="max-height: 60px; max-width: 200px;">'
+        else:
+            logo_html = f'<h1 style="color: {brand_color}; margin: 0;">{studio_name}</h1>'
+        
+        html_body = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        {logo_html}
+    </div>
+    
+    <div style="background-color: #f8f9fa; border-radius: 8px; padding: 30px; margin-bottom: 20px;">
+        <h2 style="color: #333; margin-top: 0;">You're Invited! 🎉</h2>
+        
+        <p>Hi <strong>{user_name}</strong>,</p>
+        
+        <p><strong>{invited_by_name}</strong> has invited you to join <strong>{studio_name}</strong> as a <strong>{role_display}</strong>.</p>
+        
+        <p>Click the button below to set up your account and get started:</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{invitation_url}" style="display: inline-block; background-color: {brand_color}; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
+                Accept Invitation
+            </a>
+        </div>
+        
+        <p style="color: #666; font-size: 14px;">Or copy and paste this link into your browser:</p>
+        <p style="color: {brand_color}; word-break: break-all; font-size: 14px;">{invitation_url}</p>
+    </div>
+    
+    <div style="text-align: center; color: #999; font-size: 12px;">
+        <p>This invitation was sent to {user_email}</p>
+        <p>If you didn't expect this invitation, you can safely ignore this email.</p>
+        <p>&copy; {studio_name}</p>
+    </div>
+</body>
+</html>
+"""
+        
+        text_body = f"""
+You're Invited to {studio_name}!
+
+Hi {user_name},
+
+{invited_by_name} has invited you to join {studio_name} as a {role_display}.
+
+Click the link below to set up your account:
+{invitation_url}
+
+If you didn't expect this invitation, you can safely ignore this email.
+
+- {studio_name}
+"""
+        
+        return html_body, text_body
+    
+    @staticmethod
+    def send_invitation_email(
+        to: str,
+        user_name: str,
+        role: str,
+        invitation_url: str,
+        studio_name: str,
+        invited_by_name: str,
+        studio_logo_url: Optional[str] = None,
+        brand_color: str = "#0a58d0",
+        reply_to: Optional[str] = None
+    ) -> bool:
+        """
+        Send an invitation email to a new team member.
+        
+        Args:
+            to: Recipient email address
+            user_name: Name of the invited user
+            role: Role being assigned (e.g., 'studio_photographer')
+            invitation_url: URL to accept the invitation
+            studio_name: Name of the studio
+            invited_by_name: Name of the person sending the invitation
+            studio_logo_url: Studio logo URL (optional)
+            brand_color: Brand color for styling
+            reply_to: Reply-to email address (optional)
+            
+        Returns:
+            True if email sent successfully, False otherwise
+        """
+        html_body, text_body = EmailService.get_invitation_template(
+            user_name=user_name,
+            user_email=to,
+            role=role,
+            invitation_url=invitation_url,
+            studio_name=studio_name,
+            invited_by_name=invited_by_name,
+            studio_logo_url=studio_logo_url,
+            brand_color=brand_color
+        )
+        
+        return EmailService.send_email(
+            to=to,
+            subject=f"You're invited to join {studio_name}",
+            html_body=html_body,
+            text_body=text_body,
+            from_name=studio_name,
+            reply_to=reply_to
+        )

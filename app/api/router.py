@@ -30,6 +30,7 @@ from app.routers import data_rights as data_rights_v2
 from app.routers import admin as admin_v2
 from app.routers import network_test as network_test_v2
 from app.routers import notifications as notifications_v2
+from app.routers import studio_users as studio_users_v2
 
 
 api_router = APIRouter()
@@ -98,6 +99,9 @@ api_router.include_router(network_test_v2.router, prefix="/api", tags=["network"
 
 # Notifications (in-app notifications for comments, etc.)
 api_router.include_router(notifications_v2.router, tags=["notifications"])
+
+# Studio Users Management (invite, list, update, delete team members)
+api_router.include_router(studio_users_v2.router, tags=["studio-users"])
 
 
 # ============================================================================

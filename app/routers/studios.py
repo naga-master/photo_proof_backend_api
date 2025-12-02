@@ -10,6 +10,8 @@ from typing import Optional
 from app.db.session import get_db
 from app.db.models import Studio, StudioDomain, SubscriptionPlan, StudioSubscription, StudioFeature
 from app.api.deps import get_current_studio, get_optional_studio, require_studio_user
+from app.core.dependencies import get_current_user
+from app.schemas import UserRead
 from app.services.storage_service import tenant_storage
 from app.services.cache_service import cache_studio_theme, get_cached_studio_theme, invalidate_studio_cache
 from app.core.config import get_settings
@@ -460,3 +462,97 @@ async def list_studio_domains(
         }
         for d in domains
     ]
+
+
+class DashboardMetricsResponse(BaseModel):
+    """Dashboard metrics response with delta comparisons."""
+    total_projects: int
+    total_photos: int
+    total_comments: int
+    active_clients: int
+    # Delta fields (change from last month)
+    projects_delta: int
+    photos_delta: int
+    comments_delta: int
+    clients_delta: int
+
+
+@router.get("/dashboard-metrics", response_model=DashboardMetricsResponse)
+async def get_dashboard_metrics(
+    current_user: UserRead = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get dashboard metrics with accurate counts and month-over-month deltas.
+    
+    Calculates metrics dynamically to avoid stale cached counts.
+    Uses the user's studio_id from JWT token for multi-tenant filtering.
+    """
+    from datetime import datetime, timedelta
+    from sqlalchemy import func, distinct, and_
+    from app.db.models import Project, Photo, Client, Comment
+    
+    studio_id = current_user.studio_id
+    one_month_ago = datetime.utcnow() - timedelta(days=30)
+    
+    # Current counts
+    total_projects = db.query(func.count(Project.id)).filter(
+        Project.studio_id == studio_id
+    ).scalar() or 0
+    
+    total_photos = db.query(func.count(Photo.id)).join(
+        Project, Photo.project_id == Project.id
+    ).filter(
+        Project.studio_id == studio_id,
+        Photo.status == "completed"
+    ).scalar() or 0
+    
+    total_comments = db.query(func.count(Comment.id)).join(
+        Photo, Comment.photo_id == Photo.id
+    ).join(
+        Project, Photo.project_id == Project.id
+    ).filter(
+        Project.studio_id == studio_id
+    ).scalar() or 0
+    
+    active_clients = db.query(func.count(distinct(Project.client_id))).filter(
+        Project.studio_id == studio_id
+    ).scalar() or 0
+    
+    # Counts from 30 days ago (items that existed before that date)
+    projects_last_month = db.query(func.count(Project.id)).filter(
+        Project.studio_id == studio_id,
+        Project.created_at < one_month_ago
+    ).scalar() or 0
+    
+    photos_last_month = db.query(func.count(Photo.id)).join(
+        Project, Photo.project_id == Project.id
+    ).filter(
+        Project.studio_id == studio_id,
+        Photo.status == "completed",
+        Photo.created_at < one_month_ago
+    ).scalar() or 0
+    
+    comments_last_month = db.query(func.count(Comment.id)).join(
+        Photo, Comment.photo_id == Photo.id
+    ).join(
+        Project, Photo.project_id == Project.id
+    ).filter(
+        Project.studio_id == studio_id,
+        Comment.created_at < one_month_ago
+    ).scalar() or 0
+    
+    clients_last_month = db.query(func.count(distinct(Project.client_id))).filter(
+        Project.studio_id == studio_id,
+        Project.created_at < one_month_ago
+    ).scalar() or 0
+    
+    return DashboardMetricsResponse(
+        total_projects=total_projects,
+        total_photos=total_photos,
+        total_comments=total_comments,
+        active_clients=active_clients,
+        projects_delta=total_projects - projects_last_month,
+        photos_delta=total_photos - photos_last_month,
+        comments_delta=total_comments - comments_last_month,
+        clients_delta=active_clients - clients_last_month
+    )
