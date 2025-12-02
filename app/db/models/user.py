@@ -1,6 +1,6 @@
 """User, Studio, and Client models."""
 
-from sqlalchemy import Column, String, Boolean, ForeignKey, DateTime, Text, Integer
+from sqlalchemy import Column, String, Boolean, ForeignKey, DateTime, Text, Integer, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
@@ -85,6 +85,8 @@ class User(Base, TimestampMixin):
     
     role = Column(String(50), nullable=False, default='client', index=True)
     # Roles: 'studio_owner', 'studio_admin', 'studio_photographer', 'client'
+    
+    permissions = Column(JSON, nullable=True, default={})  # RBAC permissions
     
     avatar_url = Column(String(500), nullable=True)
     phone = Column(String(50), nullable=True)

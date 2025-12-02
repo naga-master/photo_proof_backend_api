@@ -157,20 +157,18 @@ class PermissionService:
     def get_user_permissions(user: Any) -> dict:
         """
         Get effective permissions for a user.
-        If user has custom permissions, use those.
+        If user has custom permissions, use those DIRECTLY (no merge).
         Otherwise, use role defaults.
         """
         # Safely get permissions attribute (may not exist on older model instances)
         user_perms = getattr(user, 'permissions', None)
         
-        # If user has custom permissions stored, use them
+        # If user has custom permissions stored, use them directly
+        # Don't merge with defaults - admin explicitly set these permissions
         if user_perms and isinstance(user_perms, dict) and len(user_perms) > 0:
-            # Merge with defaults to ensure all permissions exist
-            defaults = PermissionService.get_default_permissions(user.role)
-            defaults.update(user_perms)
-            return defaults
+            return user_perms
         
-        # Otherwise use role defaults
+        # Only fall back to role defaults if NO custom permissions exist
         return PermissionService.get_default_permissions(user.role)
 
     @staticmethod

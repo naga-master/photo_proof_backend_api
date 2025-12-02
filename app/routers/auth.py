@@ -47,6 +47,9 @@ async def client_login_options():
 @router.post("/studio/login", response_model=LoginResponse)
 def studio_login(login_data: LoginRequest, response: Response, db: Session = Depends(get_db)):
     """Studio user login with httpOnly cookie support."""
+    import logging
+    logger = logging.getLogger(__name__)
+    
     result = AuthService.studio_login(db, login_data)
     
     if not result:
@@ -57,9 +60,19 @@ def studio_login(login_data: LoginRequest, response: Response, db: Session = Dep
     
     user, access_token = result
     
+    # Debug: Log user permissions from DB
+    logger.info(f"[AUTH DEBUG] User {user.email} logging in")
+    logger.info(f"[AUTH DEBUG] User role: {user.role}")
+    db_permissions = getattr(user, 'permissions', None)
+    logger.info(f"[AUTH DEBUG] User permissions from DB: {db_permissions}")
+    logger.info(f"[AUTH DEBUG] User permissions type: {type(db_permissions)}")
+    
     # Get user's permissions for the refresh token
     from app.services.permission_service import PermissionService
     permissions = PermissionService.get_user_permissions(user)
+    
+    logger.info(f"[AUTH DEBUG] Effective permissions: {permissions}")
+    logger.info(f"[AUTH DEBUG] canViewClients: {permissions.get('canViewClients', 'NOT SET')}")
     
     # Create refresh token with permissions
     token_data = {
@@ -98,10 +111,16 @@ def studio_login(login_data: LoginRequest, response: Response, db: Session = Dep
         max_age=7 * 24 * 60 * 60  # 7 days
     )
     
+    # Build user response with effective permissions (not raw DB permissions)
+    user_response = UserResponse.model_validate(user)
+    user_response.permissions = permissions  # Override with effective permissions
+    
+    logger.info(f"[AUTH DEBUG] Response permissions: {user_response.permissions}")
+    
     return LoginResponse(
         token=access_token,
         refresh_token=refresh_token,
-        user=UserResponse.model_validate(user)
+        user=user_response
     )
 
 
@@ -238,6 +257,13 @@ def get_current_user_info(
     Get current authenticated user.
     Supports both httpOnly cookies and Authorization header.
     """
+    from app.services.permission_service import PermissionService
+    from app.db.models import User
+    
+    # Get full user from DB to access permissions
+    user = db.query(User).filter(User.id == current_user.id).first()
+    permissions = PermissionService.get_user_permissions(user) if user else None
+    
     return UserResponse(
         id=str(current_user.id),
         email=current_user.email,
@@ -249,6 +275,7 @@ def get_current_user_info(
         email_verified=current_user.email_verified,
         phone=current_user.phone,
         avatar_url=current_user.avatar_url,
+        permissions=permissions,
         created_at=current_user.created_at.isoformat() if current_user.created_at else None,
         updated_at=current_user.updated_at.isoformat() if current_user.updated_at else None
     )
