@@ -130,6 +130,12 @@ require_delete_invoices = require_permission("canDeleteInvoices")
 # Analytics
 require_view_analytics = require_permission("canViewAnalytics")
 
+# Contracts
+require_view_contracts = require_permission("canViewContracts")
+require_create_contracts = require_permission("canCreateContracts")
+require_edit_contracts = require_permission("canEditContracts")
+require_delete_contracts = require_permission("canDeleteContracts")
+
 # Settings
 require_manage_settings = require_permission("canManageSettings")
 require_manage_users = require_permission("canManageUsers")
@@ -142,3 +148,10 @@ require_manage_packages = require_permission("canManagePackages")
 # Communication
 require_send_notifications = require_permission("canSendNotifications")
 require_manage_communication = require_permission("canManageCommunication")
+
+# Advanced / Fine-grained
+require_download_originals = require_permission("canDownloadOriginals")
+require_manage_comments = require_permission("canManageComments")
+require_apply_discounts = require_permission("canApplyDiscounts")
+require_view_revenue = require_permission("canViewRevenue")
+require_share_externally = require_permission("canShareExternally")

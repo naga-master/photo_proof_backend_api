@@ -338,16 +338,28 @@ class CommentService:
         db: Session,
         comment_id: int,
         user_id: str,
+        force: bool = False,
     ) -> bool:
-        """Soft delete a comment (only by original author)."""
-        # Resolve user_id for clients (they may have a shadow user)
-        resolved_user_id = CommentService._resolve_user_id(db, user_id)
+        """
+        Soft delete a comment.
         
-        comment = db.query(Comment).filter(
-            Comment.id == comment_id,
-            Comment.user_id == resolved_user_id,
-            Comment.is_deleted == None,  # is_deleted is DATETIME, NULL means not deleted
-        ).first()
+        Args:
+            force: If True, bypasses ownership check (for moderators with canManageComments)
+        """
+        if force:
+            # Moderator deletion - just find the comment
+            comment = db.query(Comment).filter(
+                Comment.id == comment_id,
+                Comment.is_deleted == None,
+            ).first()
+        else:
+            # Author deletion - check ownership
+            resolved_user_id = CommentService._resolve_user_id(db, user_id)
+            comment = db.query(Comment).filter(
+                Comment.id == comment_id,
+                Comment.user_id == resolved_user_id,
+                Comment.is_deleted == None,
+            ).first()
         
         if not comment:
             raise ValueError("Comment not found or unauthorized")

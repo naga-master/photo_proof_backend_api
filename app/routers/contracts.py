@@ -8,6 +8,12 @@ from app.db.session import get_db
 from app.db.models import Contract, ContractTemplate, User
 from app.api.deps import get_current_user
 from app.services.contract_service import ContractService
+from app.core.permissions import (
+    require_view_contracts,
+    require_create_contracts,
+    require_edit_contracts,
+    require_delete_contracts,
+)
 from app.schemas.contract import (
     ContractCreate,
     ContractUpdate,
@@ -27,8 +33,8 @@ from app.schemas.contract import (
 router = APIRouter()
 
 
-def is_studio_user(user: User) -> bool:
-    """Check if user is a studio user."""
+def _is_studio_user(user: User) -> bool:
+    """Helper to check if user is a studio user (for mixed access endpoints)."""
     return user.role in ["studio_owner", "studio_admin", "studio_photographer"]
 
 
@@ -37,18 +43,13 @@ def is_studio_user(user: User) -> bool:
 async def create_contract_template(
     template_data: ContractTemplateCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_create_contracts)
 ):
     """
     Create a new contract template.
     
-    Only studio users can create templates.
+    Requires canCreateContracts permission.
     """
-    if not is_studio_user(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can create contract templates"
-        )
     
     template = ContractTemplate(
         studio_id=current_user.studio_id,
@@ -71,18 +72,13 @@ def list_contract_templates(
     category: Optional[str] = Query(None, description="Filter by category"),
     active_only: bool = Query(True, description="Only show active templates"),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_view_contracts)
 ):
     """
     List contract templates for the current studio.
     
-    Only studio users can list templates.
+    Requires canViewContracts permission.
     """
-    if not is_studio_user(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can list contract templates"
-        )
     
     query = db.query(ContractTemplate).filter(
         ContractTemplate.studio_id == current_user.studio_id
@@ -103,14 +99,9 @@ def list_contract_templates(
 def get_contract_template(
     template_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_view_contracts)
 ):
-    """Get a specific contract template."""
-    if not is_studio_user(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can view contract templates"
-        )
+    """Get a specific contract template. Requires canViewContracts permission."""
     
     template = db.query(ContractTemplate).filter(
         ContractTemplate.id == template_id,
@@ -131,14 +122,9 @@ async def update_contract_template(
     template_id: str,
     template_data: ContractTemplateUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_edit_contracts)
 ):
-    """Update a contract template."""
-    if not is_studio_user(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can update contract templates"
-        )
+    """Update a contract template. Requires canEditContracts permission."""
     
     template = db.query(ContractTemplate).filter(
         ContractTemplate.id == template_id,
@@ -168,18 +154,13 @@ async def create_contract(
     contract_data: ContractCreate,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_create_contracts)
 ):
     """
     Create a new contract from template or custom content.
     
-    Only studio users can create contracts.
+    Requires canCreateContracts permission.
     """
-    if not is_studio_user(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can create contracts"
-        )
     
     service = ContractService(db)
     
@@ -241,7 +222,7 @@ def list_contracts(
     """
     query = db.query(Contract)
     
-    if is_studio_user(current_user):
+    if _is_studio_user(current_user):
         query = query.filter(Contract.studio_id == current_user.studio_id)
     else:
         # Clients can only see their own contracts
@@ -266,7 +247,7 @@ def list_contracts(
     if status_filter:
         query = query.filter(Contract.status == status_filter)
     
-    if client_id and is_studio_user(current_user):
+    if client_id and _is_studio_user(current_user):
         query = query.filter(Contract.client_id == client_id)
     
     if project_id:
@@ -295,18 +276,13 @@ def list_contracts(
 @router.get("/stats", response_model=ContractStats)
 def get_contract_stats(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_view_contracts)
 ):
     """
     Get contract statistics for the current studio.
     
-    Only studio users can view stats.
+    Requires canViewContracts permission.
     """
-    if not is_studio_user(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can view contract statistics"
-        )
     
     service = ContractService(db)
     stats = service.get_contract_stats(current_user.studio_id)
@@ -335,7 +311,7 @@ def get_contract(
         )
     
     # Check permissions
-    if is_studio_user(current_user):
+    if _is_studio_user(current_user):
         if contract.studio_id != current_user.studio_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -394,19 +370,13 @@ async def update_contract(
     contract_id: str,
     contract_data: ContractUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_edit_contracts)
 ):
     """
     Update a contract.
     
-    Only studio users can update contracts.
-    Can only update draft contracts.
+    Requires canEditContracts permission. Can only update draft contracts.
     """
-    if not is_studio_user(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can update contracts"
-        )
     
     contract = db.query(Contract).filter(
         Contract.id == contract_id,
@@ -455,18 +425,13 @@ async def send_contract(
     recipient_email: str = Query(..., description="Email address to send contract to"),
     background_tasks: BackgroundTasks = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_edit_contracts)
 ):
     """
     Send contract for signature.
     
-    Only studio users can send contracts.
+    Requires canEditContracts permission.
     """
-    if not is_studio_user(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can send contracts"
-        )
     
     contract = db.query(Contract).filter(
         Contract.id == contract_id,
@@ -563,18 +528,13 @@ async def sign_contract(
 async def verify_signature(
     contract_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_view_contracts)
 ):
     """
     Verify contract signature authenticity.
     
-    Studio users can verify signatures for their contracts.
+    Requires canViewContracts permission.
     """
-    if not is_studio_user(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can verify signatures"
-        )
     
     contract = db.query(Contract).filter(
         Contract.id == contract_id,
@@ -609,18 +569,13 @@ async def verify_signature(
 def get_contract_activities(
     contract_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_view_contracts)
 ):
     """
     Get activity log for a contract.
     
-    Only studio users can view activity logs.
+    Requires canViewContracts permission.
     """
-    if not is_studio_user(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can view activity logs"
-        )
     
     contract = db.query(Contract).filter(
         Contract.id == contract_id,
@@ -645,19 +600,13 @@ def get_contract_activities(
 async def delete_contract(
     contract_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_delete_contracts)
 ):
     """
     Delete a contract.
     
-    Only studio users can delete contracts.
-    Can only delete draft contracts.
+    Requires canDeleteContracts permission. Can only delete draft contracts.
     """
-    if not is_studio_user(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can delete contracts"
-        )
     
     contract = db.query(Contract).filter(
         Contract.id == contract_id,

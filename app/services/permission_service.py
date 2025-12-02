@@ -24,6 +24,11 @@ ALL_PERMISSIONS = [
     "canUploadPhotos",
     "canEditPhotos",
     "canDeletePhotos",
+    # Contracts
+    "canViewContracts",
+    "canCreateContracts",
+    "canEditContracts",
+    "canDeleteContracts",
     # Services & Packages
     "canManageServices",
     "canManagePackages",
@@ -34,6 +39,12 @@ ALL_PERMISSIONS = [
     # Communication
     "canSendNotifications",
     "canManageCommunication",
+    # Advanced / Fine-grained
+    "canDownloadOriginals",
+    "canManageComments",
+    "canApplyDiscounts",
+    "canViewRevenue",
+    "canShareExternally",
 ]
 
 # Default permissions per role
@@ -56,6 +67,10 @@ ROLE_DEFAULTS = {
         "canUploadPhotos": True,
         "canEditPhotos": True,
         "canDeletePhotos": True,
+        "canViewContracts": True,
+        "canCreateContracts": True,
+        "canEditContracts": True,
+        "canDeleteContracts": True,
         "canManageServices": True,
         "canManagePackages": True,
         "canManageSettings": True,
@@ -63,6 +78,11 @@ ROLE_DEFAULTS = {
         "canManageBranding": True,
         "canSendNotifications": True,
         "canManageCommunication": True,
+        "canDownloadOriginals": True,
+        "canManageComments": True,
+        "canApplyDiscounts": True,
+        "canViewRevenue": True,
+        "canShareExternally": True,
     },
     "studio_admin": {
         # Admin: Full access except some owner-only settings
@@ -82,6 +102,10 @@ ROLE_DEFAULTS = {
         "canUploadPhotos": True,
         "canEditPhotos": True,
         "canDeletePhotos": True,
+        "canViewContracts": True,
+        "canCreateContracts": True,
+        "canEditContracts": True,
+        "canDeleteContracts": True,
         "canManageServices": True,
         "canManagePackages": True,
         "canManageSettings": True,
@@ -89,6 +113,11 @@ ROLE_DEFAULTS = {
         "canManageBranding": True,
         "canSendNotifications": True,
         "canManageCommunication": True,
+        "canDownloadOriginals": True,
+        "canManageComments": True,
+        "canApplyDiscounts": True,
+        "canViewRevenue": True,
+        "canShareExternally": True,
     },
     "studio_photographer": {
         # Photographer/Editor: Content focused, limited admin
@@ -108,6 +137,10 @@ ROLE_DEFAULTS = {
         "canUploadPhotos": True,
         "canEditPhotos": True,
         "canDeletePhotos": False,
+        "canViewContracts": False,
+        "canCreateContracts": False,
+        "canEditContracts": False,
+        "canDeleteContracts": False,
         "canManageServices": False,
         "canManagePackages": False,
         "canManageSettings": False,
@@ -115,6 +148,11 @@ ROLE_DEFAULTS = {
         "canManageBranding": False,
         "canSendNotifications": False,
         "canManageCommunication": False,
+        "canDownloadOriginals": True,
+        "canManageComments": False,
+        "canApplyDiscounts": False,
+        "canViewRevenue": False,
+        "canShareExternally": True,
     },
     "client": {
         # Client: View only, very limited
@@ -134,6 +172,10 @@ ROLE_DEFAULTS = {
         "canUploadPhotos": False,
         "canEditPhotos": False,
         "canDeletePhotos": False,
+        "canViewContracts": True,
+        "canCreateContracts": False,
+        "canEditContracts": False,
+        "canDeleteContracts": False,
         "canManageServices": False,
         "canManagePackages": False,
         "canManageSettings": False,
@@ -141,6 +183,11 @@ ROLE_DEFAULTS = {
         "canManageBranding": False,
         "canSendNotifications": False,
         "canManageCommunication": False,
+        "canDownloadOriginals": False,
+        "canManageComments": False,
+        "canApplyDiscounts": False,
+        "canViewRevenue": False,
+        "canShareExternally": False,
     },
 }
 
