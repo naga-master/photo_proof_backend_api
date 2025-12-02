@@ -94,6 +94,50 @@ class Settings(BaseModel):
         default_factory=lambda: os.getenv("COOKIE_DOMAIN", None),
         description="Cookie domain (None = current domain only, use '.domain.com' for subdomains)"
     )
+    
+    # Email/SMTP Settings
+    smtp_host: str = Field(
+        default_factory=lambda: os.getenv("SMTP_HOST", ""),
+        description="SMTP server hostname"
+    )
+    smtp_port: int = Field(
+        default_factory=lambda: int(os.getenv("SMTP_PORT", "587")),
+        description="SMTP server port"
+    )
+    smtp_user: str = Field(
+        default_factory=lambda: os.getenv("SMTP_USER", ""),
+        description="SMTP username/login"
+    )
+    smtp_password: str = Field(
+        default_factory=lambda: os.getenv("SMTP_PASSWORD", ""),
+        description="SMTP password"
+    )
+    smtp_from_email: str = Field(
+        default_factory=lambda: os.getenv("SMTP_FROM_EMAIL", ""),
+        description="Default from email address"
+    )
+    smtp_from_name: str = Field(
+        default_factory=lambda: os.getenv("SMTP_FROM_NAME", "Flash"),
+        description="Default from name"
+    )
+    smtp_use_tls: bool = Field(
+        default_factory=lambda: os.getenv("SMTP_USE_TLS", "true").lower() == "true",
+        description="Use TLS for SMTP connection"
+    )
+    smtp_enabled: bool = Field(
+        default_factory=lambda: os.getenv("SMTP_ENABLED", "false").lower() == "true",
+        description="Enable email sending (false = log to console)"
+    )
+    
+    # Password Reset Settings
+    frontend_url: str = Field(
+        default_factory=lambda: os.getenv("FRONTEND_URL", "http://localhost:3001"),
+        description="Frontend URL for password reset links"
+    )
+    password_reset_expiry_hours: int = Field(
+        default_factory=lambda: int(os.getenv("PASSWORD_RESET_EXPIRY_HOURS", "1")),
+        description="Password reset token expiry in hours"
+    )
 
     model_config = {
         "frozen": True,

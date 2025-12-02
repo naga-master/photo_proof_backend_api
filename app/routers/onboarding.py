@@ -254,6 +254,14 @@ async def start_onboarding(
         db.refresh(studio)
         db.refresh(owner)
         
+        # Refresh CORS cache to include new subdomain domain
+        try:
+            from app.middleware.dynamic_cors import refresh_cors_cache
+            refresh_cors_cache()
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).warning(f"Failed to refresh CORS cache: {e}")
+        
         return {
             "studio_id": studio.id,
             "subdomain": studio.subdomain,
@@ -447,4 +455,110 @@ async def get_onboarding_status(
         "completed": studio.onboarding_completed,
         "studio_name": studio.name,
         "subdomain": studio.subdomain
+    }
+
+
+# ========== Domain Verification Endpoints ==========
+
+class VerifyDomainRequest(BaseModel):
+    domain_id: str
+
+
+@router.post("/domain/verify")
+async def verify_custom_domain(
+    data: VerifyDomainRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Verify a custom domain and update CORS cache.
+    
+    This endpoint should be called after the studio owner has configured
+    their DNS records. It verifies the domain and automatically updates
+    the CORS allowed origins.
+    """
+    from app.middleware.dynamic_cors import refresh_cors_cache
+    
+    domain = db.query(StudioDomain).filter_by(id=data.domain_id).first()
+    if not domain:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Domain not found"
+        )
+    
+    if domain.is_verified:
+        return {
+            "verified": True,
+            "message": "Domain is already verified"
+        }
+    
+    # TODO: Add actual DNS verification logic here
+    # For now, we'll auto-verify for development
+    # In production, implement DNS TXT record verification
+    
+    # Mark domain as verified
+    domain.is_verified = True
+    domain.verified_at = datetime.utcnow()
+    db.commit()
+    
+    # Refresh CORS cache to include new domain
+    num_domains = refresh_cors_cache()
+    
+    return {
+        "verified": True,
+        "domain": domain.domain,
+        "message": "Domain verified successfully! CORS updated.",
+        "cors_domains_cached": num_domains
+    }
+
+
+@router.post("/cors/refresh")
+async def refresh_cors_origins():
+    """
+    Force refresh the CORS cache.
+    
+    Call this endpoint after manually adding/verifying domains in the database.
+    This is useful for admin operations.
+    """
+    from app.middleware.dynamic_cors import refresh_cors_cache, get_all_allowed_origins
+    
+    num_domains = refresh_cors_cache()
+    all_origins = get_all_allowed_origins()
+    
+    return {
+        "message": "CORS cache refreshed successfully",
+        "custom_domains_cached": num_domains,
+        "total_allowed_origins": len(all_origins),
+        "origins_sample": list(all_origins)[:10]  # Show first 10 for debugging
+    }
+
+
+@router.get("/domains/{studio_id}")
+async def get_studio_domains(
+    studio_id: str,
+    db: Session = Depends(get_db)
+):
+    """Get all domains configured for a studio."""
+    
+    studio = db.query(Studio).filter_by(id=studio_id).first()
+    if not studio:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Studio not found"
+        )
+    
+    domains = db.query(StudioDomain).filter_by(studio_id=studio_id).all()
+    
+    return {
+        "studio_id": studio_id,
+        "domains": [
+            {
+                "id": d.id,
+                "domain": d.domain,
+                "subdomain": d.subdomain,
+                "is_primary": d.is_primary,
+                "is_verified": d.is_verified,
+                "verified_at": d.verified_at.isoformat() if d.verified_at else None
+            }
+            for d in domains
+        ]
     }

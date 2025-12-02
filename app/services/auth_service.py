@@ -251,3 +251,120 @@ class AuthService:
                 }
         
         return None
+    
+    @staticmethod
+    def create_password_reset_token(email: str, user_type: str, user_id: str, studio_id: str) -> str:
+        """
+        Create a JWT token for password reset.
+        
+        Args:
+            email: User's email address
+            user_type: 'user' or 'client'
+            user_id: User or Client ID
+            studio_id: Associated studio ID
+            
+        Returns:
+            JWT token string
+        """
+        from app.core.config import get_settings
+        settings = get_settings()
+        
+        expire = datetime.utcnow() + timedelta(hours=settings.password_reset_expiry_hours)
+        
+        to_encode = {
+            "sub": user_id,
+            "email": email,
+            "user_type": user_type,
+            "studio_id": studio_id,
+            "type": "password_reset",
+            "exp": expire,
+            "iat": datetime.utcnow()
+        }
+        
+        return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    
+    @staticmethod
+    def verify_password_reset_token(token: str) -> Optional[dict]:
+        """
+        Verify a password reset token.
+        
+        Args:
+            token: JWT token string
+            
+        Returns:
+            Token payload if valid, None otherwise
+        """
+        payload = AuthService.decode_token(token)
+        
+        if not payload:
+            return None
+        
+        if payload.get("type") != "password_reset":
+            return None
+        
+        return payload
+    
+    @staticmethod
+    def find_user_by_email(db: Session, email: str) -> Optional[Tuple[str, Union[User, Client], Studio]]:
+        """
+        Find a user or client by email address.
+        
+        Args:
+            db: Database session
+            email: Email address to search
+            
+        Returns:
+            Tuple of (user_type, entity, studio) or None if not found
+        """
+        # First check studio users (User table)
+        user = db.query(User).filter(User.email == email).first()
+        if user:
+            studio = db.query(Studio).filter(Studio.id == user.studio_id).first()
+            return ("user", user, studio)
+        
+        # Then check clients (Client table)
+        client = db.query(Client).filter(Client.email == email).first()
+        if client:
+            studio = db.query(Studio).filter(Studio.id == client.studio_id).first()
+            return ("client", client, studio)
+        
+        return None
+    
+    @staticmethod
+    def reset_password(db: Session, user_type: str, user_id: str, new_password: str) -> bool:
+        """
+        Reset password for a user or client.
+        
+        Args:
+            db: Database session
+            user_type: 'user' or 'client'
+            user_id: User or Client ID
+            new_password: New password to set
+            
+        Returns:
+            True if password was reset successfully
+        """
+        new_hash = AuthService.hash_password(new_password)
+        
+        if user_type == "user":
+            user = db.query(User).filter(User.id == user_id).first()
+            if user:
+                user.password_hash = new_hash
+                user.updated_at = datetime.utcnow()
+                db.commit()
+                return True
+        
+        elif user_type == "client":
+            # Handle client_id format (might be "client_123" or just "123")
+            client_id = user_id
+            if isinstance(client_id, str) and client_id.startswith("client_"):
+                client_id = int(client_id.replace("client_", ""))
+            
+            client = db.query(Client).filter(Client.id == client_id).first()
+            if client:
+                client.password = new_hash
+                client.updated_at = datetime.utcnow()
+                db.commit()
+                return True
+        
+        return False

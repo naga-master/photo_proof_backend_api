@@ -17,22 +17,23 @@ from app.core.logging_config import configure_logging
 from app.db.init_db import init_db
 from app.middleware.tenant import tenant_middleware
 from app.middleware.security import security_headers_middleware
+from app.middleware.dynamic_cors import is_origin_allowed, get_all_allowed_origins
 
 
 logger = logging.getLogger(__name__)
 
 
 def origin_matches_pattern(origin: str, patterns: list[str]) -> bool:
-    """Check if origin matches any of the allowed patterns (supports wildcards)."""
-    for pattern in patterns:
-        if pattern == origin:
-            return True
-        # Convert wildcard pattern to regex
-        if '*' in pattern:
-            regex_pattern = pattern.replace('.', r'\.').replace('*', r'[^:/]+')
-            if re.match(f'^{regex_pattern}$', origin):
-                return True
-    return False
+    """
+    Check if origin matches any of the allowed patterns.
+    
+    This function now uses the dynamic CORS module which supports:
+    1. Static origins from config
+    2. Wildcard patterns (e.g., http://*.photoapp.local:3001)
+    3. Custom domains from database (studio_domains table)
+    """
+    # Use the dynamic CORS checker which includes database domains
+    return is_origin_allowed(origin)
 
 
 def create_app() -> FastAPI:

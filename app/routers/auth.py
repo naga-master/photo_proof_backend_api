@@ -17,8 +17,13 @@ from app.schemas.auth import (
     UserResponse,
     StudioResponse,
     ClientResponse,
+    ForgotPasswordRequest,
+    ForgotPasswordResponse,
+    ResetPasswordRequest,
+    ResetPasswordResponse,
 )
 from app.schemas import UserRead
+from app.services.email_service import EmailService
 
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
@@ -362,3 +367,106 @@ def logout(response: Response):
     response.delete_cookie(key="access_token")
     response.delete_cookie(key="refresh_token")
     return {"message": "Successfully logged out"}
+
+
+@router.post("/forgot-password", response_model=ForgotPasswordResponse)
+def forgot_password(request: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    """
+    Request a password reset email.
+    
+    Always returns success to prevent email enumeration attacks.
+    If the email exists, sends a password reset link.
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    settings = get_settings()
+    
+    result = AuthService.find_user_by_email(db, request.email)
+    
+    if result:
+        user_type, entity, studio = result
+        
+        # Get user ID based on type
+        if user_type == "user":
+            user_id = entity.id
+            user_name = entity.name or entity.username
+        else:
+            user_id = f"client_{entity.id}"
+            user_name = entity.name
+        
+        # Get studio info for branding
+        studio_name = studio.name if studio else settings.smtp_from_name
+        studio_logo = studio.logo_url if studio else None
+        brand_color = studio.brand_color if studio and studio.brand_color else "#0a58d0"
+        studio_email = studio.email if studio else None
+        
+        # Create reset token
+        reset_token = AuthService.create_password_reset_token(
+            email=request.email,
+            user_type=user_type,
+            user_id=str(user_id),
+            studio_id=str(studio.id) if studio else ""
+        )
+        
+        # Build reset URL
+        reset_url = f"{settings.frontend_url}/reset-password?token={reset_token}"
+        
+        # Send email
+        email_sent = EmailService.send_password_reset_email(
+            to=request.email,
+            user_name=user_name,
+            reset_url=reset_url,
+            studio_name=studio_name,
+            studio_logo_url=studio_logo,
+            brand_color=brand_color,
+            reply_to=studio_email
+        )
+        
+        if not email_sent and settings.smtp_enabled:
+            logger.error(f"Failed to send password reset email to {request.email}")
+        
+        # In dev mode, log the reset URL
+        if not settings.smtp_enabled:
+            logger.info(f"[DEV MODE] Password reset URL for {request.email}: {reset_url}")
+    
+    # Always return success to prevent email enumeration
+    return ForgotPasswordResponse(
+        message="If an account with that email exists, we've sent password reset instructions."
+    )
+
+
+@router.post("/reset-password", response_model=ResetPasswordResponse)
+def reset_password(request: ResetPasswordRequest, db: Session = Depends(get_db)):
+    """
+    Reset password using a valid reset token.
+    """
+    # Verify token
+    payload = AuthService.verify_password_reset_token(request.token)
+    
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset token"
+        )
+    
+    user_type = payload.get("user_type")
+    user_id = payload.get("sub")
+    
+    if not user_type or not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid token payload"
+        )
+    
+    # Reset the password
+    success = AuthService.reset_password(db, user_type, user_id, request.new_password)
+    
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Failed to reset password. User may not exist."
+        )
+    
+    return ResetPasswordResponse(
+        message="Password has been reset successfully. You can now log in with your new password."
+    )

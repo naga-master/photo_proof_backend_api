@@ -42,6 +42,27 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class ForgotPasswordRequest(BaseModel):
+    """Request to initiate password reset."""
+    email: EmailStr
+
+
+class ForgotPasswordResponse(BaseModel):
+    """Response for forgot password request."""
+    message: str
+
+
+class ResetPasswordRequest(BaseModel):
+    """Request to reset password with token."""
+    token: str
+    new_password: str = Field(..., min_length=6, max_length=255)
+
+
+class ResetPasswordResponse(BaseModel):
+    """Response for password reset."""
+    message: str
+
+
 # ============================================================================
 # USER SCHEMAS
 # ============================================================================
