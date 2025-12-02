@@ -13,7 +13,7 @@ from app.api.deps import get_current_studio, get_optional_studio, require_studio
 from app.core.dependencies import get_current_user
 from app.schemas import UserRead
 from app.services.storage_service import tenant_storage
-from app.services.cache_service import cache_studio_theme, get_cached_studio_theme, invalidate_studio_cache
+from app.services.cache_service import cache_studio_theme, get_cached_studio_theme, invalidate_studio_cache, cache_dashboard_metrics, get_cached_dashboard_metrics
 from app.core.config import get_settings
 from pydantic import BaseModel
 from app.core.permissions import (
@@ -489,7 +489,8 @@ async def get_dashboard_metrics(
 ):
     """Get dashboard metrics with accurate counts and month-over-month deltas.
     
-    Calculates metrics dynamically to avoid stale cached counts.
+    **Caching:** Results cached for 5 minutes to reduce database load.
+    Cache is invalidated when projects, photos, or comments are modified.
     Uses the user's studio_id from JWT token for multi-tenant filtering.
     """
     from datetime import datetime, timedelta
@@ -497,6 +498,12 @@ async def get_dashboard_metrics(
     from app.db.models import Project, Photo, Client, Comment
     
     studio_id = current_user.studio_id
+    
+    # Check cache first
+    cached_metrics = get_cached_dashboard_metrics(studio_id)
+    if cached_metrics:
+        return DashboardMetricsResponse(**cached_metrics)
+    
     one_month_ago = datetime.utcnow() - timedelta(days=30)
     
     # Current counts
@@ -551,13 +558,18 @@ async def get_dashboard_metrics(
         Project.created_at < one_month_ago
     ).scalar() or 0
     
-    return DashboardMetricsResponse(
-        total_projects=total_projects,
-        total_photos=total_photos,
-        total_comments=total_comments,
-        active_clients=active_clients,
-        projects_delta=total_projects - projects_last_month,
-        photos_delta=total_photos - photos_last_month,
-        comments_delta=total_comments - comments_last_month,
-        clients_delta=active_clients - clients_last_month
-    )
+    metrics = {
+        "total_projects": total_projects,
+        "total_photos": total_photos,
+        "total_comments": total_comments,
+        "active_clients": active_clients,
+        "projects_delta": total_projects - projects_last_month,
+        "photos_delta": total_photos - photos_last_month,
+        "comments_delta": total_comments - comments_last_month,
+        "clients_delta": active_clients - clients_last_month
+    }
+    
+    # Cache for 5 minutes
+    cache_dashboard_metrics(studio_id, metrics, ttl=300)
+    
+    return DashboardMetricsResponse(**metrics)

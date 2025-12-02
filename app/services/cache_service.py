@@ -199,7 +199,43 @@ def invalidate_studio_cache(studio_id: str):
     """
     cache.delete_pattern(f"studio:theme:{studio_id}")
     cache.delete_pattern(f"studio:config:{studio_id}")
+    cache.delete_pattern(f"studio:dashboard:{studio_id}")
     logger.info(f"Invalidated cache for studio: {studio_id}")
+
+
+def cache_dashboard_metrics(studio_id: str, metrics_data: dict, ttl: int = 300):
+    """Cache dashboard metrics (5 minutes default).
+    
+    Args:
+        studio_id: Studio ID
+        metrics_data: Dashboard metrics dictionary
+        ttl: Time to live in seconds (default: 300 = 5 minutes)
+    """
+    cache.set(f"studio:dashboard:{studio_id}", metrics_data, ttl)
+
+
+def get_cached_dashboard_metrics(studio_id: str) -> Optional[dict]:
+    """Get cached dashboard metrics.
+    
+    Args:
+        studio_id: Studio ID
+        
+    Returns:
+        Metrics data dictionary if cached, None otherwise
+    """
+    return cache.get(f"studio:dashboard:{studio_id}")
+
+
+def invalidate_dashboard_metrics(studio_id: str):
+    """Invalidate dashboard metrics cache for a studio.
+    
+    Call this when projects, photos, comments, or clients are modified.
+    
+    Args:
+        studio_id: Studio ID
+    """
+    cache.delete(f"studio:dashboard:{studio_id}")
+    logger.debug(f"Invalidated dashboard metrics cache for studio: {studio_id}")
 
 
 # Background task to clean up expired entries

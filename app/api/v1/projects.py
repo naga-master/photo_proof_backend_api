@@ -139,6 +139,11 @@ def list_projects(
 
     # Client users should only see their own projects
     if current_user.role == UserRole.CLIENT:
+        # IMPORTANT: Also filter by studio_id for multi-tenant isolation
+        if current_user.studio_id:
+            query = query.filter(models.Project.studio_id == current_user.studio_id)
+            logger.debug("Filtering client projects by studio", extra={"studio_id": current_user.studio_id})
+        
         # New client auth: ID is "client_{id}" format
         if isinstance(current_user.id, str) and current_user.id.startswith("client_"):
             try:
@@ -248,6 +253,7 @@ def list_projects(
             "cover_photo_src": cover_photo_src,
             "photo_count": project.photo_count,
             "is_locked": project.is_locked,
+            "is_password_protected": project.is_password_protected if hasattr(project, 'is_password_protected') else False,
             "layout": project.layout,
             "payment_status": project.payment_status,
             "price": float(project.price) if project.price else None,

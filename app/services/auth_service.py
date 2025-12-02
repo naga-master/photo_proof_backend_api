@@ -139,23 +139,43 @@ class AuthService:
         Uses Client.password directly for simple gallery access authentication.
         Falls back to User table for legacy accounts.
         
+        SECURITY: studio_id is REQUIRED for multi-tenant isolation.
+        
         Args:
             db: Database session
             login_data: Login credentials
-            studio_id: Optional studio ID for multi-tenant filtering (from domain)
+            studio_id: Studio ID from domain context (REQUIRED for security)
         """
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        # SECURITY: Require studio context for client login
+        if not studio_id:
+            logger.warning(
+                "[AUTH SECURITY] Client login attempted without studio context",
+                extra={"email": login_data.username}
+            )
+            return None  # Fail safe - no cross-studio auth allowed
+        
+        logger.info(
+            "[AUTH] Client login attempt",
+            extra={"email": login_data.username, "studio_id": studio_id}
+        )
+        
         # First, try direct Client authentication (new simple method)
-        query = db.query(Client).filter(Client.email == login_data.username)
-        
-        # Filter by studio if provided (multi-tenant support)
-        if studio_id:
-            query = query.filter(Client.studio_id == studio_id)
-        
-        client = query.first()
+        # ALWAYS filter by studio_id for multi-tenant isolation
+        client = db.query(Client).filter(
+            Client.email == login_data.username,
+            Client.studio_id == studio_id
+        ).first()
         
         if client and client.password:
             # Client has direct password - use it
             if AuthService.verify_password(login_data.password, client.password):
+                logger.info(
+                    "[AUTH SUCCESS] Client authenticated via Client table",
+                    extra={"client_id": client.id, "studio_id": studio_id}
+                )
                 # Create token with client info
                 token_data = {
                     "sub": f"client_{client.id}",
@@ -166,24 +186,38 @@ class AuthService:
                 }
                 access_token = AuthService.create_access_token(token_data)
                 return client, access_token
+            else:
+                logger.warning(
+                    "[AUTH FAILED] Client password mismatch",
+                    extra={"client_id": client.id, "studio_id": studio_id}
+                )
         
         # Fallback: Try legacy User table authentication
-        user_query = db.query(User).filter(
-            User.username == login_data.username,
-            User.role == "client"
-        )
-        
-        # Filter by studio if provided (multi-tenant support)
-        if studio_id:
-            user_query = user_query.filter(User.studio_id == studio_id)
-        
-        user = user_query.first()
+        # Use email field (not username) and ALWAYS filter by studio_id
+        user = db.query(User).filter(
+            User.email == login_data.username,
+            User.role == "client",
+            User.studio_id == studio_id
+        ).first()
         
         if not user or not user.password_hash:
+            logger.warning(
+                "[AUTH FAILED] No matching user/client found",
+                extra={"email": login_data.username, "studio_id": studio_id}
+            )
             return None
             
         if not AuthService.verify_password(login_data.password, user.password_hash):
+            logger.warning(
+                "[AUTH FAILED] User password mismatch",
+                extra={"user_id": user.id, "studio_id": studio_id}
+            )
             return None
+        
+        logger.info(
+            "[AUTH SUCCESS] Client authenticated via User table (legacy)",
+            extra={"user_id": user.id, "studio_id": studio_id}
+        )
         
         # Get the client record associated with this user
         client = db.query(Client).filter(Client.user_id == user.id).first()

@@ -118,7 +118,12 @@ async def tenant_middleware(request: Request, call_next):
         '/api/health',
         '/api/v1/health',
         '/api/onboarding',
-        '/api/auth',  # Skip all auth endpoints (login, register, etc.)
+        '/api/auth/studio',  # Studio login doesn't need tenant context
+        '/api/auth/register',
+        '/api/auth/me',
+        '/api/auth/logout',
+        '/api/auth/refresh',
+        # NOTE: /api/auth/client/login NEEDS tenant context for multi-tenant isolation
         '/_',  # Internal routes
     ]
     
@@ -130,6 +135,18 @@ async def tenant_middleware(request: Request, call_next):
     
     # Get host header
     host = request.headers.get('host', '')
+    
+    # If host is localhost, check Origin header for actual studio domain
+    # This handles cases where frontend at test.photoapp.local:3001 calls localhost:8000 API
+    if host.startswith('localhost') or host.startswith('127.0.0.1'):
+        origin = request.headers.get('origin', '')
+        if origin:
+            # Extract host from origin (e.g., "http://test.photoapp.local:3001" -> "test.photoapp.local:3001")
+            from urllib.parse import urlparse
+            parsed = urlparse(origin)
+            if parsed.netloc and not parsed.netloc.startswith('localhost') and not parsed.netloc.startswith('127.0.0.1'):
+                host = parsed.netloc
+                logger.debug(f"Using Origin header for tenant detection: {host}")
     
     if not host:
         # No host header, continue without tenant

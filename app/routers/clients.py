@@ -400,7 +400,24 @@ def set_client_password(
         )
     
     # Hash and store password
-    client.password = AuthService.hash_password(new_password)
+    hashed_password = AuthService.hash_password(new_password)
+    client.password = hashed_password
+    
+    # SYNC: Also update User table if legacy user record exists
+    # This ensures both auth paths work with the same password
+    legacy_user = db.query(User).filter(
+        User.email == client.email,
+        User.studio_id == client.studio_id,
+        User.role == "client"
+    ).first()
+    
+    if legacy_user:
+        legacy_user.password_hash = hashed_password
+        logger.info(
+            f"[PASSWORD SYNC] Updated password in both Client and User tables",
+            extra={"client_id": client.id, "user_id": legacy_user.id}
+        )
+    
     db.commit()
     
     return {
@@ -447,7 +464,18 @@ def get_client_password(
     # If client has no password, generate one
     if not client.password:
         new_password = AuthService.generate_password()
-        client.password = AuthService.hash_password(new_password)
+        hashed_password = AuthService.hash_password(new_password)
+        client.password = hashed_password
+        
+        # SYNC: Also update User table if legacy user record exists
+        legacy_user = db.query(User).filter(
+            User.email == client.email,
+            User.studio_id == client.studio_id,
+            User.role == "client"
+        ).first()
+        if legacy_user:
+            legacy_user.password_hash = hashed_password
+        
         db.commit()
         return {
             "client_id": client.id,

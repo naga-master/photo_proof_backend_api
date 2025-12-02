@@ -132,12 +132,26 @@ def client_login(login_data: LoginRequest, response: Response, request: Request,
     - Direct Client authentication (Client.password) - new simple method
     - Legacy User table authentication (User.password_hash)
     
-    Uses studio context from domain for multi-tenant isolation.
+    SECURITY: Uses studio context from domain for multi-tenant isolation.
     """
+    import logging
+    logger = logging.getLogger(__name__)
+    
     from app.middleware.tenant import TenantContext
     
     # Get studio_id from tenant middleware (domain-based)
     studio_id = TenantContext.get_studio_id_from_request(request)
+    
+    # SECURITY: Require studio context for client login
+    if not studio_id:
+        logger.warning(
+            "[AUTH SECURITY] Client login rejected - no studio context",
+            extra={"email": login_data.username, "host": request.headers.get('host', 'unknown')}
+        )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid login domain. Please access from your studio's URL."
+        )
     
     result = AuthService.client_login(db, login_data, studio_id=studio_id)
     
