@@ -1,13 +1,13 @@
 """Photo upload router with presigned URLs."""
 
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.core.dependencies import get_current_user
 from app.schemas import UserRead
 from app.services.storage_service import get_storage_service
-from app.services.upload_service import UploadService
+from app.services.upload_service import UploadService, _process_photo_variants_background
 from app.schemas.photo import (
     PresignedUploadRequest,
     PresignedUploadResponse,
@@ -15,6 +15,7 @@ from app.schemas.photo import (
     BatchPresignedUploadResponse,
     PhotoResponse,
 )
+from app.core.permissions import require_upload_photos
 
 # Import chunked upload router
 from app.routers.chunked_upload import router as chunked_upload_router
@@ -72,6 +73,7 @@ def generate_presigned_upload(
 @router.put("/{token}", response_model=PhotoResponse)
 async def complete_upload(
     token: str,
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
@@ -79,7 +81,8 @@ async def complete_upload(
     Complete photo upload using presigned token.
     
     This endpoint is called with the file data after getting presigned URL.
-    It validates the token, saves the file, and creates the Photo record.
+    It validates the token, saves the file, creates the Photo record, and
+    queues background processing for image variants.
     """
     storage = get_storage_service()
     upload_service = UploadService(storage)
@@ -88,11 +91,19 @@ async def complete_upload(
         # Read file data
         file_data = await file.read()
         
-        # Complete upload
+        # Complete upload (returns immediately with status='processing')
         photo = await upload_service.complete_upload(
             db=db,
             token=token,
             file_data=file_data,
+        )
+        
+        # Queue background processing for variants
+        background_tasks.add_task(
+            _process_photo_variants_background,
+            photo_id=photo.id,
+            storage_path=photo.storage_path,
+            project_id=photo.project_id
         )
         
         return PhotoResponse(
@@ -115,6 +126,9 @@ async def complete_upload(
             updated_at=photo.updated_at,
         )
     
+    except HTTPException as e:
+        # Re-raise HTTP exceptions as-is (e.g., 409 for duplicates)
+        raise e
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

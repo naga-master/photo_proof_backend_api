@@ -4,9 +4,16 @@ from __future__ import annotations
 
 import os
 from functools import lru_cache
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, Field, field_validator
+
+# Load environment variables from .env file
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # python-dotenv not installed, will use environment variables directly
 
 
 class Settings(BaseModel):
@@ -18,18 +25,34 @@ class Settings(BaseModel):
     environment: str = Field(default=os.getenv("APP_ENV", "development"), description="environment identifier")
     api_prefix: str = Field(default="/api")
     cors_origins: List[str] = Field(
-        default_factory=lambda: [
-            "http://localhost:3000",
-            "http://localhost:3001",
-            "http://localhost:3002",
-            "http://localhost:5173",
-        ]
+        default_factory=lambda: (
+            # Check environment variable first
+            [origin.strip() for origin in os.getenv("CORS_ORIGINS", "").split(",") if origin.strip()]
+            if os.getenv("CORS_ORIGINS")
+            else [
+                "http://localhost:3000",
+                "http://localhost:3001",
+                "http://localhost:3002",
+                "http://localhost:5173",
+                # Multi-tenant studio domains
+                "http://*.photoapp.local:3001",  # Wildcard for all studio subdomains
+                "http://demo.photoapp.local:3001",
+                "http://alpha.photoapp.local:3001",
+                "http://beta.photoapp.local:3001",
+                "http://gamma.photoapp.local:3001",
+            ]
+        )
     )
     allow_credentials: bool = Field(default=True)
-    allow_methods: List[str] = Field(default_factory=lambda: ["*"])
-    allow_headers: List[str] = Field(default_factory=lambda: ["*"])
+    # Restrict to specific methods for security (not "*")
+    allow_methods: List[str] = Field(default_factory=lambda: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
+    # Restrict to specific headers for security (not "*")
+    allow_headers: List[str] = Field(default_factory=lambda: [
+        "Content-Type", "Authorization", "Accept", "Origin",
+        "X-Requested-With", "Cache-Control", "X-Studio-ID"
+    ])
     data_directory: str = Field(default=os.getenv("DATA_DIR", "data"))
-    database_url: str = Field(default=os.getenv("DATABASE_URL", "sqlite:///./photo_proof.db"))
+    database_url: str = Field(default=os.getenv("DATABASE_URL", "postgresql://photo_proof_user:PhotoProof2024!@localhost/photo_proof_production"))
     uploads_directory: str = Field(default=os.getenv("UPLOADS_DIR", "uploads"))
     log_directory: str = Field(default_factory=lambda: os.getenv("LOG_DIR", "logs"))
     log_file_name: str = Field(default_factory=lambda: os.getenv("LOG_FILE", "photo_proof_api.log"))
@@ -56,6 +79,64 @@ class Settings(BaseModel):
     version_storage_prefix: str = Field(
         default="versions",
         description="Storage prefix for versions"
+    )
+    
+    # Cookie Security Settings (for httpOnly cookies)
+    cookie_secure: bool = Field(
+        default_factory=lambda: os.getenv("COOKIE_SECURE", "false").lower() == "true",
+        description="Set Secure flag on cookies (requires HTTPS)"
+    )
+    cookie_samesite: str = Field(
+        default_factory=lambda: os.getenv("COOKIE_SAMESITE", "lax"),
+        description="SameSite cookie attribute: 'strict', 'lax', or 'none'"
+    )
+    cookie_domain: Optional[str] = Field(
+        default_factory=lambda: os.getenv("COOKIE_DOMAIN", None),
+        description="Cookie domain (None = current domain only, use '.domain.com' for subdomains)"
+    )
+    
+    # Email/SMTP Settings
+    smtp_host: str = Field(
+        default_factory=lambda: os.getenv("SMTP_HOST", ""),
+        description="SMTP server hostname"
+    )
+    smtp_port: int = Field(
+        default_factory=lambda: int(os.getenv("SMTP_PORT", "587")),
+        description="SMTP server port"
+    )
+    smtp_user: str = Field(
+        default_factory=lambda: os.getenv("SMTP_USER", ""),
+        description="SMTP username/login"
+    )
+    smtp_password: str = Field(
+        default_factory=lambda: os.getenv("SMTP_PASSWORD", ""),
+        description="SMTP password"
+    )
+    smtp_from_email: str = Field(
+        default_factory=lambda: os.getenv("SMTP_FROM_EMAIL", ""),
+        description="Default from email address"
+    )
+    smtp_from_name: str = Field(
+        default_factory=lambda: os.getenv("SMTP_FROM_NAME", "Flash"),
+        description="Default from name"
+    )
+    smtp_use_tls: bool = Field(
+        default_factory=lambda: os.getenv("SMTP_USE_TLS", "true").lower() == "true",
+        description="Use TLS for SMTP connection"
+    )
+    smtp_enabled: bool = Field(
+        default_factory=lambda: os.getenv("SMTP_ENABLED", "false").lower() == "true",
+        description="Enable email sending (false = log to console)"
+    )
+    
+    # Password Reset Settings
+    frontend_url: str = Field(
+        default_factory=lambda: os.getenv("FRONTEND_URL", "http://localhost:3001"),
+        description="Frontend URL for password reset links"
+    )
+    password_reset_expiry_hours: int = Field(
+        default_factory=lambda: int(os.getenv("PASSWORD_RESET_EXPIRY_HOURS", "1")),
+        description="Password reset token expiry in hours"
     )
 
     model_config = {

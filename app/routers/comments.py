@@ -8,6 +8,7 @@ from app.db.session import get_db
 from app.core.dependencies import get_current_user
 from app.schemas import UserRead
 from app.services.comment_service import CommentService
+from app.services.permission_service import PermissionService
 from app.schemas.photo import (
     CommentCreate,
     CommentUpdate,
@@ -168,16 +169,47 @@ def delete_comment(
     current_user: UserRead = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Soft delete a comment (only by original author)."""
+    """
+    Soft delete a comment.
+    
+    Can be deleted by:
+    - Original author of the comment
+    - Users with canManageComments permission (moderators)
+    """
     try:
+        # Check if user has canManageComments permission
+        from app.db.models import User, Comment
+        user = db.query(User).filter(User.id == current_user.id).first()
+        can_manage = PermissionService.has_permission(user, "canManageComments") if user else False
+        
+        # Get the comment to check ownership
+        comment = db.query(Comment).filter(Comment.id == comment_id).first()
+        if not comment:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Comment not found"
+            )
+        
+        # Allow if user is author OR has canManageComments permission
+        is_author = str(comment.user_id) == str(current_user.id)
+        if not is_author and not can_manage:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not authorized to delete this comment"
+            )
+        
+        # Perform deletion (using user_id=None to bypass ownership check in service)
         success = CommentService.delete_comment(
             db=db,
             comment_id=comment_id,
-            user_id=current_user.id,
+            user_id=current_user.id if is_author else None,
+            force=can_manage,  # Add force parameter to service
         )
         
         return {"success": success, "message": "Comment deleted successfully"}
     
+    except HTTPException:
+        raise
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

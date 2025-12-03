@@ -6,8 +6,9 @@ from uuid import uuid4
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.core.dependencies import get_current_user, get_db
+from app.core.dependencies import get_current_user, get_db, is_studio_user
 from app.db.models import ServicePackage, User
+from app.core.permissions import require_manage_services
 from app.schemas.invoice import (
     ServicePackageCreate,
     ServicePackageResponse,
@@ -33,7 +34,7 @@ def get_service_packages(
     - **category**: Optional category filter (e.g., "Wedding", "Portrait")
     """
     # Determine which studio to query
-    if current_user.role == "studio":
+    if is_studio_user(current_user.role):
         target_studio_id = studio_id or current_user.studio_id
     elif studio_id:
         target_studio_id = studio_id
@@ -72,7 +73,7 @@ def get_service_package(
         )
     
     # Check permissions
-    if current_user.role == "studio" and package.studio_id != current_user.studio_id:
+    if is_studio_user(current_user.role) and package.studio_id != current_user.studio_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to access this service package"
@@ -85,18 +86,13 @@ def get_service_package(
 def create_service_package(
     package_data: ServicePackageCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_manage_services),
 ) -> ServicePackageResponse:
     """
     Create a new service package.
     
-    Only studio users can create service packages for their studio.
+    Requires canManageServices permission.
     """
-    if current_user.role != "studio":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can create service packages"
-        )
     
     # Create new package
     new_package = ServicePackage(
@@ -106,7 +102,11 @@ def create_service_package(
         category=package_data.category,
         description=package_data.description,
         price=package_data.price,
+        package_type_id=package_data.package_type_id,
         features=package_data.features,
+        restrictions=package_data.restrictions,
+        deliverables=package_data.deliverables,
+        lifecycle_config=package_data.lifecycle_config,
     )
     
     db.add(new_package)
@@ -121,18 +121,13 @@ def update_service_package(
     package_id: str,
     package_data: ServicePackageUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_manage_services),
 ) -> ServicePackageResponse:
     """
     Update a service package.
     
-    Only the owning studio can update their packages.
+    Requires canManageServices permission.
     """
-    if current_user.role != "studio":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can update service packages"
-        )
     
     # Get package
     package = db.query(ServicePackage).filter(ServicePackage.id == package_id).first()
@@ -159,8 +154,16 @@ def update_service_package(
         package.description = package_data.description
     if package_data.price is not None:
         package.price = package_data.price
+    if package_data.package_type_id is not None:
+        package.package_type_id = package_data.package_type_id
     if package_data.features is not None:
         package.features = package_data.features
+    if package_data.deliverables is not None:
+        package.deliverables = package_data.deliverables
+    if package_data.restrictions is not None:
+        package.restrictions = package_data.restrictions
+    if package_data.lifecycle_config is not None:
+        package.lifecycle_config = package_data.lifecycle_config
     
     db.commit()
     db.refresh(package)
@@ -172,18 +175,13 @@ def update_service_package(
 def delete_service_package(
     package_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_manage_services),
 ) -> None:
     """
     Delete a service package.
     
-    Only the owning studio can delete their packages.
+    Requires canManageServices permission.
     """
-    if current_user.role != "studio":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can delete service packages"
-        )
     
     # Get package
     package = db.query(ServicePackage).filter(ServicePackage.id == package_id).first()

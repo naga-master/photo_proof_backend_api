@@ -11,6 +11,12 @@ import uuid
 from app.db.session import get_db
 from app.db.models import Invoice, User, Client, Project
 from app.api.deps import get_current_user
+from app.core.permissions import (
+    require_view_invoices,
+    require_create_invoices,
+    require_edit_invoices,
+    require_delete_invoices,
+)
 
 
 router = APIRouter()
@@ -78,19 +84,13 @@ def list_invoices(
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_view_invoices),
 ) -> List[Invoice]:
     """
     List all invoices for the current studio.
     
-    Only studio users can access this endpoint.
+    Requires canViewInvoices permission.
     """
-    # Only studio users can list invoices
-    if not current_user.studio_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can list invoices"
-        )
     
     query = db.query(Invoice).filter(Invoice.studio_id == current_user.studio_id)
     
@@ -149,19 +149,13 @@ def get_invoice(
 def create_invoice(
     invoice_data: InvoiceCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_create_invoices),
 ) -> Invoice:
     """
     Create a new invoice.
     
-    Only studio users can create invoices.
+    Requires canCreateInvoices permission.
     """
-    # Only studio users can create invoices
-    if not current_user.studio_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can create invoices"
-        )
     
     # Verify client exists and belongs to studio
     client = (
@@ -251,20 +245,13 @@ def update_invoice(
     invoice_id: str,
     invoice_update: InvoiceUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_edit_invoices),
 ) -> Invoice:
     """
     Update an invoice.
     
-    Only studio users can update invoices.
-    Only Draft invoices can be fully edited.
+    Requires canEditInvoices permission. Only Draft invoices can be fully edited.
     """
-    # Only studio users can update
-    if not current_user.studio_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can update invoices"
-        )
     
     invoice = db.query(Invoice).filter(Invoice.id == invoice_id).first()
     
@@ -335,18 +322,13 @@ def update_invoice(
 def send_invoice(
     invoice_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_edit_invoices),
 ) -> Invoice:
     """
     Send invoice to client (marks as Unpaid).
     
-    Only studio users can send invoices.
+    Requires canEditInvoices permission.
     """
-    if not current_user.studio_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can send invoices"
-        )
     
     invoice = db.query(Invoice).filter(Invoice.id == invoice_id).first()
     
@@ -381,18 +363,13 @@ def send_invoice(
 def mark_invoice_paid(
     invoice_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_edit_invoices),
 ) -> Invoice:
     """
     Mark invoice as paid.
     
-    Only studio users can mark invoices as paid.
+    Requires canEditInvoices permission.
     """
-    if not current_user.studio_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only studio users can mark invoices as paid"
-        )
     
     invoice = db.query(Invoice).filter(Invoice.id == invoice_id).first()
     
@@ -419,13 +396,12 @@ def mark_invoice_paid(
 def delete_invoice(
     invoice_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_delete_invoices),
 ) -> None:
     """
     Delete an invoice.
     
-    Only studio users can delete invoices.
-    Only Draft invoices can be deleted.
+    Requires canDeleteInvoices permission. Only Draft invoices can be deleted.
     """
     if not current_user.studio_id:
         raise HTTPException(

@@ -6,6 +6,7 @@ Handles server-side chunked file uploads with assembly and validation.
 
 import hashlib
 import json
+import logging
 import shutil
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -17,6 +18,9 @@ from fastapi import UploadFile
 
 from app.db.models import Photo, Project
 from app.services.storage_service import StorageService
+
+
+logger = logging.getLogger(__name__)
 
 
 # Global session store (shared across all service instances)
@@ -101,10 +105,10 @@ class ChunkedUploadService:
         session_dir = self.temp_dir / session_id
         session_dir.mkdir(parents=True, exist_ok=True)
         
-        print(f"[ChunkedUpload] Session initialized: {session_id}")
-        print(f"  Filename: {filename}")
-        print(f"  Size: {file_size} bytes")
-        print(f"  Total chunks: {total_chunks}")
+        logger.debug(f"[ChunkedUpload] Session initialized: {session_id}")
+        logger.debug(f"  Filename: {filename}")
+        logger.debug(f"  Size: {file_size} bytes")
+        logger.debug(f"  Total chunks: {total_chunks}")
         
         return session
     
@@ -132,7 +136,7 @@ class ChunkedUploadService:
         
         # Check if chunk already uploaded
         if chunk_index in session.uploaded_chunks:
-            print(f"[ChunkedUpload] Chunk {chunk_index} already uploaded, skipping")
+            logger.debug(f"[ChunkedUpload] Chunk {chunk_index} already uploaded, skipping")
             return {
                 "session_id": session_id,
                 "chunk_index": chunk_index,
@@ -155,8 +159,8 @@ class ChunkedUploadService:
         session.uploaded_chunks.append(chunk_index)
         session.uploaded_chunks.sort()
         
-        print(f"[ChunkedUpload] Chunk {chunk_index} received ({len(chunk_data)} bytes)")
-        print(f"  Progress: {len(session.uploaded_chunks)}/{session.total_chunks}")
+        logger.debug(f"[ChunkedUpload] Chunk {chunk_index} received ({len(chunk_data)} bytes)")
+        logger.debug(f"  Progress: {len(session.uploaded_chunks)}/{session.total_chunks}")
         
         return {
             "session_id": session_id,
@@ -183,7 +187,7 @@ class ChunkedUploadService:
             missing = set(range(session.total_chunks)) - set(session.uploaded_chunks)
             raise ValueError(f"Missing chunks: {missing}")
         
-        print(f"[ChunkedUpload] Finalizing upload: {session_id}")
+        logger.debug(f"[ChunkedUpload] Finalizing upload: {session_id}")
         
         # Assemble chunks
         final_path = self.temp_dir / session_id / "final"
@@ -198,7 +202,7 @@ class ChunkedUploadService:
         if actual_size != session.file_size:
             raise ValueError(f"Assembled file size mismatch: expected {session.file_size}, got {actual_size}")
         
-        print(f"[ChunkedUpload] File assembled successfully ({actual_size} bytes)")
+        logger.debug(f"[ChunkedUpload] File assembled successfully ({actual_size} bytes)")
         
         # Extract image dimensions
         from PIL import Image
@@ -211,7 +215,7 @@ class ChunkedUploadService:
             image = Image.open(io.BytesIO(image_data))
             width, height = image.size
         except Exception as e:
-            print(f"[ChunkedUpload] Warning: Could not extract dimensions: {e}")
+            logger.debug(f"[ChunkedUpload] Warning: Could not extract dimensions: {e}")
             width, height = 1920, 1080  # Default
         
         # Save to permanent storage (originals/ subdirectory for nested structure)
@@ -223,7 +227,7 @@ class ChunkedUploadService:
         with open(final_path, 'rb') as f:
             url = await self.storage.save_file(f, storage_path)
         
-        print(f"[ChunkedUpload] File saved to storage: {storage_path}")
+        logger.debug(f"[ChunkedUpload] File saved to storage: {storage_path}")
         
         # Create Photo record
         photo = Photo(
@@ -263,24 +267,24 @@ class ChunkedUploadService:
         storage_full_path = self.storage.get_full_path(storage_path)
         
         try:
-            print(f"[ChunkedUpload] Generating quality variants for photo {photo.id}")
+            logger.debug(f"[ChunkedUpload] Generating quality variants for photo {photo.id}")
             variants = await image_service.generate_quality_variants(
                 db=db,
                 photo=photo,
                 original_file_path=storage_full_path
             )
-            print(f"[ChunkedUpload] Generated {len(variants)} variants for photo {photo.id}")
+            logger.debug(f"[ChunkedUpload] Generated {len(variants)} variants for photo {photo.id}")
             
             # Generate ThumbHash for instant placeholders
-            print(f"[ChunkedUpload] Generating ThumbHash for photo {photo.id}")
-            thumbhash = await image_service.generate_thumbhash(storage_full_path)
+            logger.debug(f"[ChunkedUpload] Generating ThumbHash for photo {photo.id}")
+            thumbhash = image_service.generate_thumbhash(storage_full_path)
             if thumbhash:
                 photo.thumbhash = thumbhash
-                print(f"[ChunkedUpload] ThumbHash generated for photo {photo.id}")
+                logger.debug(f"[ChunkedUpload] ThumbHash generated for photo {photo.id}")
             
         except Exception as e:
             # Don't fail upload if variant generation fails
-            print(f"[ChunkedUpload] Failed to generate variants for photo {photo.id}: {e}")
+            logger.debug(f"[ChunkedUpload] Failed to generate variants for photo {photo.id}: {e}")
             # Variants can be regenerated later via admin task
         
         db.commit()
@@ -292,7 +296,7 @@ class ChunkedUploadService:
         # Remove from sessions
         del _SESSIONS[session_id]
         
-        print(f"[ChunkedUpload] Upload finalized, photo ID: {photo.id}")
+        logger.debug(f"[ChunkedUpload] Upload finalized, photo ID: {photo.id}")
         
         return photo
     
@@ -305,7 +309,7 @@ class ChunkedUploadService:
         session_dir = self.temp_dir / session_id
         if session_dir.exists():
             shutil.rmtree(session_dir)
-            print(f"[ChunkedUpload] Cleaned up temp files for session: {session_id}")
+            logger.debug(f"[ChunkedUpload] Cleaned up temp files for session: {session_id}")
     
     def cleanup_expired_sessions(self) -> None:
         """Cleanup expired sessions (should be called periodically)"""
@@ -319,7 +323,7 @@ class ChunkedUploadService:
         for session_id in expired:
             self.cleanup_session(session_id)
             del _SESSIONS[session_id]
-            print(f"[ChunkedUpload] Expired session cleaned up: {session_id}")
+            logger.debug(f"[ChunkedUpload] Expired session cleaned up: {session_id}")
         
         if expired:
-            print(f"[ChunkedUpload] Cleaned up {len(expired)} expired sessions")
+            logger.debug(f"[ChunkedUpload] Cleaned up {len(expired)} expired sessions")

@@ -28,9 +28,16 @@ class ServicePackage(Base, TimestampMixin):
     features = Column(JSON, nullable=False)  # ["6 Hours Coverage", "200 Photos", ...]
     
     is_active = Column(Boolean, nullable=False, default=True, index=True)
+    
+    # Package Type and Restrictions (new columns for dynamic package system)
+    package_type_id = Column(String(36), ForeignKey("package_types.id", ondelete="SET NULL"), nullable=True, index=True)
+    restrictions = Column(JSON, nullable=True)  # Package-specific restrictions (photo limits, video limits, etc.)
+    deliverables = Column(JSON, nullable=True)  # Structured deliverable specifications
+    lifecycle_config = Column(JSON, nullable=True)  # Retention, archival, editing periods
 
     # Relationships
     studio = relationship("Studio", back_populates="service_packages")
+    package_type = relationship("PackageType", back_populates="service_packages", foreign_keys=[package_type_id])
     projects = relationship("Project", back_populates="package")
 
     def __repr__(self):

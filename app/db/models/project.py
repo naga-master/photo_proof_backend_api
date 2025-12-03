@@ -1,6 +1,6 @@
 """Project and Folder models."""
 
-from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, Date, Text, Numeric
+from sqlalchemy import Column, String, Integer, Boolean, ForeignKey, Date, Text, Numeric, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
@@ -23,6 +23,7 @@ class Project(Base, TimestampMixin):
     
     # Cached counts for performance
     photo_count = Column(Integer, nullable=False, default=0)
+    total_comments = Column(Integer, nullable=False, default=0)
     
     # Gallery settings
     is_locked = Column(Boolean, nullable=False, default=False, index=True)
@@ -39,6 +40,14 @@ class Project(Base, TimestampMixin):
     
     # Folder structure flag
     has_folders = Column(Boolean, nullable=False, default=False)
+    
+    # Package snapshot and usage tracking
+    package_snapshot = Column(JSON, nullable=True)  # Frozen copy of package config at creation
+    usage_stats = Column(JSON, nullable=True)  # Tracks usage vs limits
+    
+    # Gallery password protection
+    is_password_protected = Column(Boolean, nullable=False, default=False)
+    gallery_password = Column(String(255), nullable=True)  # Hashed password
 
     # Relationships
     studio = relationship("Studio", back_populates="projects")
@@ -48,6 +57,8 @@ class Project(Base, TimestampMixin):
     folders = relationship("Folder", back_populates="project", cascade="all, delete-orphan")
     photos = relationship("Photo", back_populates="project", foreign_keys="Photo.project_id", cascade="all, delete-orphan")
     invoices = relationship("Invoice", back_populates="project")
+    contracts = relationship("Contract", back_populates="project", cascade="all, delete-orphan")
+    members = relationship("ProjectMember", back_populates="project", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Project(id={self.id}, title={self.title}, client_id={self.client_id})>"

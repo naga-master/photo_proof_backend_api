@@ -42,6 +42,27 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class ForgotPasswordRequest(BaseModel):
+    """Request to initiate password reset."""
+    email: EmailStr
+
+
+class ForgotPasswordResponse(BaseModel):
+    """Response for forgot password request."""
+    message: str
+
+
+class ResetPasswordRequest(BaseModel):
+    """Request to reset password with token."""
+    token: str
+    new_password: str = Field(..., min_length=6, max_length=255)
+
+
+class ResetPasswordResponse(BaseModel):
+    """Response for password reset."""
+    message: str
+
+
 # ============================================================================
 # USER SCHEMAS
 # ============================================================================
@@ -76,6 +97,7 @@ class UserResponse(UserBase):
     avatar_url: Optional[str] = None
     is_active: bool
     email_verified: bool
+    permissions: Optional[dict] = None  # RBAC permissions
     last_login_at: Optional[datetime] = None
     created_at: datetime
     updated_at: datetime
@@ -172,6 +194,8 @@ class ClientResponse(ClientBase):
     studio_id: str
     user_id: Optional[str] = None
     username: Optional[str] = None
+    password: Optional[str] = None  # Plain password (only returned during creation/reset)
+    has_password: bool = False  # Indicates if client has a password set
     avatar_url: Optional[str] = None
     profile_picture: Optional[str] = None
     whatsapp_opt_in: bool

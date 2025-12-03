@@ -8,29 +8,32 @@ from fastapi import FastAPI, Request, status
 from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from app.api import api_router
 from app.core.config import get_settings
 from app.core.logging_config import configure_logging
 from app.db.init_db import init_db
+from app.middleware.tenant import tenant_middleware
+from app.middleware.security import security_headers_middleware
+from app.middleware.dynamic_cors import is_origin_allowed, get_all_allowed_origins
 
 
 logger = logging.getLogger(__name__)
 
 
 def origin_matches_pattern(origin: str, patterns: list[str]) -> bool:
-    """Check if origin matches any of the allowed patterns (supports wildcards)."""
-    for pattern in patterns:
-        if pattern == origin:
-            return True
-        # Convert wildcard pattern to regex
-        if '*' in pattern:
-            regex_pattern = pattern.replace('.', r'\.').replace('*', r'[^:/]+')
-            if re.match(f'^{regex_pattern}$', origin):
-                return True
-    return False
+    """
+    Check if origin matches any of the allowed patterns.
+    
+    This function now uses the dynamic CORS module which supports:
+    1. Static origins from config
+    2. Wildcard patterns (e.g., http://*.photoapp.local:3001)
+    3. Custom domains from database (studio_domains table)
+    """
+    # Use the dynamic CORS checker which includes database domains
+    return is_origin_allowed(origin)
 
 
 def create_app() -> FastAPI:
@@ -52,7 +55,8 @@ def create_app() -> FastAPI:
         headers = {
             "Cache-Control": "no-cache, no-store, must-revalidate",  # Prevent caching errors
             "Pragma": "no-cache",
-            "Expires": "0"
+            "Expires": "0",
+            "Vary": "Origin",  # Cache separately per origin to prevent CORS issues
         }
         if origin and origin_matches_pattern(origin, settings.cors_origins):
             headers["Access-Control-Allow-Origin"] = origin
@@ -63,6 +67,32 @@ def create_app() -> FastAPI:
         return JSONResponse(
             status_code=exc.status_code,
             content={"detail": exc.detail},
+            headers=headers
+        )
+
+    # Add generic exception handler to ensure ALL errors get CORS headers
+    @application.exception_handler(Exception)
+    async def generic_exception_handler(request: Request, exc: Exception):
+        """Ensure ALL errors (not just HTTPException) get CORS headers."""
+        origin = request.headers.get("origin", "")
+        
+        headers = {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+            "Vary": "Origin",  # Cache separately per origin to prevent CORS issues
+        }
+        if origin and origin_matches_pattern(origin, settings.cors_origins):
+            headers["Access-Control-Allow-Origin"] = origin
+            headers["Access-Control-Allow-Credentials"] = "true"
+            headers["Access-Control-Allow-Methods"] = "*"
+            headers["Access-Control-Allow-Headers"] = "*"
+        
+        logger.error(f"Unhandled exception: {exc}", exc_info=True)
+        
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "Internal server error"},
             headers=headers
         )
 
@@ -104,11 +134,57 @@ def create_app() -> FastAPI:
         minimum_size=1000,  # Only compress responses >1KB
         compresslevel=6     # Balance between speed and compression (1-9)
     )
+    
+    # Multi-tenant middleware - detect studio from domain
+    application.middleware("http")(tenant_middleware)
+    logger.info("✅ Tenant detection middleware enabled")
+    
+    # Security headers middleware - adds HSTS, X-Frame-Options, etc. in production
+    application.middleware("http")(security_headers_middleware)
+    logger.info("✅ Security headers middleware enabled")
+
+    # Explicit CORS preflight middleware - handles OPTIONS before any authentication
+    # This runs FIRST (added last = runs first in LIFO order)
+    @application.middleware("http")
+    async def cors_preflight_middleware(request: Request, call_next):
+        """Handle CORS preflight requests explicitly before any auth checks."""
+        if request.method == "OPTIONS":
+            origin = request.headers.get("origin", "")
+            if origin and origin_matches_pattern(origin, settings.cors_origins):
+                return Response(
+                    status_code=200,
+                    headers={
+                        "Access-Control-Allow-Origin": origin,
+                        "Access-Control-Allow-Credentials": "true",
+                        "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+                        "Access-Control-Allow-Headers": "Content-Type,Authorization,Accept,Origin,X-Requested-With,Cache-Control,X-Studio-ID",
+                        "Access-Control-Max-Age": "86400",  # Cache preflight for 24 hours
+                        "Vary": "Origin",  # Cache separately per origin
+                    }
+                )
+        response = await call_next(request)
+        # Add Vary: Origin to ALL responses to prevent CORS caching issues
+        # This tells browsers to cache responses separately for each origin
+        response.headers["Vary"] = "Origin"
+        return response
+    logger.info("✅ CORS preflight middleware enabled")
 
     uploads_dir = Path(settings.uploads_directory)
     uploads_dir.mkdir(parents=True, exist_ok=True)
 
     init_db()
+    
+    # Clean up expired notifications on startup
+    try:
+        from app.db.session import session_scope
+        from app.services.notification_cleanup_service import NotificationCleanupService
+        
+        with session_scope() as db:
+            results = NotificationCleanupService.cleanup_expired(db)
+            if results > 0:
+                logger.info(f"✅ Cleaned up {results} expired notification(s)")
+    except Exception as e:
+        logger.warning(f"⚠️ Notification cleanup failed: {e}")
     
     # Include API router (which now handles /uploads via files router with proper CORS)
     application.include_router(api_router)

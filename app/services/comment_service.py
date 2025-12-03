@@ -6,10 +6,69 @@ from sqlalchemy import and_
 from datetime import datetime
 
 from app.db.models import Comment, User, Client, Studio, Photo
+from app.db.models.project import Project
+from app.services.notification_service import NotificationService
 
 
 class CommentService:
     """Comment service with nested reply tree building."""
+    
+    @staticmethod
+    def _get_or_create_user_for_client(db: Session, client_id: int) -> str:
+        """
+        Get or create a shadow User record for a client.
+        This allows clients to use features that require a User record (comments, favorites, etc.)
+        """
+        import uuid
+        
+        # Find the client
+        client = db.query(Client).filter(Client.id == client_id).first()
+        if not client:
+            raise ValueError(f"Client {client_id} not found")
+        
+        # If client already has a user_id, use it
+        if client.user_id:
+            return client.user_id
+        
+        # Create a shadow User record for this client
+        shadow_user_id = str(uuid.uuid4())
+        shadow_user = User(
+            id=shadow_user_id,
+            email=f"client_{client_id}@internal.photoproof.com",  # Internal email
+            username=f"client_{client_id}",
+            name=client.name,
+            password_hash=None,  # No password - auth is via Client table
+            role="client",
+            studio_id=client.studio_id,
+            is_active=True,
+            email_verified=True,
+        )
+        
+        db.add(shadow_user)
+        db.flush()
+        
+        # Link client to shadow user
+        client.user_id = shadow_user_id
+        db.commit()
+        
+        return shadow_user_id
+    
+    @staticmethod
+    def _resolve_user_id(db: Session, user_id: str) -> str:
+        """
+        Resolve user_id for clients using new auth format.
+        Returns a valid User ID that can be stored in the database.
+        """
+        # Check if this is a new-style client ID (format: "client_{id}")
+        if isinstance(user_id, str) and user_id.startswith("client_"):
+            try:
+                client_id = int(user_id.replace("client_", ""))
+                return CommentService._get_or_create_user_for_client(db, client_id)
+            except (ValueError, Exception) as e:
+                raise ValueError(f"Invalid client ID format: {user_id}")
+        
+        # Regular user ID - return as-is
+        return user_id
     
     @staticmethod
     def create_comment(
@@ -30,9 +89,15 @@ class CommentService:
             parent_comment_id: Parent comment for storage hierarchy
             reply_to_id: Specific comment being replied to (for UI context)
         """
+        # Store original user_id for notification (before resolving)
+        original_user_id = user_id
+        
+        # Resolve user_id for clients
+        resolved_user_id = CommentService._resolve_user_id(db, user_id)
+        
         comment = Comment(
             photo_id=photo_id,
-            user_id=user_id,
+            user_id=resolved_user_id,
             text=text,
             parent_comment_id=parent_comment_id,
             reply_to_id=reply_to_id,
@@ -44,42 +109,113 @@ class CommentService:
         
         # Update photo comment count
         photo = db.query(Photo).filter(Photo.id == photo_id).first()
+        project = None
         if photo:
             photo.comment_count = db.query(Comment).filter(
                 Comment.photo_id == photo_id,
                 Comment.is_deleted == None  # is_deleted is DATETIME, NULL means not deleted
             ).count()
+            
+            # Update project total_comments
+            project = db.query(Project).filter(Project.id == photo.project_id).first()
+            if project:
+                project.total_comments = db.query(Comment).join(Photo).filter(
+                    Photo.project_id == project.id,
+                    Comment.is_deleted == None
+                ).count()
+            
             db.commit()
+        
+        # Create notification for the other party
+        if photo and project:
+            try:
+                # Determine commenter info
+                commenter_client_id = None
+                commenter_user_id = None
+                commenter_type = "studio"
+                commenter_name = "Someone"
+                
+                if original_user_id.startswith("client_"):
+                    # Client commenting
+                    commenter_client_id = int(original_user_id.replace("client_", ""))
+                    commenter_type = "client"
+                    client = db.query(Client).filter(Client.id == commenter_client_id).first()
+                    if client:
+                        commenter_name = client.name
+                else:
+                    # Studio user commenting
+                    commenter_user_id = original_user_id
+                    commenter_type = "studio"
+                    user = db.query(User).filter(User.id == commenter_user_id).first()
+                    if user:
+                        commenter_name = user.name
+                
+                NotificationService.create_comment_notification(
+                    db=db,
+                    comment_id=comment.id,
+                    comment_text=text,
+                    photo_id=photo_id,
+                    project_id=project.id,
+                    commenter_user_id=commenter_user_id,
+                    commenter_client_id=commenter_client_id,
+                    commenter_name=commenter_name,
+                    commenter_type=commenter_type,
+                )
+            except Exception as e:
+                # Don't fail comment creation if notification fails
+                print(f"[CommentService] Failed to create notification: {e}")
         
         return comment
     
     @staticmethod
     def get_user_info(db: Session, user_id: str) -> dict:
         """Get user information for comment author."""
-        # Check if user is a Studio
-        studio = db.query(Studio).filter(Studio.id == user_id).first()
-        if studio:
+        # Handle new-style client IDs (format: "client_{id}")
+        if isinstance(user_id, str) and user_id.startswith("client_"):
+            try:
+                client_id = int(user_id.replace("client_", ""))
+                client = db.query(Client).filter(Client.id == client_id).first()
+                if client:
+                    return {
+                        "name": client.name,
+                        "avatar": client.avatar_url or client.profile_picture,
+                        "role": "client",
+                    }
+            except ValueError:
+                pass
+        
+        # Get user from User table
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
             return {
-                "name": studio.studio_name,
-                "avatar": studio.logo,
+                "name": "Unknown User",
+                "avatar": None,
+                "role": "unknown",
+            }
+        
+        # For studio users - return the USER's actual name, not studio name
+        if user.role in ["studio_owner", "studio_admin", "studio_photographer", "studio"]:
+            return {
+                "name": user.name,
+                "avatar": user.avatar_url,
                 "role": "studio",
             }
         
-        # Check if user is a Client (via User table)
-        user = db.query(User).filter(User.id == user_id).first()
-        if user:
+        # Check if user is a Client
+        if user.role == "client":
             client = db.query(Client).filter(Client.user_id == user.id).first()
             if client:
                 return {
                     "name": client.name,
-                    "avatar": client.avatar,
+                    "avatar": client.avatar_url or client.profile_picture,
                     "role": "client",
                 }
         
+        # Fallback for other user types
         return {
-            "name": "Unknown User",
-            "avatar": None,
-            "role": "unknown",
+            "name": user.name,
+            "avatar": user.avatar_url,
+            "role": user.role,
         }
     
     @staticmethod
@@ -176,9 +312,12 @@ class CommentService:
         text: str,
     ) -> Comment:
         """Update a comment (only by original author)."""
+        # Resolve user_id for clients (they may have a shadow user)
+        resolved_user_id = CommentService._resolve_user_id(db, user_id)
+        
         comment = db.query(Comment).filter(
             Comment.id == comment_id,
-            Comment.user_id == user_id,
+            Comment.user_id == resolved_user_id,
             Comment.is_deleted == None,  # is_deleted is DATETIME, NULL means not deleted
         ).first()
         
@@ -199,13 +338,28 @@ class CommentService:
         db: Session,
         comment_id: int,
         user_id: str,
+        force: bool = False,
     ) -> bool:
-        """Soft delete a comment (only by original author)."""
-        comment = db.query(Comment).filter(
-            Comment.id == comment_id,
-            Comment.user_id == user_id,
-            Comment.is_deleted == None,  # is_deleted is DATETIME, NULL means not deleted
-        ).first()
+        """
+        Soft delete a comment.
+        
+        Args:
+            force: If True, bypasses ownership check (for moderators with canManageComments)
+        """
+        if force:
+            # Moderator deletion - just find the comment
+            comment = db.query(Comment).filter(
+                Comment.id == comment_id,
+                Comment.is_deleted == None,
+            ).first()
+        else:
+            # Author deletion - check ownership
+            resolved_user_id = CommentService._resolve_user_id(db, user_id)
+            comment = db.query(Comment).filter(
+                Comment.id == comment_id,
+                Comment.user_id == resolved_user_id,
+                Comment.is_deleted == None,
+            ).first()
         
         if not comment:
             raise ValueError("Comment not found or unauthorized")
@@ -220,6 +374,14 @@ class CommentService:
                 Comment.photo_id == comment.photo_id,
                 Comment.is_deleted == None  # is_deleted is DATETIME, NULL means not deleted
             ).count()
+            
+            # Update project total_comments
+            project = db.query(Project).filter(Project.id == photo.project_id).first()
+            if project:
+                project.total_comments = db.query(Comment).join(Photo).filter(
+                    Photo.project_id == project.id,
+                    Comment.is_deleted == None
+                ).count()
         
         db.commit()
         

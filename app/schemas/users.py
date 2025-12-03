@@ -15,6 +15,7 @@ class UserRead(BaseModel):
     email: str
     username: str  # Added missing username field
     role: UserRole
+    permissions: Optional[dict] = None  # RBAC permissions
     avatar_url: Optional[str] = None
     phone: Optional[str] = None
     last_login_at: Optional[datetime] = None
@@ -70,7 +71,7 @@ class ClientRead(BaseModel):
     company_name: Optional[str] = None
     notes: Optional[str] = None
     status: ClientStatus
-    total_projects: int
+    total_projects: Optional[int] = 0
     last_project_date: Optional[date] = None
     created_at: datetime
     updated_at: datetime

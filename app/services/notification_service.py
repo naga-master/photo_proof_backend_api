@@ -1,314 +1,379 @@
-"""Notification service for real-time alerts and messaging."""
+"""Notification service for creating and managing notifications."""
 
-from typing import List, Dict, Any, Optional
+import uuid
 from datetime import datetime, timedelta
+from typing import Optional, List, Dict, Any
 from sqlalchemy.orm import Session
-from enum import Enum
+from sqlalchemy import or_
 
-from app.schemas.notifications import (
-    Notification,
-    NotificationRequest,
-    NotificationTemplate,
-    MessageThread,
-    MessageRequest,
-    NotificationPreferences,
-    NotificationStatus,
-    NotificationType
-)
+from app.db.models.notification import Notification
+from app.db.models.user import User, Client
+from app.db.models.project import Project
+from app.db.models.photo import Photo
+
+
+# Category configuration for notifications
+CATEGORY_CONFIG = {
+    'upload': {'retention_days': 90, 'email_default': False, 'priority': 'low'},
+    'comment': {'retention_days': 365, 'email_default': True, 'priority': 'normal'},
+    'order': {'retention_days': 730, 'email_default': True, 'priority': 'high'},
+    'contract': {'retention_days': 730, 'email_default': True, 'priority': 'high'},
+    'payment': {'retention_days': 730, 'email_default': True, 'priority': 'high'},
+    'download': {'retention_days': 90, 'email_default': False, 'priority': 'low'},
+    'system': {'retention_days': 730, 'email_default': True, 'priority': 'normal'},
+}
+
+
+def _format_timestamp(dt: datetime) -> str:
+    """Format datetime as human-readable relative timestamp."""
+    now = datetime.utcnow()
+    diff = now - dt
+    
+    minutes = int(diff.total_seconds() / 60)
+    hours = int(diff.total_seconds() / 3600)
+    days = int(diff.total_seconds() / 86400)
+    
+    if minutes < 1:
+        return "Just now"
+    if minutes < 60:
+        return f"{minutes} minute{'s' if minutes > 1 else ''} ago"
+    if hours < 24:
+        return f"{hours} hour{'s' if hours > 1 else ''} ago"
+    if days < 7:
+        return f"{days} day{'s' if days > 1 else ''} ago"
+    return dt.strftime("%b %d, %Y")
 
 
 class NotificationService:
-    """Service for managing notifications and messaging."""
+    """Service for notification operations."""
     
-    def __init__(self, db: Session):
-        self.db = db
+    @staticmethod
+    def notify(
+        db: Session,
+        category: str,
+        event_type: str,
+        recipients: List[Dict[str, Any]],
+        title: str,
+        message: str,
+        project_id: Optional[int] = None,
+        entity_type: Optional[str] = None,
+        entity_id: Optional[str] = None,
+        actor_name: Optional[str] = None,
+        actor_type: Optional[str] = None,
+        extra_data: Optional[Dict[str, Any]] = None,
+        photo_id: Optional[int] = None,
+        comment_id: Optional[int] = None,
+    ) -> List[Notification]:
+        """
+        Unified method to create notifications.
+        
+        Args:
+            category: 'upload', 'comment', 'order', 'contract', 'payment', 'system'
+            event_type: Specific event like 'upload_complete', 'comment_new', etc.
+            recipients: List of dicts with 'user_id' or 'client_id'
+            title: Short title like "Upload Complete"
+            message: Detailed message like "87/101 files uploaded"
+            project_id: Related project if any
+            entity_type: 'photo', 'order', 'contract', etc.
+            entity_id: ID of the related entity
+            actor_name: Name of who triggered the notification
+            actor_type: 'studio', 'client', or 'system'
+            extra_data: Additional JSON data for category-specific info
+            photo_id: Related photo if any
+            comment_id: Related comment if any
+        
+        Returns:
+            List of created Notification objects
+        """
+        notifications = []
+        config = CATEGORY_CONFIG.get(category, {'retention_days': 365, 'email_default': True, 'priority': 'normal'})
+        expires_at = datetime.utcnow() + timedelta(days=config.get('retention_days', 365))
+        
+        for recipient in recipients:
+            notification = Notification(
+                id=str(uuid.uuid4()),
+                user_id=recipient.get('user_id'),
+                client_id=recipient.get('client_id'),
+                category=category,
+                event_type=event_type,
+                type=category,  # For backward compatibility
+                title=title,
+                message=message,
+                text=title,  # For backward compatibility
+                context=message,  # For backward compatibility
+                timestamp=_format_timestamp(datetime.utcnow()),
+                is_read=False,
+                priority=config.get('priority', 'normal'),
+                project_id=project_id,
+                entity_type=entity_type,
+                entity_id=entity_id,
+                photo_id=photo_id,
+                comment_id=comment_id,
+                actor_name=actor_name,
+                actor_type=actor_type,
+                extra_data=extra_data,
+                email_enabled=config.get('email_default', True),
+                expires_at=expires_at,
+            )
+            db.add(notification)
+            notifications.append(notification)
+        
+        db.commit()
+        return notifications
     
-    def create_notification(
-        self, 
-        studio_id: str, 
-        request: NotificationRequest
+    @staticmethod
+    def create_upload_notification(
+        db: Session,
+        user_id: str,
+        project_id: int,
+        project_name: str,
+        total_files: int,
+        completed_files: int,
+        failed_files: int,
+        status: str,  # 'success', 'partial', 'failed'
     ) -> Notification:
-        """Create a new notification."""
-        notification = Notification(
-            id=f"notif_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}",
-            studio_id=studio_id,
-            user_id=request.user_id,
-            type=request.type,
-            title=request.title,
-            message=request.message,
-            data=request.data or {},
-            status=NotificationStatus.UNREAD,
-            priority=request.priority or "medium",
-            scheduled_for=request.scheduled_for,
-            expires_at=request.expires_at,
-            created_at=datetime.utcnow()
-        )
+        """
+        Create a notification for upload completion.
+        Called once per upload batch, not per file.
+        """
+        if status == 'success':
+            title = "Upload Complete"
+            message = f"All {total_files} files uploaded to {project_name}"
+        elif status == 'partial':
+            title = "Upload Partially Complete"
+            message = f"{completed_files}/{total_files} files uploaded to {project_name} ({failed_files} failed)"
+        else:
+            title = "Upload Failed"
+            message = f"Failed to upload files to {project_name}"
         
-        return notification
-    
-    def get_notifications(
-        self, 
-        user_id: str,
-        status: Optional[NotificationStatus] = None,
-        type: Optional[NotificationType] = None,
-        page: int = 1,
-        limit: int = 20
-    ) -> Dict[str, Any]:
-        """Get user notifications with filtering."""
-        # Mock notifications
-        notifications = [
-            Notification(
-                id="notif_001",
-                studio_id="studio_001",
-                user_id=user_id,
-                type=NotificationType.PROJECT_UPDATE,
-                title="Gallery Ready",
-                message="Your wedding gallery is now ready for viewing",
-                data={"project_id": "proj_001", "gallery_url": "/gallery/proj_001"},
-                status=NotificationStatus.UNREAD,
-                priority="high",
-                created_at=datetime.utcnow() - timedelta(hours=2)
-            ),
-            Notification(
-                id="notif_002",
-                studio_id="studio_001", 
-                user_id=user_id,
-                type=NotificationType.PAYMENT_RECEIVED,
-                title="Payment Received",
-                message="Payment of $2,500 received for Invoice #INV-001",
-                data={"invoice_id": "inv_001", "amount": 2500.00},
-                status=NotificationStatus.READ,
-                priority="medium",
-                created_at=datetime.utcnow() - timedelta(days=1)
-            ),
-            Notification(
-                id="notif_003",
-                studio_id="studio_001",
-                user_id=user_id,
-                type=NotificationType.CLIENT_MESSAGE,
-                title="New Message",
-                message="Sarah Davis sent you a message about the portrait session",
-                data={"client_id": "client_002", "message_id": "msg_001"},
-                status=NotificationStatus.UNREAD,
-                priority="medium",
-                created_at=datetime.utcnow() - timedelta(hours=6)
-            )
-        ]
-        
-        # Apply filters
-        if status:
-            notifications = [n for n in notifications if n.status == status]
-        if type:
-            notifications = [n for n in notifications if n.type == type]
-        
-        return {
-            "notifications": notifications,
-            "total": len(notifications),
-            "unread_count": len([n for n in notifications if n.status == NotificationStatus.UNREAD]),
-            "page": page,
-            "limit": limit
-        }
-    
-    def mark_as_read(self, notification_id: str, user_id: str) -> Notification:
-        """Mark notification as read."""
-        # Mock implementation
-        notification = Notification(
-            id=notification_id,
-            studio_id="studio_001",
-            user_id=user_id,
-            type=NotificationType.PROJECT_UPDATE,
-            title="Gallery Ready",
-            message="Your wedding gallery is now ready for viewing",
-            status=NotificationStatus.READ,
-            priority="high",
-            created_at=datetime.utcnow() - timedelta(hours=2),
-            read_at=datetime.utcnow()
-        )
-        
-        return notification
-    
-    def mark_all_as_read(self, user_id: str) -> Dict[str, Any]:
-        """Mark all notifications as read for user."""
-        return {
-            "user_id": user_id,
-            "marked_count": 5,
-            "marked_at": datetime.utcnow().isoformat()
-        }
-    
-    def delete_notification(self, notification_id: str, user_id: str) -> bool:
-        """Delete a notification."""
-        # Mock deletion
-        return True
-    
-    def send_email_notification(
-        self, 
-        template_id: str, 
-        recipient: str, 
-        data: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """Send email notification using template."""
-        # Mock email sending
-        return {
-            "message_id": f"email_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}",
-            "template_id": template_id,
-            "recipient": recipient,
-            "status": "sent",
-            "sent_at": datetime.utcnow().isoformat(),
-            "delivery_status": "delivered"
-        }
-    
-    def create_message_thread(
-        self, 
-        studio_id: str, 
-        client_id: str, 
-        project_id: Optional[str] = None
-    ) -> MessageThread:
-        """Create a new message thread with client."""
-        thread = MessageThread(
-            id=f"thread_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}",
-            studio_id=studio_id,
-            client_id=client_id,
+        notifications = NotificationService.notify(
+            db=db,
+            category='upload',
+            event_type=f'upload_{status}',
+            recipients=[{'user_id': user_id}],
+            title=title,
+            message=message,
             project_id=project_id,
-            subject=f"Discussion about Project {project_id}" if project_id else "General Discussion",
-            status="active",
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow()
-        )
-        
-        return thread
-    
-    def send_message(
-        self, 
-        thread_id: str, 
-        sender_id: str, 
-        request: MessageRequest
-    ) -> Dict[str, Any]:
-        """Send message in thread."""
-        message = {
-            "id": f"msg_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}",
-            "thread_id": thread_id,
-            "sender_id": sender_id,
-            "content": request.content,
-            "attachments": request.attachments or [],
-            "sent_at": datetime.utcnow().isoformat(),
-            "status": "delivered"
-        }
-        
-        return message
-    
-    def get_message_threads(
-        self, 
-        user_id: str,
-        status: Optional[str] = None
-    ) -> List[MessageThread]:
-        """Get message threads for user."""
-        # Mock threads
-        threads = [
-            MessageThread(
-                id="thread_001",
-                studio_id="studio_001",
-                client_id="client_001",
-                project_id="proj_001",
-                subject="Wedding Photography Discussion",
-                status="active",
-                last_message_at=datetime.utcnow() - timedelta(hours=2),
-                unread_count=2,
-                created_at=datetime.utcnow() - timedelta(days=7)
-            ),
-            MessageThread(
-                id="thread_002",
-                studio_id="studio_001",
-                client_id="client_002",
-                project_id="proj_002",
-                subject="Portrait Session Follow-up",
-                status="active",
-                last_message_at=datetime.utcnow() - timedelta(days=1),
-                unread_count=0,
-                created_at=datetime.utcnow() - timedelta(days=3)
-            )
-        ]
-        
-        if status:
-            threads = [t for t in threads if t.status == status]
-        
-        return threads
-    
-    def get_notification_templates(self, studio_id: str) -> List[NotificationTemplate]:
-        """Get available notification templates."""
-        templates = [
-            NotificationTemplate(
-                id="gallery_ready",
-                name="Gallery Ready",
-                subject="Your photos are ready!",
-                content="Hi {{client_name}}, your {{project_type}} gallery is now ready for viewing. Click here to access: {{gallery_url}}",
-                type=NotificationType.PROJECT_UPDATE,
-                variables=["client_name", "project_type", "gallery_url"],
-                is_active=True
-            ),
-            NotificationTemplate(
-                id="payment_reminder",
-                name="Payment Reminder",
-                subject="Payment Reminder - Invoice {{invoice_number}}",
-                content="Hello {{client_name}}, this is a friendly reminder that your payment of ${{amount}} for Invoice {{invoice_number}} is due on {{due_date}}.",
-                type=NotificationType.PAYMENT_REMINDER,
-                variables=["client_name", "invoice_number", "amount", "due_date"],
-                is_active=True
-            ),
-            NotificationTemplate(
-                id="session_reminder",
-                name="Session Reminder",
-                subject="Upcoming Photography Session",
-                content="Hi {{client_name}}, this is a reminder about your {{session_type}} session scheduled for {{session_date}} at {{session_time}}. Location: {{location}}",
-                type=NotificationType.APPOINTMENT_REMINDER,
-                variables=["client_name", "session_type", "session_date", "session_time", "location"],
-                is_active=True
-            )
-        ]
-        
-        return templates
-    
-    def update_notification_preferences(
-        self, 
-        user_id: str, 
-        preferences: NotificationPreferences
-    ) -> NotificationPreferences:
-        """Update user notification preferences."""
-        # Mock preferences update
-        updated_preferences = NotificationPreferences(
-            user_id=user_id,
-            email_notifications=preferences.email_notifications,
-            push_notifications=preferences.push_notifications,
-            sms_notifications=preferences.sms_notifications,
-            notification_types=preferences.notification_types,
-            quiet_hours_start=preferences.quiet_hours_start,
-            quiet_hours_end=preferences.quiet_hours_end,
-            updated_at=datetime.utcnow()
-        )
-        
-        return updated_preferences
-    
-    def get_notification_analytics(self, studio_id: str) -> Dict[str, Any]:
-        """Get notification analytics and metrics."""
-        return {
-            "total_sent": 1247,
-            "delivery_rate": 98.5,
-            "open_rate": 76.3,
-            "click_rate": 23.7,
-            "unsubscribe_rate": 0.8,
-            "by_type": {
-                "project_updates": 45.2,
-                "payment_reminders": 23.1,
-                "appointment_reminders": 18.7,
-                "promotional": 13.0
+            actor_type='system',
+            extra_data={
+                'total': total_files,
+                'success': completed_files,
+                'failed': failed_files,
+                'status': status,
+                'project_name': project_name,
             },
-            "engagement_trends": [
-                {"date": "2024-01-01", "sent": 45, "opened": 34, "clicked": 12},
-                {"date": "2024-01-02", "sent": 38, "opened": 29, "clicked": 8},
-                {"date": "2024-01-03", "sent": 52, "opened": 41, "clicked": 15}
-            ],
-            "best_sending_times": {
-                "day_of_week": "Tuesday",
-                "hour_of_day": 10,
-                "open_rate": 82.4
-            }
-        }
+        )
+        
+        return notifications[0] if notifications else None
+    
+    @staticmethod
+    def create_comment_notification(
+        db: Session,
+        comment_id: int,
+        comment_text: str,
+        photo_id: int,
+        project_id: int,
+        commenter_user_id: Optional[str] = None,
+        commenter_client_id: Optional[int] = None,
+        commenter_name: str = "Someone",
+        commenter_type: str = "client"  # 'studio' or 'client'
+    ) -> List[Notification]:
+        """
+        Create notification(s) when a comment is posted.
+        
+        - If commenter is client → notify all studio users
+        - If commenter is studio → notify the project's client
+        """
+        notifications = []
+        
+        # Get project to find studio_id and client_id
+        project = db.query(Project).filter(Project.id == project_id).first()
+        if not project:
+            return notifications
+        
+        # Get photo for context
+        photo = db.query(Photo).filter(Photo.id == photo_id).first()
+        photo_name = photo.original_filename if photo else "a photo"
+        
+        # Build notification content
+        text = f"{commenter_name} commented on"
+        context = f"{photo_name} in {project.title}"
+        
+        if commenter_type == "client":
+            # Client commented → notify studio staff only (not other clients)
+            studio_users = db.query(User).filter(
+                User.studio_id == project.studio_id,
+                User.role.in_(['studio_owner', 'studio_admin', 'studio_photographer', 'studio'])
+            ).all()
+            
+            for user in studio_users:
+                notification = Notification(
+                    id=str(uuid.uuid4()),
+                    user_id=user.id,
+                    client_id=None,
+                    type="comment",
+                    text=text,
+                    context=context,
+                    timestamp=_format_timestamp(datetime.utcnow()),
+                    is_read=False,
+                    project_id=project_id,
+                    photo_id=photo_id,
+                    comment_id=comment_id,
+                    actor_name=commenter_name,
+                    actor_type=commenter_type,
+                )
+                db.add(notification)
+                notifications.append(notification)
+        else:
+            # Studio user commented → notify the project's client
+            notification = Notification(
+                id=str(uuid.uuid4()),
+                user_id=None,
+                client_id=project.client_id,
+                type="comment",
+                text=text,
+                context=context,
+                timestamp=_format_timestamp(datetime.utcnow()),
+                is_read=False,
+                project_id=project_id,
+                photo_id=photo_id,
+                comment_id=comment_id,
+                actor_name=commenter_name,
+                actor_type=commenter_type,
+            )
+            db.add(notification)
+            notifications.append(notification)
+        
+        db.commit()
+        return notifications
+    
+    @staticmethod
+    def get_notifications(
+        db: Session,
+        user_id: Optional[str] = None,
+        client_id: Optional[int] = None,
+        type_filter: Optional[str] = None,
+        unread_only: bool = False,
+        limit: int = 50,
+        project_ids: Optional[List[int]] = None
+    ) -> List[Notification]:
+        """Get notifications for a user or client.
+        
+        Args:
+            project_ids: If provided, only return notifications for these projects.
+                        Used for filtering editor notifications to their assigned projects.
+        """
+        query = db.query(Notification)
+        
+        # Filter by recipient
+        if user_id:
+            query = query.filter(Notification.user_id == user_id)
+        elif client_id:
+            query = query.filter(Notification.client_id == client_id)
+        else:
+            return []
+        
+        # Filter by assigned projects (for editors)
+        if project_ids is not None:
+            # Include notifications for these projects OR system-wide notifications (no project)
+            query = query.filter(
+                or_(
+                    Notification.project_id.in_(project_ids),
+                    Notification.project_id.is_(None)
+                )
+            )
+        
+        # Filter by type
+        if type_filter:
+            query = query.filter(Notification.type == type_filter)
+        
+        # Filter unread only
+        if unread_only:
+            query = query.filter(Notification.is_read == False)
+        
+        # Order by newest first
+        query = query.order_by(Notification.created_at.desc())
+        
+        # Limit results
+        query = query.limit(limit)
+        
+        notifications = query.all()
+        
+        # Update timestamps to be relative
+        for n in notifications:
+            n.timestamp = _format_timestamp(n.created_at)
+        
+        return notifications
+    
+    @staticmethod
+    def get_unread_count(
+        db: Session,
+        user_id: Optional[str] = None,
+        client_id: Optional[int] = None,
+        project_ids: Optional[List[int]] = None
+    ) -> int:
+        """Get unread notification count."""
+        query = db.query(Notification).filter(Notification.is_read == False)
+        
+        if user_id:
+            query = query.filter(Notification.user_id == user_id)
+        elif client_id:
+            query = query.filter(Notification.client_id == client_id)
+        else:
+            return 0
+        
+        # Filter by assigned projects (for editors)
+        if project_ids is not None:
+            query = query.filter(
+                or_(
+                    Notification.project_id.in_(project_ids),
+                    Notification.project_id.is_(None)
+                )
+            )
+        
+        return query.count()
+    
+    @staticmethod
+    def mark_as_read(
+        db: Session,
+        notification_id: str,
+        user_id: Optional[str] = None,
+        client_id: Optional[int] = None
+    ) -> bool:
+        """Mark a single notification as read."""
+        query = db.query(Notification).filter(Notification.id == notification_id)
+        
+        # Ensure user can only mark their own notifications
+        if user_id:
+            query = query.filter(Notification.user_id == user_id)
+        elif client_id:
+            query = query.filter(Notification.client_id == client_id)
+        else:
+            return False
+        
+        notification = query.first()
+        if notification:
+            notification.is_read = True
+            db.commit()
+            return True
+        return False
+    
+    @staticmethod
+    def mark_all_read(
+        db: Session,
+        user_id: Optional[str] = None,
+        client_id: Optional[int] = None
+    ) -> int:
+        """Mark all notifications as read. Returns count of updated notifications."""
+        query = db.query(Notification).filter(Notification.is_read == False)
+        
+        if user_id:
+            query = query.filter(Notification.user_id == user_id)
+        elif client_id:
+            query = query.filter(Notification.client_id == client_id)
+        else:
+            return 0
+        
+        count = query.update({"is_read": True})
+        db.commit()
+        return count

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import uuid
 from datetime import datetime
@@ -32,6 +33,9 @@ from app.schemas import (
     ProjectMetadata,
     ProjectMetadataListResponse,
 )
+from app.middleware.package_restrictions import create_package_snapshot
+from app.services.project_member_service import ProjectMemberService
+import bcrypt
 
 
 router = APIRouter(prefix="/api/projects", tags=["Projects"])
@@ -70,7 +74,7 @@ def _project_detail(project: models.Project, include_images: bool = True, db: Op
         "name": project.title,  # Map title to name
         "total_images": project.photo_count,  # Map photo_count to total_images
         "selected_images": 0,  # Not tracked in current schema
-        "total_comments": 0,  # Not tracked at project level
+        "total_comments": getattr(project, 'total_comments', 0),
         "storage_used_bytes": 0,  # Not tracked in current schema
         "access_url": None,  # Not in current schema
     }
@@ -114,8 +118,8 @@ def list_projects(
     db: Session = Depends(get_db),
 ) -> Union[dict, ProjectMetadataListResponse]:
     print("\n" + "="*80)
-    print("[COVER DEBUG] list_projects endpoint called!")
-    print(f"[COVER DEBUG] User: {current_user.email}, Role: {current_user.role}")
+    logger.debug("[COVER DEBUG] list_projects endpoint called!")
+    logger.debug(f"[COVER DEBUG] User: {current_user.email}, Role: {current_user.role}")
     print("="*80)
     
     logger.debug(
@@ -130,26 +134,53 @@ def list_projects(
     )
     query = db.query(models.Project).options(joinedload(models.Project.cover_photo)).order_by(models.Project.created_at.desc())
     print("\n" + "="*80)
-    print("[COVER DEBUG] Executing query with joinedload for cover_photo relationship")
+    logger.debug("[COVER DEBUG] Executing query with joinedload for cover_photo relationship")
     print("="*80 + "\n")
 
     # Client users should only see their own projects
     if current_user.role == UserRole.CLIENT:
-        # Get client record for this user
-        client = db.query(models.Client).filter(models.Client.user_id == current_user.id).first()
-        if client:
-            query = query.filter(models.Project.client_id == client.id)
-            logger.debug("Filtering projects for client", extra={"client_id": client.id})
+        # IMPORTANT: Also filter by studio_id for multi-tenant isolation
+        if current_user.studio_id:
+            query = query.filter(models.Project.studio_id == current_user.studio_id)
+            logger.debug("Filtering client projects by studio", extra={"studio_id": current_user.studio_id})
+        
+        # New client auth: ID is "client_{id}" format
+        if isinstance(current_user.id, str) and current_user.id.startswith("client_"):
+            try:
+                client_id = int(current_user.id.replace("client_", ""))
+                query = query.filter(models.Project.client_id == client_id)
+                logger.debug("Filtering projects for client (new auth)", extra={"client_id": client_id})
+            except ValueError:
+                logger.warning("Invalid client ID format", extra={"user_id": current_user.id})
+                return {"projects": [], "total": 0}
         else:
-            # User is a client but has no client record, return empty
-            logger.warning("Client user has no client record", extra={"user_id": current_user.id})
-            return {"projects": [], "total": 0}
+            # Legacy: Get client record by user_id (for clients with User accounts)
+            client = db.query(models.Client).filter(models.Client.user_id == current_user.id).first()
+            if client:
+                query = query.filter(models.Project.client_id == client.id)
+                logger.debug("Filtering projects for client (legacy auth)", extra={"client_id": client.id})
+            else:
+                # User is a client but has no client record, return empty
+                logger.warning("Client user has no client record", extra={"user_id": current_user.id})
+                return {"projects": [], "total": 0}
     else:
-        # Studio users see all projects in their studio
+        # Studio users - filter by studio
         if studio_id:
             query = query.filter(models.Project.studio_id == studio_id)
         elif current_user.studio_id:
             query = query.filter(models.Project.studio_id == current_user.studio_id)
+        
+        # For editors/photographers, only show assigned projects
+        # Studio owners and admins see all projects in their studio
+        if current_user.role in [UserRole.STUDIO_PHOTOGRAPHER, UserRole.STUDIO_EDITOR]:
+            member_service = ProjectMemberService(db)
+            assigned_project_ids = member_service.get_user_projects(current_user.id)
+            if assigned_project_ids:
+                query = query.filter(models.Project.id.in_(assigned_project_ids))
+            else:
+                # No assigned projects - return empty
+                logger.debug(f"User {current_user.id} has no assigned projects")
+                return {"projects": [], "total": 0}
 
     if status:
         query = query.filter(models.Project.status == status.value)
@@ -208,34 +239,36 @@ def list_projects(
         cover_photo_src = None
         if project.cover_photo:
             cover_photo_src = project.cover_photo.src
-            print(f"[COVER DEBUG] Project {project.id} ({project.title}) - Has cover_photo, src: {cover_photo_src}")
+            logger.debug(f"[COVER DEBUG] Project {project.id} ({project.title}) - Has cover_photo, src: {cover_photo_src}")
         else:
-            print(f"[COVER DEBUG] Project {project.id} ({project.title}) - No cover_photo, cover_photo_id: {project.cover_photo_id}")
+            logger.debug(f"[COVER DEBUG] Project {project.id} ({project.title}) - No cover_photo, cover_photo_id: {project.cover_photo_id}")
         
         project_dict = {
             "id": str(project.id),
             "studio_id": project.studio_id,
             "client_id": str(project.client_id),
             "title": project.title,
-            "shoot_date": project.shoot_date.isoformat() if project.shoot_date else None,
+            "shoot_date": project.shoot_date.strftime('%Y-%m-%d') if project.shoot_date else None,
             "cover_photo_id": project.cover_photo_id,
             "cover_photo_src": cover_photo_src,
             "photo_count": project.photo_count,
             "is_locked": project.is_locked,
+            "is_password_protected": project.is_password_protected if hasattr(project, 'is_password_protected') else False,
             "layout": project.layout,
             "payment_status": project.payment_status,
             "price": float(project.price) if project.price else None,
             "package_id": project.package_id,
             "status": project.status,
             "has_folders": project.has_folders,
+            "total_comments": getattr(project, 'total_comments', 0),
             "created_at": project.created_at.isoformat() if project.created_at else None,
             "updated_at": project.updated_at.isoformat() if project.updated_at else None,
         }
         summaries.append(project_dict)
-        print(f"[COVER DEBUG] Project {project.id} response dict: cover_photo_src={project_dict.get('cover_photo_src')}")
+        logger.debug(f"[COVER DEBUG] Project {project.id} response dict: cover_photo_src={project_dict.get('cover_photo_src')}")
     
-    print(f"\n[COVER DEBUG] Returning {len(summaries)} projects")
-    print(f"[COVER DEBUG] Sample response: {summaries[0] if summaries else 'No projects'}")
+    logger.debug(f"\n[COVER DEBUG] Returning {len(summaries)} projects")
+    logger.debug(f"[COVER DEBUG] Sample response: {summaries[0] if summaries else 'No projects'}")
     print("="*80 + "\n")
     
     logger.info(f"Returned {len(summaries)} complete projects", extra={
@@ -261,6 +294,88 @@ def get_project_by_access_url(access_url: str, db: Session = Depends(get_db)) ->
         status_code=status.HTTP_501_NOT_IMPLEMENTED,
         detail="Access URL lookup not implemented in current schema"
     )
+
+
+@router.post("/{project_id}/verify-password")
+def verify_gallery_password(
+    project_id: str,
+    body: dict,
+    db: Session = Depends(get_db),
+) -> dict:
+    """
+    Verify gallery password for a password-protected project.
+    
+    This endpoint is public (no auth required) to allow clients to access galleries.
+    
+    Args:
+        project_id: The project ID
+        body: JSON with 'password' field
+        
+    Returns:
+        success: True if password matches, raises 403 if invalid
+    """
+    logger.debug("Verifying gallery password", extra={"project_id": project_id})
+    
+    # Convert project_id to integer
+    try:
+        project_id_int = int(project_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid project ID format"
+        )
+    
+    # Get project
+    project = db.query(models.Project).filter(models.Project.id == project_id_int).first()
+    if not project:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found"
+        )
+    
+    # Check if password protection is enabled
+    if not project.is_password_protected:
+        return {"success": True, "message": "Project is not password protected"}
+    
+    # Get password from body
+    password = body.get("password", "")
+    if not password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password is required"
+        )
+    
+    # Verify password
+    if not project.gallery_password:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Password protection enabled but no password set"
+        )
+    
+    try:
+        password_valid = bcrypt.checkpw(
+            password.encode('utf-8'),
+            project.gallery_password.encode('utf-8')
+        )
+    except Exception as e:
+        logger.error(f"Password verification error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Password verification failed"
+        )
+    
+    if not password_valid:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Invalid password"
+        )
+    
+    return {
+        "success": True,
+        "message": "Password verified",
+        "project_id": project.id,
+        "project_title": project.title,
+    }
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -344,6 +459,18 @@ def create_project(
     slug = request.name.lower().replace(" ", "-")
     access_url = f"{slug}-{project_id[:6]}"
 
+    # Create package snapshot if package is selected
+    package_snapshot = None
+    usage_stats = {"photos_selected": 0, "video_gb_used": 0}
+    
+    if hasattr(request, 'package_id') and request.package_id:
+        try:
+            snapshot_data = create_package_snapshot(request.package_id, db)
+            package_snapshot = json.dumps(snapshot_data) if snapshot_data else None
+        except Exception as e:
+            logger.warning(f"Failed to create package snapshot: {e}")
+            package_snapshot = None
+    
     project = models.Project(
         studio_id=current_user.studio_id,
         client_id=client.id,
@@ -351,6 +478,9 @@ def create_project(
         shoot_date=request.shoot_date,
         status='draft',
         has_folders=False,
+        package_id=getattr(request, 'package_id', None),
+        package_snapshot=package_snapshot,
+        usage_stats=json.dumps(usage_stats),
     )
     db.add(project)
     db.flush()
@@ -407,7 +537,7 @@ def create_project(
         "studio_id": project.studio_id,
         "client_id": project.client_id,
         "title": project.title,
-        "shoot_date": project.shoot_date.isoformat() if project.shoot_date else None,
+        "shoot_date": project.shoot_date.strftime('%Y-%m-%d') if project.shoot_date else None,
         "cover_photo_id": project.cover_photo_id,
         "photo_count": project.photo_count,
         "is_locked": project.is_locked,
@@ -498,6 +628,22 @@ def update_project(
                       extra={"project_id": project_id})
         # Skip settings update - ProjectSettings model doesn't exist
         # The Project model doesn't have a settings relationship
+
+    # Handle gallery password protection
+    if "is_password_protected" in project_update:
+        project.is_password_protected = project_update["is_password_protected"]
+        # If disabling password protection, clear the password
+        if not project_update["is_password_protected"]:
+            project.gallery_password = None
+    
+    if "gallery_password" in project_update:
+        password = project_update["gallery_password"]
+        if password:
+            # Hash the password before storing
+            hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            project.gallery_password = hashed.decode('utf-8')
+        else:
+            project.gallery_password = None
 
     project.updated_at = datetime.utcnow()
     
@@ -608,7 +754,15 @@ def get_project_folders(
     
     # Authorization check
     if current_user.role == UserRole.CLIENT:
-        if project.client_id != current_user.id:
+        # Extract client_id from user ID (format: "client_{id}")
+        user_client_id = None
+        if isinstance(current_user.id, str) and current_user.id.startswith("client_"):
+            try:
+                user_client_id = int(current_user.id.replace("client_", ""))
+            except ValueError:
+                pass
+        
+        if user_client_id is None or project.client_id != user_client_id:
             logger.warning(
                 "Unauthorized folder access attempt",
                 extra={"project_id": project_id, "user_id": current_user.id}
@@ -719,30 +873,35 @@ def create_project_folder(
                 detail="Not authorized to create folders in this project"
             )
     
-    # Check if folder with same name already exists
+    # Check if folder with same name already exists (case-insensitive)
     existing_folder = (
         db.query(models.Folder)
         .filter(
             models.Folder.project_id == project_id_int,
-            models.Folder.name == folder_name
+            func.lower(models.Folder.name) == folder_name.lower()
         )
         .first()
     )
     
     if existing_folder:
-        # Return existing folder instead of error
-        logger.info("Folder already exists, returning existing", extra={"folder_id": existing_folder.id, "folder_name": folder_name})
-        return {
-            "id": existing_folder.id,
-            "name": existing_folder.name,
-            "project_id": existing_folder.project_id,
-            "photoCount": existing_folder.photo_count,
-            "coverPhotoId": existing_folder.cover_photo_id,
-            "coverPhotoSrc": None,
-            "order_index": existing_folder.order_index,
-            "created_at": existing_folder.created_at.isoformat() if existing_folder.created_at else None,
-            "updated_at": existing_folder.updated_at.isoformat() if existing_folder.updated_at else None,
-        }
+        logger.warning("Duplicate folder name detected", extra={
+            "folder_name": folder_name,
+            "existing_folder_id": existing_folder.id
+        })
+        
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error": "duplicate_detected",
+                "type": "folder_name",
+                "message": f"Folder '{folder_name}' already exists in this project. Please use a different folder name.",
+                "existing_folder": {
+                    "id": existing_folder.id,
+                    "name": existing_folder.name,
+                    "photo_count": existing_folder.photo_count
+                }
+            }
+        )
     
     # Get the next order index
     max_order = db.query(func.max(models.Folder.order_index)).filter(

@@ -2,14 +2,19 @@
 
 import logging
 import secrets
+import time
+import hashlib
 from datetime import datetime, timedelta
 from typing import Optional, Tuple, List, Dict
 from sqlalchemy.orm import Session
 from PIL import Image
 import io
+from pathlib import Path
 
 from app.db.models import UploadSession, UploadToken, Photo, Project
 from app.services.storage_service import StorageService
+
+from fastapi import HTTPException
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +24,11 @@ class UploadService:
     
     def __init__(self, storage_service: StorageService):
         self.storage = storage_service
+    
+    @staticmethod
+    def calculate_file_hash(file_data: bytes) -> str:
+        """Calculate SHA-256 hash of file content for duplicate detection."""
+        return hashlib.sha256(file_data).hexdigest()
     
     def generate_upload_token(
         self,
@@ -156,41 +166,16 @@ class UploadService:
         upload_token.status = 'completed'
         upload_token.photo_id = photo.id  # Reference original photo
         
-        # Generate quality variants for the new version (Phase 2: Backend Image Optimization)
-        from app.services.image_processing_service import ImageProcessingService
-        from pathlib import Path
-        
-        image_service = ImageProcessingService()
-        version_storage_path = photo_version.storage_path
-        storage_full_path = self.storage.get_full_path(version_storage_path)
-        
-        try:
-            logger.info(f"Generating quality variants for version {photo_version.version_number} of photo {photo.id}")
-            # Note: For photo versions, variants are stored in photo_version record
-            # But we use the same service to generate them
-            variants = await image_service.generate_quality_variants(
-                db=db,
-                photo=photo,  # Reference to base photo
-                original_file_path=storage_full_path
-            )
-            logger.info(f"Generated {len(variants)} variants for version {photo_version.version_number}")
-            
-            # Generate ThumbHash
-            logger.info(f"Generating ThumbHash for version {photo_version.version_number}")
-            thumbhash = await image_service.generate_thumbhash(storage_full_path)
-            if thumbhash:
-                # Store thumbhash in the photo version or photo record
-                photo.thumbhash = thumbhash
-                logger.info(f"ThumbHash generated for version {photo_version.version_number}")
-            
-        except Exception as e:
-            logger.error(f"Failed to generate variants for version: {e}")
-            # Continue - variants can be regenerated later
+        # Set photo status to processing
+        photo.status = 'processing'
         
         db.commit()
         db.refresh(photo)
         
-        logger.info(f"Version {photo_version.version_number} created for photo {photo.id}")
+        logger.info(f"Version {photo_version.version_number} created for photo {photo.id}, queuing for background processing")
+        
+        # Note: Background processing will be triggered by the router
+        # Variants for photo versions will be generated in background
         
         # Return photo (not photo_version) for consistent API response
         return photo
@@ -234,8 +219,8 @@ class UploadService:
             
         except Exception as e:
             # Log warning but don't fail - set default dimensions
-            print(f"[UploadService] Warning: Could not extract dimensions for {upload_token.filename}: {str(e)}")
-            print(f"[UploadService] File size: {len(file_data)} bytes, Content-Type: {upload_token.content_type}")
+            logger.warning(f"[UploadService] Warning: Could not extract dimensions for {upload_token.filename}: {str(e)}")
+            logger.warning(f"[UploadService] File size: {len(file_data)} bytes, Content-Type: {upload_token.content_type}")
             
             # Set default dimensions for images that can't be parsed
             # Backend will accept them but they'll need manual verification
@@ -249,11 +234,175 @@ class UploadService:
                     raise ValueError(f"Empty file data for {upload_token.filename}")
                 # Otherwise allow it through with default dimensions
         
+        # Calculate file hash for duplicate detection
+        file_hash = self.calculate_file_hash(file_data)
+        
+        logger.debug(
+            f"[UploadService] Checking for duplicates: "
+            f"filename={upload_token.filename}, "
+            f"project_id={project.id}, "
+            f"folder_id={upload_token.folder_id}, "
+            f"content_hash={file_hash[:16]}..."
+        )
+        
+        # Duplicate detection: ONLY checks within same project + same folder
+        # Allows same photo in: different folders within same project, or different projects
+        # Blocks same photo in: same folder of same project (duplicate in same location)
+        if upload_token.folder_id:
+            duplicate_photo = db.query(Photo).filter(
+                Photo.project_id == project.id,
+                Photo.folder_id == upload_token.folder_id,
+                Photo.content_hash == file_hash
+            ).first()
+            
+            if duplicate_photo:
+                # Get folder name for better error message
+                from app.db.models.project import Folder
+                folder = db.query(Folder).filter(Folder.id == upload_token.folder_id).first()
+                folder_name = folder.name if folder else "this folder"
+                
+                logger.warning(
+                    f"[UploadService] Duplicate photo detected: "
+                    f"filename={upload_token.filename}, "
+                    f"project_id={project.id}, "
+                    f"folder={folder_name} ({upload_token.folder_id}), "
+                    f"existing_photo_id={duplicate_photo.id}"
+                )
+                
+                # Check if it's the same filename or just same content
+                is_same_filename = duplicate_photo.original_filename == upload_token.filename
+                
+                if is_same_filename:
+                    message = f"A photo with filename '{upload_token.filename}' already exists in folder '{folder_name}'."
+                    help_text = "This exact file was already uploaded to this folder. Remove it from your upload list."
+                else:
+                    message = f"This photo (content) already exists in folder '{folder_name}' as '{duplicate_photo.original_filename}'. Your file '{upload_token.filename}' has the same image content but a different name."
+                    help_text = f"The photo you're uploading has the same content as '{duplicate_photo.original_filename}' already in this folder. If this is the same photo renamed, skip it. If they should be different, check your source files."
+                
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "error": "duplicate_detected",
+                        "type": "photo_content",
+                        "message": message,
+                        "your_file": upload_token.filename,
+                        "existing_photo": {
+                            "id": duplicate_photo.id,
+                            "filename": duplicate_photo.original_filename,
+                            "folder_name": folder_name,
+                            "uploaded_at": duplicate_photo.created_at.isoformat(),
+                            "thumbnail_url": f"/api/photos/{duplicate_photo.id}/thumbnail"
+                        },
+                        "help": help_text,
+                        "note": "Duplicate detection checks image content, not just filename. This prevents the same photo being uploaded multiple times with different names."
+                    }
+                )
+        else:
+            # For photos without folders, check at project level
+            duplicate_photo = db.query(Photo).filter(
+                Photo.project_id == project.id,
+                Photo.folder_id.is_(None),
+                Photo.content_hash == file_hash
+            ).first()
+            
+            if duplicate_photo:
+                # Check if it's the same filename or just same content
+                is_same_filename = duplicate_photo.original_filename == upload_token.filename
+                
+                if is_same_filename:
+                    message = f"A photo with filename '{upload_token.filename}' already exists at the root level of this project."
+                    help_text = "This exact file was already uploaded. Remove it from your upload list."
+                else:
+                    message = f"This photo (content) already exists at the root level as '{duplicate_photo.original_filename}'. Your file '{upload_token.filename}' has the same image content but a different name."
+                    help_text = f"The photo you're uploading has the same content as '{duplicate_photo.original_filename}'. If this is the same photo renamed, skip it. If they should be different, check your source files."
+                
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "error": "duplicate_detected",
+                        "type": "photo_content",
+                        "message": message,
+                        "your_file": upload_token.filename,
+                        "existing_photo": {
+                            "id": duplicate_photo.id,
+                            "filename": duplicate_photo.original_filename,
+                            "uploaded_at": duplicate_photo.created_at.isoformat(),
+                            "thumbnail_url": f"/api/photos/{duplicate_photo.id}/thumbnail"
+                        },
+                        "help": help_text,
+                        "note": "Duplicate detection checks image content, not just filename. This prevents the same photo being uploaded multiple times with different names."
+                    }
+                )
+        
+        # Check for same filename in same folder - BLOCK if duplicate
+        # Photos must have unique filenames within their folder (or within project if no folder)
+        if upload_token.folder_id:
+            # Check for duplicate filename in the same folder
+            same_filename = db.query(Photo).filter(
+                Photo.project_id == project.id,
+                Photo.folder_id == upload_token.folder_id,
+                Photo.original_filename == upload_token.filename
+            ).first()
+            
+            if same_filename:
+                # Get folder name for better error message
+                from app.db.models.project import Folder
+                folder = db.query(Folder).filter(Folder.id == upload_token.folder_id).first()
+                folder_name = folder.name if folder else "this folder"
+                
+                logger.warning(
+                    f"Duplicate filename in folder {upload_token.folder_id}: "
+                    f"{upload_token.filename} (existing ID: {same_filename.id})"
+                )
+                
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "error": "duplicate_detected",
+                        "type": "photo_filename",
+                        "message": f"File '{upload_token.filename}' already exists in folder '{folder_name}'. Please rename the file.",
+                        "existing_photo": {
+                            "id": same_filename.id,
+                            "filename": same_filename.original_filename,
+                            "folder_name": folder_name,
+                            "uploaded_at": same_filename.created_at.isoformat()
+                        }
+                    }
+                )
+        else:
+            # Check for duplicate filename in project (no folder)
+            same_filename = db.query(Photo).filter(
+                Photo.project_id == project.id,
+                Photo.folder_id.is_(None),
+                Photo.original_filename == upload_token.filename
+            ).first()
+            
+            if same_filename:
+                logger.warning(
+                    f"Duplicate filename in project {project.id} (no folder): "
+                    f"{upload_token.filename} (existing ID: {same_filename.id})"
+                )
+                
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "error": "duplicate_detected",
+                        "type": "photo_filename",
+                        "message": f"File '{upload_token.filename}' already exists in this project. Please rename the file.",
+                        "existing_photo": {
+                            "id": same_filename.id,
+                            "filename": same_filename.original_filename,
+                            "uploaded_at": same_filename.created_at.isoformat()
+                        }
+                    }
+                )
+        
         # Save file to storage
         file_obj = io.BytesIO(file_data)
         url = await self.storage.save_file(file_obj, upload_token.storage_path)
         
-        # Create Photo record
+        # Create Photo record with 'processing' status
+        # Variants will be generated in background
         photo = Photo(
             project_id=upload_session.project_id,
             folder_id=upload_token.folder_id,
@@ -266,7 +415,8 @@ class UploadService:
             file_size=upload_token.file_size,
             mime_type=upload_token.content_type,
             uploaded_by=upload_session.user_id,
-            status='completed',
+            status='processing',  # Changed from 'completed' - variants generated in background
+            content_hash=file_hash,  # For duplicate detection
         )
         
         db.add(photo)
@@ -312,36 +462,17 @@ class UploadService:
                         "photo_id": photo.id
                     })
         
-        # Generate quality variants (Phase 2: Backend Image Optimization)
-        from app.services.image_processing_service import ImageProcessingService
-        from pathlib import Path
-        
-        image_service = ImageProcessingService()
-        storage_full_path = self.storage.get_full_path(upload_token.storage_path)
-        
-        try:
-            logger.info(f"Generating quality variants for photo {photo.id}")
-            variants = await image_service.generate_quality_variants(
-                db=db,
-                photo=photo,
-                original_file_path=storage_full_path
-            )
-            logger.info(f"Generated {len(variants)} variants for photo {photo.id}")
-            
-            # Generate ThumbHash for instant placeholders
-            logger.info(f"Generating ThumbHash for photo {photo.id}")
-            thumbhash = await image_service.generate_thumbhash(storage_full_path)
-            if thumbhash:
-                photo.thumbhash = thumbhash
-                logger.info(f"ThumbHash generated for photo {photo.id}")
-            
-        except Exception as e:
-            # Don't fail upload if variant generation fails
-            logger.error(f"Failed to generate variants for photo {photo.id}: {e}")
-            # Variants can be regenerated later via admin task
-        
+        # Commit photo record immediately - variants will be generated in background
         db.commit()
         db.refresh(photo)
+        
+        logger.info(f"Photo {photo.id} uploaded successfully, queuing for background processing")
+        
+        # Note: Background processing will be triggered by the router using BackgroundTasks
+        # The _process_photo_variants_background function will:
+        # 1. Generate quality variants
+        # 2. Generate ThumbHash
+        # 3. Update status to 'completed' or set processing_error
         
         return photo
     
@@ -521,3 +652,145 @@ class UploadService:
             "pending": pending_count,
             "status": upload_session.status,
         }
+
+
+def _process_photo_variants_background(
+    photo_id: int,
+    storage_path: str,
+    project_id: int,
+    max_retries: int = 3
+):
+    """
+    Background task to generate variants with retry logic.
+    This runs asynchronously after photo upload completes.
+    """
+    from app.db.session import SessionLocal
+    from app.services.image_processing_service import ImageProcessingService
+    from app.services.storage_service import get_storage_service
+    
+    db = SessionLocal()
+    try:
+        photo = db.query(Photo).filter(Photo.id == photo_id).first()
+        if not photo:
+            logger.error(f"Photo {photo_id} not found for variant processing")
+            return
+        
+        storage = get_storage_service()
+        image_service = ImageProcessingService()
+        storage_full_path = storage.get_full_path(storage_path)
+        
+        # Retry loop with exponential backoff
+        last_error = None
+        for attempt in range(max_retries):
+            try:
+                photo.processing_attempts = attempt + 1
+                photo.last_processing_attempt_at = datetime.utcnow()
+                db.commit()
+                
+                logger.info(f"Generating variants for photo {photo_id} (attempt {attempt + 1}/{max_retries})")
+                
+                # Generate quality variants
+                variants = image_service.generate_quality_variants(
+                    db=db,
+                    photo=photo,
+                    original_file_path=storage_full_path
+                )
+                
+                # Generate ThumbHash
+                thumbhash = image_service.generate_thumbhash(storage_full_path)
+                if thumbhash:
+                    photo.thumbhash = thumbhash
+                
+                # SUCCESS - mark as completed
+                photo.status = 'completed'
+                photo.processing_error = None
+                db.flush()  # Flush status change so count query includes this photo
+                
+                # Update project photo_count now that status is 'completed'
+                project = db.query(Project).filter(Project.id == photo.project_id).first()
+                if project:
+                    project.photo_count = db.query(Photo).filter(
+                        Photo.project_id == project.id,
+                        Photo.status == "completed"
+                    ).count()
+                
+                # Update folder photo_count if photo belongs to a folder
+                if photo.folder_id:
+                    from app.db.models.project import Folder
+                    folder = db.query(Folder).filter(Folder.id == photo.folder_id).first()
+                    if folder:
+                        folder.photo_count = db.query(Photo).filter(
+                            Photo.folder_id == folder.id,
+                            Photo.status == "completed"
+                        ).count()
+                
+                db.commit()
+                logger.info(f"Successfully generated variants for photo {photo_id}")
+                return
+                
+            except Exception as e:
+                last_error = str(e)
+                logger.warning(f"Variant generation attempt {attempt + 1} failed for photo {photo_id}: {e}")
+                
+                if attempt < max_retries - 1:
+                    # Exponential backoff: 1s, 2s, 4s
+                    time.sleep(2 ** attempt)
+        
+        # All retries failed - still mark as completed but with error
+        photo.status = 'completed'  # Photo is still usable with original
+        photo.processing_error = f"Failed after {max_retries} attempts: {last_error}"
+        db.flush()  # Flush status change so count query includes this photo
+        
+        # Update project photo_count now that status is 'completed'
+        project = db.query(Project).filter(Project.id == photo.project_id).first()
+        if project:
+            project.photo_count = db.query(Photo).filter(
+                Photo.project_id == project.id,
+                Photo.status == "completed"
+            ).count()
+        
+        # Update folder photo_count if photo belongs to a folder
+        if photo.folder_id:
+            from app.db.models.project import Folder
+            folder = db.query(Folder).filter(Folder.id == photo.folder_id).first()
+            if folder:
+                folder.photo_count = db.query(Photo).filter(
+                    Photo.folder_id == folder.id,
+                    Photo.status == "completed"
+                ).count()
+        
+        db.commit()
+        logger.error(f"Failed to generate variants for photo {photo_id} after {max_retries} attempts: {last_error}")
+        
+    except Exception as e:
+        logger.error(f"Critical error in background processing for photo {photo_id}: {e}")
+        try:
+            photo = db.query(Photo).filter(Photo.id == photo_id).first()
+            if photo:
+                photo.status = 'completed'
+                photo.processing_error = f"Critical error: {str(e)}"
+                db.flush()  # Flush status change so count query includes this photo
+                
+                # Update project photo_count now that status is 'completed'
+                project = db.query(Project).filter(Project.id == photo.project_id).first()
+                if project:
+                    project.photo_count = db.query(Photo).filter(
+                        Photo.project_id == project.id,
+                        Photo.status == "completed"
+                    ).count()
+                
+                # Update folder photo_count if photo belongs to a folder
+                if photo.folder_id:
+                    from app.db.models.project import Folder
+                    folder = db.query(Folder).filter(Folder.id == photo.folder_id).first()
+                    if folder:
+                        folder.photo_count = db.query(Photo).filter(
+                            Photo.folder_id == folder.id,
+                            Photo.status == "completed"
+                        ).count()
+                
+                db.commit()
+        except:
+            pass
+    finally:
+        db.close()

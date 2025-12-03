@@ -20,31 +20,42 @@ class ServicePackageFeature(BaseModel):
 class ServicePackageBase(BaseModel):
     """Base service package fields."""
     name: str = Field(..., min_length=1, max_length=500)
-    description: str = Field(..., min_length=1)
+    category: str = Field(..., min_length=1, max_length=100)  # Category (e.g., "Wedding", "Portrait")
+    description: str = Field(default="", min_length=0)  # Allow empty description
     price: Decimal = Field(..., ge=0)
 
 
 class ServicePackageCreate(ServicePackageBase):
     """Service package creation schema."""
+    package_type_id: Optional[str] = None  # Reference to package type
     features: List[ServicePackageFeature] = []
     deliverables: List[str] = []
+    restrictions: Optional[Dict[str, Any]] = None  # Package-specific restrictions
+    lifecycle_config: Optional[Dict[str, Any]] = None  # Retention, archival, editing periods
 
 
 class ServicePackageUpdate(BaseModel):
     """Service package update schema."""
     name: Optional[str] = Field(None, min_length=1, max_length=500)
+    category: Optional[str] = Field(None, min_length=1, max_length=100)
     description: Optional[str] = None
     price: Optional[Decimal] = Field(None, ge=0)
+    package_type_id: Optional[str] = None
     features: Optional[List[ServicePackageFeature]] = None
     deliverables: Optional[List[str]] = None
+    restrictions: Optional[Dict[str, Any]] = None
+    lifecycle_config: Optional[Dict[str, Any]] = None
 
 
 class ServicePackageResponse(ServicePackageBase):
     """Service package response schema."""
     id: str
     studio_id: str
+    package_type_id: Optional[str] = None
     features: List[ServicePackageFeature]
     deliverables: Optional[List[str]] = []
+    restrictions: Optional[Dict[str, Any]] = None
+    lifecycle_config: Optional[Dict[str, Any]] = None
     created_at: datetime
     updated_at: datetime
     

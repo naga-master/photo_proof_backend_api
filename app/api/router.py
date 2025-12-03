@@ -19,8 +19,19 @@ from app.routers import cart as cart_v2
 from app.routers import orders as orders_v2
 from app.routers import invoices as invoices_v2
 from app.routers import service_packages as service_packages_v2
+from app.routers import package_types as package_types_v2
+
 from app.routers import files as files_v2
 from app.routers import ai_tools as ai_tools_v2
+from app.routers import studios as studios_v2
+from app.routers import onboarding as onboarding_v2
+from app.routers import contracts as contracts_v2
+from app.routers import data_rights as data_rights_v2
+from app.routers import admin as admin_v2
+from app.routers import network_test as network_test_v2
+from app.routers import notifications as notifications_v2
+from app.routers import studio_users as studio_users_v2
+from app.routers import project_members as project_members_v2
 
 
 api_router = APIRouter()
@@ -62,9 +73,39 @@ api_router.include_router(orders_v2.router, prefix="/v2/orders", tags=["v2-order
 # Billing & Services
 api_router.include_router(invoices_v2.router, prefix="/v2/invoices", tags=["v2-invoices"])
 api_router.include_router(service_packages_v2.router, prefix="/v2/packages", tags=["v2-service-packages"])
+api_router.include_router(package_types_v2.router, prefix="/v2/package-types", tags=["v2-package-types"])
+
+
 
 # AI Tools
 api_router.include_router(ai_tools_v2.router, prefix="/v2", tags=["v2-ai-tools"])
+
+# Multi-Tenant Studio Management
+api_router.include_router(studios_v2.router, prefix="/api", tags=["studios"])  # /api/studio/*
+
+# Studio Onboarding
+api_router.include_router(onboarding_v2.router, prefix="/api", tags=["onboarding"])  # /api/onboarding/*
+
+# Contracts Management
+api_router.include_router(contracts_v2.router, prefix="/v2/contracts", tags=["v2-contracts"])
+
+# Data Subject Rights (DPDPA 2023 Compliance)
+api_router.include_router(data_rights_v2.router, prefix="/v2/data-rights", tags=["v2-data-rights"])
+
+# Admin & System Management
+api_router.include_router(admin_v2.router, prefix="/v2", tags=["v2-admin"])
+
+# Network Testing (for performance-based network detection)
+api_router.include_router(network_test_v2.router, prefix="/api", tags=["network"])
+
+# Notifications (in-app notifications for comments, etc.)
+api_router.include_router(notifications_v2.router, tags=["notifications"])
+
+# Studio Users Management (invite, list, update, delete team members)
+api_router.include_router(studio_users_v2.router, tags=["studio-users"])
+
+# Project Members Management (team assignment to specific projects)
+api_router.include_router(project_members_v2.router, prefix="/v2", tags=["project-members"])
 
 
 # ============================================================================
